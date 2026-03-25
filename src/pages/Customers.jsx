@@ -53,7 +53,10 @@ export default function Customers() {
           <h1 className="text-2xl md:text-3xl font-bold font-inter tracking-tight">Customers</h1>
           <p className="text-muted-foreground text-sm mt-1">{customers.length} customers</p>
         </div>
-        <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" /> Add Customer</Button>
+        <div className="flex gap-2">
+          <QuickBooksImport onImported={() => queryClient.invalidateQueries({ queryKey: ["customers"] })} />
+          <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" /> Add Customer</Button>
+        </div>
       </div>
 
       <div className="relative">
