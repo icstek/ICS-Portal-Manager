@@ -1,0 +1,113 @@
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Plus, Search, Users, Pencil, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+
+export default function Customers() {
+  const [search, setSearch] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editing, setEditing] = useState(null);
+  const [form, setForm] = useState({ name: "", address: "", city: "", zip: "", tel: "", cell: "", email: "" });
+  const queryClient = useQueryClient();
+
+  const { data: customers = [], isLoading } = useQuery({
+    queryKey: ["customers"],
+    queryFn: () => base44.entities.Customer.list("name"),
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: (data) => editing
+      ? base44.entities.Customer.update(editing.id, data)
+      : base44.entities.Customer.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+      setDialogOpen(false);
+      toast.success(editing ? "Customer updated" : "Customer added");
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.Customer.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+      toast.success("Customer deleted");
+    },
+  });
+
+  const openNew = () => { setEditing(null); setForm({ name: "", address: "", city: "", zip: "", tel: "", cell: "", email: "" }); setDialogOpen(true); };
+  const openEdit = (c) => { setEditing(c); setForm({ name: c.name || "", address: c.address || "", city: c.city || "", zip: c.zip || "", tel: c.tel || "", cell: c.cell || "", email: c.email || "" }); setDialogOpen(true); };
+
+  const filtered = customers.filter((c) => (c.name || "").toLowerCase().includes(search.toLowerCase()));
+
+  return (
+    <div className="max-w-5xl mx-auto space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold font-inter tracking-tight">Customers</h1>
+          <p className="text-muted-foreground text-sm mt-1">{customers.length} customers</p>
+        </div>
+        <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" /> Add Customer</Button>
+      </div>
+
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input placeholder="Search customers..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+      </div>
+
+      {isLoading ? (
+        <div className="flex justify-center py-12"><div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>
+      ) : filtered.length === 0 ? (
+        <Card><CardContent className="py-12 text-center"><Users className="w-10 h-10 text-muted-foreground mx-auto mb-3" /><p className="text-muted-foreground">No customers found</p></CardContent></Card>
+      ) : (
+        <div className="grid gap-3">
+          {filtered.map((c) => (
+            <Card key={c.id} className="hover:shadow-md transition-shadow">
+              <CardContent className="p-4 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <span className="text-sm font-bold text-primary">{(c.name || "?")[0].toUpperCase()}</span>
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-medium truncate">{c.name}</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {[c.city, c.tel].filter(Boolean).join(" · ") || "No details"}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-1 shrink-0">
+                  <Button variant="ghost" size="icon" onClick={() => openEdit(c)}><Pencil className="w-4 h-4" /></Button>
+                  <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(c.id)} className="text-destructive hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>{editing ? "Edit Customer" : "Add Customer"}</DialogTitle></DialogHeader>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="sm:col-span-2"><Label className="text-xs">Name *</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="mt-1" /></div>
+            <div><Label className="text-xs">Address</Label><Input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="mt-1" /></div>
+            <div><Label className="text-xs">City</Label><Input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="mt-1" /></div>
+            <div><Label className="text-xs">Zip</Label><Input value={form.zip} onChange={(e) => setForm({ ...form, zip: e.target.value })} className="mt-1" /></div>
+            <div><Label className="text-xs">Telephone</Label><Input value={form.tel} onChange={(e) => setForm({ ...form, tel: e.target.value })} className="mt-1" /></div>
+            <div><Label className="text-xs">Cell</Label><Input value={form.cell} onChange={(e) => setForm({ ...form, cell: e.target.value })} className="mt-1" /></div>
+            <div><Label className="text-xs">Email</Label><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="mt-1" /></div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
+            <Button onClick={() => saveMutation.mutate(form)} disabled={!form.name || saveMutation.isPending}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
