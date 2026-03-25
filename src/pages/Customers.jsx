@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Plus, Search, Users, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import QuickBooksImport from "@/components/customers/QuickBooksImport";
 
 export default function Customers() {
   const [search, setSearch] = useState("");
