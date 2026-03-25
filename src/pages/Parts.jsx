@@ -57,7 +57,10 @@ export default function Parts() {
           <h1 className="text-2xl md:text-3xl font-bold font-inter tracking-tight">Parts Catalog</h1>
           <p className="text-muted-foreground text-sm mt-1">{parts.length} parts</p>
         </div>
-        <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" /> Add Part</Button>
+        <div className="flex gap-2">
+          <QuickBooksPartsImport onImported={() => queryClient.invalidateQueries({ queryKey: ["parts"] })} />
+          <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" /> Add Part</Button>
+        </div>
       </div>
 
       <div className="relative">
