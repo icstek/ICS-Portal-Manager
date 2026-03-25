@@ -61,6 +61,9 @@ module.exports = {
   				ring: 'hsl(var(--sidebar-ring))'
   			}
   		},
+  		fontFamily: {
+  			inter: ['var(--font-inter)']
+  		},
   		keyframes: {
   			'accordion-down': {
   				from: {
