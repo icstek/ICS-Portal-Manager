@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Plus, Wrench, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import QuickBooksEmployeesImport from "@/components/technicians/QuickBooksEmployeesImport";
 
 export default function Technicians() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -49,7 +50,10 @@ export default function Technicians() {
           <h1 className="text-2xl md:text-3xl font-bold font-inter tracking-tight">Technicians</h1>
           <p className="text-muted-foreground text-sm mt-1">{technicians.length} technicians</p>
         </div>
-        <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" /> Add Technician</Button>
+        <div className="flex gap-2">
+          <QuickBooksEmployeesImport onImported={() => queryClient.invalidateQueries({ queryKey: ["technicians"] })} />
+          <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" /> Add Technician</Button>
+        </div>
       </div>
 
       {isLoading ? (
