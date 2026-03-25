@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Plus, Search, Package, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import QuickBooksPartsImport from "@/components/parts/QuickBooksPartsImport";
 
 const categories = ["hardware", "cable", "peripheral", "storage", "memory", "display", "battery", "other"];
 
