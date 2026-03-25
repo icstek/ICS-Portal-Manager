@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -50,6 +50,17 @@ export default function NewServiceReport() {
   const [items, setItems] = useState([]);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  // Auto-generate report number starting at 1000
+  useEffect(() => {
+    base44.entities.ServiceReport.list().then((reports) => {
+      const numbers = reports
+        .map((r) => parseInt(r.report_number))
+        .filter((n) => !isNaN(n));
+      const next = numbers.length > 0 ? Math.max(...numbers) + 1 : 1000;
+      setForm((f) => ({ ...f, report_number: String(next) }));
+    });
+  }, []);
 
   const partsTotal = items.reduce((sum, it) => sum + (it.total || 0), 0);
   const laborCharge = (form.total_time_hours || 0) * (form.hourly_rate || 0) + (form.misc_charge || 0);
@@ -130,7 +141,7 @@ export default function NewServiceReport() {
               </div>
               <div className="flex-1">
                 <Label className="text-xs text-muted-foreground">Report #</Label>
-                <Input value={form.report_number || ""} onChange={(e) => setForm((f) => ({ ...f, report_number: e.target.value }))} className="mt-1" placeholder="Auto or manual" />
+                <Input value={form.report_number || ""} onChange={(e) => setForm((f) => ({ ...f, report_number: e.target.value }))} className="mt-1" placeholder="Loading..." />
               </div>
               <div>
                 <Label className="text-xs text-muted-foreground">Date</Label>
