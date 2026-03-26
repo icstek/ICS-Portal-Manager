@@ -167,10 +167,15 @@ export default function ReportDetail() {
             {/* Terms & Conditions (left, visible on print) */}
             <div className="hidden md:block print:block">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Terms & Conditions</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
+              <p className="text-xs text-muted-foreground leading-relaxed mb-6">
                 Payment is due upon receipt of this invoice. Please make checks payable to the company. 
                 All work is guaranteed for 30 days from the date of service. Returns must be made within 14 days of purchase.
               </p>
+              <div className="space-y-1 pt-4 border-t">
+                <p className="text-xs text-muted-foreground">Customer Signature</p>
+                <div className="h-12 border-b border-foreground"></div>
+                <p className="text-xs text-muted-foreground">Date: _______________</p>
+              </div>
             </div>
 
             {/* Charges Summary (right) */}
