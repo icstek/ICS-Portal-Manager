@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Plus, Search, Users, Pencil, Trash2, Check } from "lucide-react";
+import { Plus, Search, Users, Pencil, Trash2, Check, FileText } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import QuickBooksImport from "@/components/customers/QuickBooksImport";
+import CustomerReports from "@/components/customers/CustomerReports";
 import { useRole } from "@/hooks/useRole";
 
 export default function Customers() {
@@ -19,6 +20,8 @@ export default function Customers() {
   const [form, setForm] = useState({ name: "", address: "", city: "", zip: "", tel: "", cell: "", email: "" });
   const [selectedCustomers, setSelectedCustomers] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
+  const [reportsModalOpen, setReportsModalOpen] = useState(false);
+  const [selectedCustomerForReports, setSelectedCustomerForReports] = useState(null);
   const pageSize = 50;
   const queryClient = useQueryClient();
   const { isAdmin } = useRole();
@@ -169,12 +172,15 @@ export default function Customers() {
                      </p>
                    </div>
                  </div>
-                 {isAdmin && (
-                   <div className="flex gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
-                     <Button variant="ghost" size="icon" onClick={() => openEdit(c)}><Pencil className="w-4 h-4" /></Button>
-                     <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(c.id)} className="text-destructive hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
-                   </div>
-                 )}
+                 <div className="flex gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
+                   <Button variant="ghost" size="icon" onClick={() => { setSelectedCustomerForReports(c); setReportsModalOpen(true); }}><FileText className="w-4 h-4" /></Button>
+                   {isAdmin && (
+                     <>
+                       <Button variant="ghost" size="icon" onClick={() => openEdit(c)}><Pencil className="w-4 h-4" /></Button>
+                       <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(c.id)} className="text-destructive hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
+                     </>
+                   )}
+                 </div>
                </CardContent>
              </Card>
            ))}
@@ -223,6 +229,12 @@ export default function Customers() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
-  );
-}
+
+      <CustomerReports 
+        customer={selectedCustomerForReports}
+        open={reportsModalOpen}
+        onOpenChange={setReportsModalOpen}
+      />
+      </div>
+      );
+      }
