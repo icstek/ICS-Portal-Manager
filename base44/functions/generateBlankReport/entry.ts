@@ -97,13 +97,13 @@ Deno.serve(async (req) => {
     addSectionTitle('EQUIPMENT');
     addThreeFields('Received Item:', 'Model:', 'Serial #:');
     addField('Problem Description:', 6);
+    addField('Password:');
     yPos += 4;
 
     // LABOR SECTION
     addSectionTitle('LABOR');
     addThreeFields('Technician:', 'Arrive Time:', 'Left Time:');
     addThreeFields('Wait Hours:', 'Rate:', 'Total Hours:');
-    addField('Password:');
     yPos += 4;
 
     // SERVICE DESCRIPTION
