@@ -60,17 +60,21 @@ export default function ReportDetail() {
 
     setSendingEmail(true);
     try {
-      const { base44 } = await import('@/api/base44Client');
-      await base44.functions.invoke('emailReport', {
+      const response = await base44.functions.invoke('emailReport', {
         reportId: id,
         recipientEmail: emailAddress,
         ccEmail: report?.customer_email || undefined,
       });
-      toast.success('Email sent successfully');
+      
+      if (response.data.success) {
+        toast.success('Successful');
+      } else {
+        toast.error('Unsuccessful');
+      }
       setShowEmailDialog(false);
       setEmailAddress('');
     } catch (error) {
-      toast.error('Failed to send email');
+      toast.error('Unsuccessful');
     } finally {
       setSendingEmail(false);
     }
