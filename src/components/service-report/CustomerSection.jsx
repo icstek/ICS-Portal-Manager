@@ -69,25 +69,28 @@ export default function CustomerSection({ form, setForm }) {
             onChange={(e) => setSearch(e.target.value)}
             className="pl-9"
           />
+          {search && (
+            <div className="absolute top-full left-0 right-0 border rounded-lg bg-card max-h-48 overflow-y-auto z-10 mt-1">
+              {filteredCustomers.length > 0 ? (
+                filteredCustomers.map((c) => (
+                  <button
+                    key={c.id}
+                    onClick={() => handleCustomerSelect(c.id)}
+                    className="w-full text-left px-3 py-2 hover:bg-muted border-b last:border-b-0 text-sm"
+                  >
+                    <p className="font-medium">{c.name}</p>
+                    <p className="text-xs text-muted-foreground">{[c.city, c.tel].filter(Boolean).join(" · ")}</p>
+                  </button>
+                ))
+              ) : (
+                <div className="px-3 py-2 text-sm text-muted-foreground">No customers found</div>
+              )}
+            </div>
+          )}
+          {form.customer_id && !search && (
+            <div className="text-xs text-muted-foreground mt-1">{form.customer_name}</div>
+          )}
         </div>
-        {search && (
-          <div className="border rounded-lg bg-card max-h-48 overflow-y-auto">
-            {filteredCustomers.length > 0 ? (
-              filteredCustomers.map((c) => (
-                <button
-                  key={c.id}
-                  onClick={() => handleCustomerSelect(c.id)}
-                  className="w-full text-left px-3 py-2 hover:bg-muted border-b last:border-b-0 text-sm"
-                >
-                  <p className="font-medium">{c.name}</p>
-                  <p className="text-xs text-muted-foreground">{[c.city, c.tel].filter(Boolean).join(" · ")}</p>
-                </button>
-              ))
-            ) : (
-              <div className="px-3 py-2 text-sm text-muted-foreground">No customers found</div>
-            )}
-          </div>
-        )}
         <Button
           variant="outline"
           size="sm"
