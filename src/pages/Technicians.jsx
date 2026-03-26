@@ -64,11 +64,11 @@ export default function Technicians() {
                   <div className="min-w-0">
                     <p className="font-medium truncate">{t.full_name}</p>
                     <p className="text-xs text-muted-foreground">
-                      {t.email}
+                      {t.email} · {t.role}
                     </p>
                   </div>
                 </div>
-                {isAdmin && (
+                {isAdmin && t.role === "admin" && (
                   <div className="flex gap-1 shrink-0">
                     <Button variant="ghost" size="icon" onClick={() => openEdit(t)}><Pencil className="w-4 h-4" /></Button>
                   </div>
