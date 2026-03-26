@@ -87,9 +87,11 @@ export default function QuickBooksImport({ onImported }) {
   const handleImport = async () => {
     setImporting(true);
     try {
-      // Use bulk creation to avoid rate limits
-      if (preview.length > 0) {
-        await base44.entities.Customer.bulkCreate(preview);
+      // Process in chunks of 500 to avoid timeouts and memory issues
+      const chunkSize = 500;
+      for (let i = 0; i < preview.length; i += chunkSize) {
+        const chunk = preview.slice(i, i + chunkSize);
+        await base44.entities.Customer.bulkCreate(chunk);
       }
       setImporting(false);
       setOpen(false);

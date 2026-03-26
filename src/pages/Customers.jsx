@@ -18,12 +18,14 @@ export default function Customers() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ name: "", address: "", city: "", zip: "", tel: "", cell: "", email: "" });
   const [selectedCustomers, setSelectedCustomers] = useState(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 50;
   const queryClient = useQueryClient();
   const { isAdmin } = useRole();
 
   const { data: customers = [], isLoading } = useQuery({
     queryKey: ["customers"],
-    queryFn: () => base44.entities.Customer.list("name"),
+    queryFn: () => base44.entities.Customer.list("name", 10000),
   });
 
   const saveMutation = useMutation({
@@ -62,6 +64,8 @@ export default function Customers() {
   const openEdit = (c) => { setEditing(c); setForm({ name: c.name || "", address: c.address || "", city: c.city || "", zip: c.zip || "", tel: c.tel || "", cell: c.cell || "", email: c.email || "" }); setDialogOpen(true); };
 
   const filtered = customers.filter((c) => (c.name || "").toLowerCase().includes(search.toLowerCase()));
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const paginatedCustomers = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   const toggleCustomer = (id) => {
     const newSelected = new Set(selectedCustomers);
@@ -74,10 +78,10 @@ export default function Customers() {
   };
 
   const toggleSelectAll = () => {
-    if (selectedCustomers.size === filtered.length) {
+    if (selectedCustomers.size === paginatedCustomers.length) {
       setSelectedCustomers(new Set());
     } else {
-      setSelectedCustomers(new Set(filtered.map(c => c.id)));
+      setSelectedCustomers(new Set(paginatedCustomers.map(c => c.id)));
     }
   };
 
@@ -105,11 +109,11 @@ export default function Customers() {
          <div className="flex items-center justify-between">
            <div className="flex items-center gap-2">
              <Checkbox 
-               checked={selectedCustomers.size === filtered.length && filtered.length > 0}
+               checked={selectedCustomers.size === paginatedCustomers.length && paginatedCustomers.length > 0}
                onCheckedChange={toggleSelectAll}
              />
              <span className="text-sm text-muted-foreground">
-               {selectedCustomers.size > 0 ? `${selectedCustomers.size} selected` : "Select all"}
+               {selectedCustomers.size > 0 ? `${selectedCustomers.size} selected` : `Select all on page (${paginatedCustomers.length})`}
              </span>
            </div>
            {selectedCustomers.size > 0 && (
@@ -135,8 +139,9 @@ export default function Customers() {
       ) : filtered.length === 0 ? (
         <Card><CardContent className="py-12 text-center"><Users className="w-10 h-10 text-muted-foreground mx-auto mb-3" /><p className="text-muted-foreground">No customers found</p></CardContent></Card>
       ) : (
+        <>
         <div className="grid gap-3">
-           {filtered.map((c) => (
+           {paginatedCustomers.map((c) => (
              <Card 
                key={c.id} 
                className={`hover:shadow-md transition-shadow cursor-pointer ${selectedCustomers.has(c.id) ? 'ring-2 ring-primary bg-primary/5' : ''}`}
@@ -168,8 +173,32 @@ export default function Customers() {
                </CardContent>
              </Card>
            ))}
-         </div>
-      )}
+           </div>
+           {totalPages > 1 && (
+           <div className="flex items-center justify-center gap-2 mt-6">
+             <Button 
+               variant="outline" 
+               size="sm"
+               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+               disabled={currentPage === 1}
+             >
+               Previous
+             </Button>
+             <span className="text-sm text-muted-foreground">
+               Page {currentPage} of {totalPages}
+             </span>
+             <Button 
+               variant="outline" 
+               size="sm"
+               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+               disabled={currentPage === totalPages}
+             >
+               Next
+             </Button>
+           </div>
+           )}
+           </>
+           )}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
