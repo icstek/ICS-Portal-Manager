@@ -113,9 +113,9 @@ export default function PartsSection({ items, setItems, taxRate = 9.5, onTaxRate
             <Input
               type="number"
               min="0"
-              step="0.1"
+              step="0.01"
               value={taxRate}
-              onChange={(e) => onTaxRateChange && onTaxRateChange(parseFloat(e.target.value) || 0)}
+              onChange={(e) => onTaxRateChange && onTaxRateChange(parseFloat(parseFloat(e.target.value).toFixed(2)) || 0)}
               className="h-7 w-16 text-xs px-2 inline-flex"
             />
             %):
