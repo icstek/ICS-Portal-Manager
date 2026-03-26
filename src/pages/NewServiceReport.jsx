@@ -181,7 +181,7 @@ export default function NewServiceReport() {
         {/* Parts */}
         <Card>
           <CardContent className="p-6">
-            <PartsSection items={items} setItems={setItems} />
+            <PartsSection items={items} setItems={setItems} taxRate={form.tax_rate ?? 9.5} />
           </CardContent>
         </Card>
 
