@@ -300,7 +300,7 @@ export default function ReportDetail() {
       </Card>
 
       <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
-        <DialogContent>
+        <DialogContent aria-describedby="email-dialog-description">
           <DialogHeader>
             <DialogTitle>Email Report</DialogTitle>
           </DialogHeader>
