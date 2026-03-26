@@ -13,6 +13,7 @@ import ReportDetail from '@/pages/ReportDetail';
 import Customers from '@/pages/Customers';
 import Technicians from '@/pages/Technicians';
 import Parts from '@/pages/Parts';
+import Settings from '@/pages/Settings';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -48,6 +49,7 @@ const AuthenticatedApp = () => {
         <Route path="/customers" element={<Customers />} />
         <Route path="/technicians" element={<Technicians />} />
         <Route path="/parts" element={<Parts />} />
+        <Route path="/settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
