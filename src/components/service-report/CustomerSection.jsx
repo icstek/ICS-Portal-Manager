@@ -78,10 +78,6 @@ export default function CustomerSection({ form, setForm }) {
           <Input value={form.customer_zip || ""} onChange={(e) => handleChange("customer_zip", e.target.value)} className="mt-1" />
         </div>
         <div>
-          <Label className="text-xs text-muted-foreground">Telephone</Label>
-          <Input value={form.customer_tel || ""} onChange={(e) => handleChange("customer_tel", e.target.value)} className="mt-1" />
-        </div>
-        <div>
           <Label className="text-xs text-muted-foreground">Cell</Label>
           <Input value={form.customer_cell || ""} onChange={(e) => handleChange("customer_cell", e.target.value)} className="mt-1" />
         </div>
