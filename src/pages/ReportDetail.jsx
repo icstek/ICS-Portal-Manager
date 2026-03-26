@@ -335,42 +335,54 @@ export default function ReportDetail() {
                 type="email"
                 value={emailData.to}
                 onChange={(e) => setEmailData({ ...emailData, to: e.target.value })}
-                disabled={!editMode}
-                className="w-full mt-1 px-3 py-2 border rounded-md text-sm disabled:bg-muted disabled:cursor-default"
+                className="w-full mt-1 px-3 py-2 border rounded-md text-sm"
               />
             </div>
 
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">CC (Optional)</label>
-              <input
-                type="email"
-                value={emailData.cc}
-                onChange={(e) => setEmailData({ ...emailData, cc: e.target.value })}
-                disabled={!editMode}
-                className="w-full mt-1 px-3 py-2 border rounded-md text-sm disabled:bg-muted disabled:cursor-default"
-              />
-            </div>
+            {editMode ? (
+              <>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">CC (Optional)</label>
+                  <input
+                    type="email"
+                    value={emailData.cc}
+                    onChange={(e) => setEmailData({ ...emailData, cc: e.target.value })}
+                    className="w-full mt-1 px-3 py-2 border rounded-md text-sm"
+                  />
+                </div>
 
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Subject</label>
-              <input
-                type="text"
-                value={emailData.subject}
-                onChange={(e) => setEmailData({ ...emailData, subject: e.target.value })}
-                disabled={!editMode}
-                className="w-full mt-1 px-3 py-2 border rounded-md text-sm disabled:bg-muted disabled:cursor-default"
-              />
-            </div>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Subject</label>
+                  <input
+                    type="text"
+                    value={emailData.subject}
+                    onChange={(e) => setEmailData({ ...emailData, subject: e.target.value })}
+                    className="w-full mt-1 px-3 py-2 border rounded-md text-sm"
+                  />
+                </div>
 
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Body</label>
-              <textarea
-                value={emailData.body}
-                onChange={(e) => setEmailData({ ...emailData, body: e.target.value })}
-                disabled={!editMode}
-                className="w-full mt-1 px-3 py-2 border rounded-md text-sm h-32 disabled:bg-muted disabled:cursor-default"
-              />
-            </div>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Body</label>
+                  <textarea
+                    value={emailData.body}
+                    onChange={(e) => setEmailData({ ...emailData, body: e.target.value })}
+                    className="w-full mt-1 px-3 py-2 border rounded-md text-sm h-32"
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Subject</label>
+                  <div className="mt-1 px-3 py-2 bg-muted rounded-md text-sm">{emailData.subject}</div>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Body</label>
+                  <div className="mt-1 px-3 py-2 bg-muted rounded-md text-sm whitespace-pre-wrap text-xs">{emailData.body}</div>
+                </div>
+              </>
+            )}
           </div>
 
           <DialogFooter>
