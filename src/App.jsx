@@ -10,6 +10,7 @@ import Dashboard from '@/pages/Dashboard';
 import NewServiceReport from '@/pages/NewServiceReport';
 import Reports from '@/pages/Reports';
 import ReportDetail from '@/pages/ReportDetail';
+import PrintEmptyForm, { EmptyServiceReportForm } from '@/pages/PrintEmptyForm';
 import Customers from '@/pages/Customers';
 import Technicians from '@/pages/Technicians';
 import Parts from '@/pages/Parts';
@@ -45,6 +46,7 @@ const AuthenticatedApp = () => {
         <Route path="/" element={<Dashboard />} />
         <Route path="/reports/new" element={<NewServiceReport />} />
         <Route path="/reports" element={<Reports />} />
+        <Route path="/reports/print-empty" element={<PrintEmptyForm />} />
         <Route path="/reports/:id" element={<ReportDetail />} />
         <Route path="/customers" element={<Customers />} />
         <Route path="/technicians" element={<Technicians />} />
