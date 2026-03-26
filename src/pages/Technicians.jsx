@@ -74,9 +74,9 @@ export default function Technicians() {
                     )}
                   </div>
                   <div className="min-w-0">
-                    <p className="font-medium truncate">{t.full_name}</p>
+                    <p className="font-medium truncate">{t.name}</p>
                     <p className="text-xs text-muted-foreground">
-                      {t.email} · {t.role}
+                      {t.phone || "No phone"} · ${t.hourly_rate || 0}/hr
                     </p>
                   </div>
                 </div>
