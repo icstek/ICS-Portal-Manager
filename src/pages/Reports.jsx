@@ -5,13 +5,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, FileText } from "lucide-react";
+import { Plus, Search, FileText, Download } from "lucide-react";
 import { format } from "date-fns";
 import { useState } from "react";
 import { useRole } from "@/hooks/useRole";
+import { toast } from "sonner";
 
 export default function Reports() {
   const [search, setSearch] = useState("");
+  const [downloading, setDownloading] = useState(false);
   const { isAdmin } = useRole();
   const { data: reports = [], isLoading } = useQuery({
     queryKey: ["reports"],
@@ -24,6 +26,30 @@ export default function Reports() {
     (r.technician_name || "").toLowerCase().includes(search.toLowerCase())
   );
 
+  const handleDownloadBlankPDF = async () => {
+    try {
+      setDownloading(true);
+      const response = await base44.functions.invoke('generateBlankReport', {});
+      
+      // Create a blob from the response
+      const blob = await response.data;
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'blank-service-report.pdf';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast.success('Blank PDF downloaded');
+    } catch (error) {
+      toast.error('Failed to download blank PDF');
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -32,10 +58,13 @@ export default function Reports() {
           <p className="text-muted-foreground text-sm mt-1">{reports.length} total reports</p>
         </div>
         <div className="flex gap-2">
-          <Link to="/reports/new">
-            <Button className="gap-2"><Plus className="w-4 h-4" /> New Report</Button>
-          </Link>
-        </div>
+           <Button variant="outline" onClick={handleDownloadBlankPDF} disabled={downloading} className="gap-2">
+             <Download className="w-4 h-4" /> {downloading ? 'Downloading...' : 'Blank PDF'}
+           </Button>
+           <Link to="/reports/new">
+             <Button className="gap-2"><Plus className="w-4 h-4" /> New Report</Button>
+           </Link>
+         </div>
       </div>
 
       <div className="relative">
