@@ -130,14 +130,16 @@ Deno.serve(async (req) => {
     pdf.rect(margin + colWidths[0] + colWidths[1], tableY, colWidths[2], 5);
     pdf.rect(margin + colWidths[0] + colWidths[1] + colWidths[2], tableY, colWidths[3], 5);
 
-    // One empty row for parts
-    const rowY = tableY + 5;
-    pdf.rect(margin, rowY, colWidths[0], 5);
-    pdf.rect(margin + colWidths[0], rowY, colWidths[1], 5);
-    pdf.rect(margin + colWidths[0] + colWidths[1], rowY, colWidths[2], 5);
-    pdf.rect(margin + colWidths[0] + colWidths[1] + colWidths[2], rowY, colWidths[3], 5);
+    // Four empty rows for parts
+    for (let i = 0; i < 4; i++) {
+      const rowY = tableY + 5 + (i * 5);
+      pdf.rect(margin, rowY, colWidths[0], 5);
+      pdf.rect(margin + colWidths[0], rowY, colWidths[1], 5);
+      pdf.rect(margin + colWidths[0] + colWidths[1], rowY, colWidths[2], 5);
+      pdf.rect(margin + colWidths[0] + colWidths[1] + colWidths[2], rowY, colWidths[3], 5);
+    }
 
-    yPos = tableY + 10;
+    yPos = tableY + 25;
     yPos += 2;
 
     // TWO-COLUMN LAYOUT: TERMS & CONDITIONS (LEFT) + CHARGES (RIGHT)
