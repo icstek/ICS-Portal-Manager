@@ -89,7 +89,7 @@ export default function ChargesSection({ form, setForm, partsTotal }) {
             </div>
             <hr className="border-border" />
             <div className="flex justify-between text-base font-bold">
-              <span>Total Charges</span>
+              <span>Total Service & Travel Charge</span>
               <span>${totalCharges.toFixed(2)}</span>
             </div>
           </div>
