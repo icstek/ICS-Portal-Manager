@@ -162,16 +162,28 @@ export default function ReportDetail() {
             </div>
           )}
 
-          {/* Charges Summary */}
-          <div className="bg-muted/50 rounded-lg p-4 max-w-xs ml-auto space-y-2">
-            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Labor</span><span>${(r.labor_charge || 0).toFixed(2)}</span></div>
-            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Parts</span><span>${(r.parts_charge || 0).toFixed(2)}</span></div>
-            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Travel</span><span>${(r.travel_charge || 0).toFixed(2)}</span></div>
-            <hr className="border-border" />
-            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Sub Total</span><span>${(r.sub_total || 0).toFixed(2)}</span></div>
-            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Tax ({r.tax_rate || 9.5}%)</span><span>${(r.tax_amount || 0).toFixed(2)}</span></div>
-            <hr className="border-border" />
-            <div className="flex justify-between font-bold text-base"><span>Total</span><span>${(r.total_charges || 0).toFixed(2)}</span></div>
+          {/* Charges Summary with Terms & Conditions */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Terms & Conditions (left, visible on print) */}
+            <div className="hidden md:block print:block">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Terms & Conditions</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Payment is due upon receipt of this invoice. Please make checks payable to the company. 
+                All work is guaranteed for 30 days from the date of service. Returns must be made within 14 days of purchase.
+              </p>
+            </div>
+
+            {/* Charges Summary (right) */}
+            <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+              <div className="flex justify-between text-sm"><span className="text-muted-foreground">Labor</span><span>${(r.labor_charge || 0).toFixed(2)}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-muted-foreground">Parts</span><span>${(r.parts_charge || 0).toFixed(2)}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-muted-foreground">Travel</span><span>${(r.travel_charge || 0).toFixed(2)}</span></div>
+              <hr className="border-border" />
+              <div className="flex justify-between text-sm"><span className="text-muted-foreground">Sub Total</span><span>${(r.sub_total || 0).toFixed(2)}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-muted-foreground">Tax ({r.tax_rate || 9.5}%)</span><span>${(r.tax_amount || 0).toFixed(2)}</span></div>
+              <hr className="border-border" />
+              <div className="flex justify-between font-bold text-base"><span>Total</span><span>${(r.total_charges || 0).toFixed(2)}</span></div>
+            </div>
           </div>
         </CardContent>
       </Card>
