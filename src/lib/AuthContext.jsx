@@ -95,12 +95,24 @@ export const AuthProvider = ({ children }) => {
       setUser(currentUser);
       setIsAuthenticated(true);
       
+      const updates = {};
+      
+      // Assign technician role on first login if no role exists
+      if (currentUser && !currentUser.role) {
+        updates.role = 'technician';
+      }
+      
       // Capture profile picture from social login if not already set
       if (currentUser && !currentUser.profile_picture) {
         const profilePicture = extractProfilePicture(currentUser);
         if (profilePicture) {
-          await base44.auth.updateMe({ profile_picture: profilePicture });
+          updates.profile_picture = profilePicture;
         }
+      }
+      
+      // Update user if there are any changes
+      if (Object.keys(updates).length > 0) {
+        await base44.auth.updateMe(updates);
       }
       
       setIsLoadingAuth(false);
