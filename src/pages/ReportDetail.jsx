@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Printer, Trash2, Download, Mail, AlertCircle, CheckCircle2, ChevronDown } from "lucide-react";
+import { ArrowLeft, Printer, Trash2, Download, Mail, AlertCircle, CheckCircle2, ChevronDown, Paperclip } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useState } from "react";
@@ -448,6 +448,11 @@ export default function ReportDetail() {
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">Body</label>
                   <div className="mt-1 px-3 py-2 bg-muted rounded-md text-sm whitespace-pre-wrap text-xs">{emailData.body}</div>
+                </div>
+
+                <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-md">
+                  <Paperclip className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                  <span className="text-sm text-amber-900">PDF attached: report-{r.report_number || id}.pdf</span>
                 </div>
               </>
             )}
