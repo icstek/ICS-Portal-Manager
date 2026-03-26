@@ -49,14 +49,19 @@ export default function Customers() {
 
   const deleteSelectedMutation = useMutation({
     mutationFn: async () => {
-      for (const id of selectedCustomers) {
-        await base44.entities.Customer.delete(id);
+      const ids = Array.from(selectedCustomers);
+      const batchSize = 50;
+      for (let i = 0; i < ids.length; i += batchSize) {
+        const batch = ids.slice(i, i + batchSize);
+        await Promise.all(batch.map(id => base44.entities.Customer.delete(id)));
       }
     },
     onSuccess: () => {
+      const count = selectedCustomers.size;
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       setSelectedCustomers(new Set());
-      toast.success(`${selectedCustomers.size} customer(s) deleted`);
+      setCurrentPage(1);
+      toast.success(`${count} customer(s) deleted`);
     },
   });
 
