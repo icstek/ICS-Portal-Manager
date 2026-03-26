@@ -22,7 +22,7 @@ export default function Technicians() {
 
   const { data: technicians = [], isLoading } = useQuery({
     queryKey: ["technicians"],
-    queryFn: () => base44.entities.User.list(),
+    queryFn: () => base44.entities.Technician.list(),
   });
 
   const saveMutation = useMutation({
