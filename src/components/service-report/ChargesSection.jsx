@@ -1,6 +1,7 @@
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
-export default function ChargesSection({ form, partsTotal }) {
+export default function ChargesSection({ form, setForm, partsTotal }) {
   const laborCharge = (form.total_time_hours || 0) * (form.hourly_rate || 0) + (form.misc_charge || 0);
   const subTotal = laborCharge + partsTotal;
   const taxRate = form.tax_rate ?? 9.75;
@@ -26,8 +27,19 @@ export default function ChargesSection({ form, partsTotal }) {
               <span className="text-muted-foreground">Sub Total</span>
               <span className="font-medium">${subTotal.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Tax ({taxRate}%)</span>
+            <div className="flex justify-between text-sm items-center">
+              <span className="text-muted-foreground flex items-center gap-1">
+                Tax (
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={taxRate}
+                  onChange={(e) => setForm && setForm((f) => ({ ...f, tax_rate: parseFloat(parseFloat(e.target.value).toFixed(2)) || 0 }))}
+                  className="h-7 w-16 text-xs px-2 inline-flex"
+                />
+                %):
+              </span>
               <span className="font-medium">${taxAmount.toFixed(2)}</span>
             </div>
             <hr className="border-border" />

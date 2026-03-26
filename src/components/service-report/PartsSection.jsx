@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Trash2 } from "lucide-react";
 
-export default function PartsSection({ items, setItems, taxRate = 9.5, onTaxRateChange }) {
+export default function PartsSection({ items, setItems }) {
   const { data: parts = [] } = useQuery({
     queryKey: ["parts"],
     queryFn: () => base44.entities.Part.list("name"),
@@ -45,8 +45,6 @@ export default function PartsSection({ items, setItems, taxRate = 9.5, onTaxRate
   };
 
   const itemsSubTotal = items.reduce((sum, it) => sum + (it.total || 0), 0);
-  const taxAmount = itemsSubTotal * (taxRate / 100);
-  const partsTotal = itemsSubTotal + taxAmount;
 
   return (
     <div className="space-y-4">
@@ -106,25 +104,6 @@ export default function PartsSection({ items, setItems, taxRate = 9.5, onTaxRate
         <div className="flex gap-8">
           <span className="text-muted-foreground">Items Sub Total:</span>
           <span className="font-semibold w-24 text-right">${itemsSubTotal.toFixed(2)}</span>
-        </div>
-        <div className="flex gap-8 items-center">
-          <span className="text-muted-foreground flex items-center gap-1">
-            Tax (
-            <Input
-              type="number"
-              min="0"
-              step="0.01"
-              value={taxRate}
-              onChange={(e) => onTaxRateChange && onTaxRateChange(parseFloat(parseFloat(e.target.value).toFixed(2)) || 0)}
-              className="h-7 w-16 text-xs px-2 inline-flex"
-            />
-            %):
-          </span>
-          <span className="font-semibold w-24 text-right">${taxAmount.toFixed(2)}</span>
-        </div>
-        <div className="flex gap-8 border-t pt-1.5">
-          <span className="font-semibold">Parts Total:</span>
-          <span className="font-bold w-24 text-right">${partsTotal.toFixed(2)}</span>
         </div>
       </div>
     </div>

@@ -189,12 +189,7 @@ export default function NewServiceReport() {
         {/* Parts */}
         <Card>
           <CardContent className="p-6">
-            <PartsSection
-              items={items}
-              setItems={setItems}
-              taxRate={form.tax_rate ?? 9.75}
-              onTaxRateChange={(rate) => setForm((f) => ({ ...f, tax_rate: rate }))}
-            />
+            <PartsSection items={items} setItems={setItems} />
           </CardContent>
         </Card>
 
@@ -209,7 +204,7 @@ export default function NewServiceReport() {
                 </p>
               </div>
               <div className="md:w-72">
-                <ChargesSection form={form} partsTotal={partsTotal} />
+                <ChargesSection form={form} setForm={setForm} partsTotal={partsTotal} />
               </div>
             </div>
           </CardContent>
