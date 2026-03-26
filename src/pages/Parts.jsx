@@ -49,6 +49,19 @@ export default function Parts() {
     },
   });
 
+  const deleteSelectedMutation = useMutation({
+    mutationFn: async () => {
+      for (const id of selectedParts) {
+        await base44.entities.Part.delete(id);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["parts"] });
+      setSelectedParts(new Set());
+      toast.success(`${selectedParts.size} part(s) deleted`);
+    },
+  });
+
   const openNew = () => { setEditing(null); setForm({ name: "", sku: "", unit_cost: 0, stock_quantity: 0, category: "other" }); setDialogOpen(true); };
   const openEdit = (p) => { setEditing(p); setForm({ name: p.name || "", sku: p.sku || "", unit_cost: p.unit_cost || 0, stock_quantity: p.stock_quantity || 0, category: p.category || "other" }); setDialogOpen(true); };
 
@@ -75,17 +88,33 @@ export default function Parts() {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold font-inter tracking-tight">Parts Catalog</h1>
-          <p className="text-muted-foreground text-sm mt-1">{parts.length} parts</p>
-        </div>
-        {isAdmin && (
-          <div className="flex gap-2">
-            <QuickBooksPartsImport onImported={() => queryClient.invalidateQueries({ queryKey: ["parts"] })} />
-            <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" /> Add Part</Button>
-          </div>
-        )}
-      </div>
+         <div>
+           <h1 className="text-2xl md:text-3xl font-bold font-inter tracking-tight">Parts Catalog</h1>
+           <p className="text-muted-foreground text-sm mt-1">{parts.length} parts</p>
+         </div>
+         <div className="flex gap-2">
+           {selectedParts.size > 0 && (
+             <Button 
+               variant="destructive" 
+               onClick={() => {
+                 if (confirm(`Delete ${selectedParts.size} part(s)?`)) {
+                   deleteSelectedMutation.mutate();
+                 }
+               }}
+               disabled={deleteSelectedMutation.isPending}
+               className="gap-2"
+             >
+               <Trash2 className="w-4 h-4" /> Delete ({selectedParts.size})
+             </Button>
+           )}
+           {isAdmin && (
+             <>
+               <QuickBooksPartsImport onImported={() => queryClient.invalidateQueries({ queryKey: ["parts"] })} />
+               <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" /> Add Part</Button>
+             </>
+           )}
+         </div>
+       </div>
 
       <div className="relative">
          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
