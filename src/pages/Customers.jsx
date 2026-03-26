@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Plus, Search, Users, Pencil, Trash2 } from "lucide-react";
+import { Plus, Search, Users, Pencil, Trash2, Check } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import QuickBooksImport from "@/components/customers/QuickBooksImport";
 import { useRole } from "@/hooks/useRole";
@@ -16,6 +17,7 @@ export default function Customers() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ name: "", address: "", city: "", zip: "", tel: "", cell: "", email: "" });
+  const [selectedCustomers, setSelectedCustomers] = useState(new Set());
   const queryClient = useQueryClient();
   const { isAdmin } = useRole();
 
@@ -43,10 +45,41 @@ export default function Customers() {
     },
   });
 
+  const deleteSelectedMutation = useMutation({
+    mutationFn: async () => {
+      for (const id of selectedCustomers) {
+        await base44.entities.Customer.delete(id);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+      setSelectedCustomers(new Set());
+      toast.success(`${selectedCustomers.size} customer(s) deleted`);
+    },
+  });
+
   const openNew = () => { setEditing(null); setForm({ name: "", address: "", city: "", zip: "", tel: "", cell: "", email: "" }); setDialogOpen(true); };
   const openEdit = (c) => { setEditing(c); setForm({ name: c.name || "", address: c.address || "", city: c.city || "", zip: c.zip || "", tel: c.tel || "", cell: c.cell || "", email: c.email || "" }); setDialogOpen(true); };
 
   const filtered = customers.filter((c) => (c.name || "").toLowerCase().includes(search.toLowerCase()));
+
+  const toggleCustomer = (id) => {
+    const newSelected = new Set(selectedCustomers);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedCustomers(newSelected);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedCustomers.size === filtered.length) {
+      setSelectedCustomers(new Set());
+    } else {
+      setSelectedCustomers(new Set(filtered.map(c => c.id)));
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -64,9 +97,38 @@ export default function Customers() {
       </div>
 
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input placeholder="Search customers..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
-      </div>
+         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+         <Input placeholder="Search customers..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+       </div>
+
+       {filtered.length > 0 && (
+         <div className="flex items-center justify-between">
+           <div className="flex items-center gap-2">
+             <Checkbox 
+               checked={selectedCustomers.size === filtered.length && filtered.length > 0}
+               onCheckedChange={toggleSelectAll}
+             />
+             <span className="text-sm text-muted-foreground">
+               {selectedCustomers.size > 0 ? `${selectedCustomers.size} selected` : "Select all"}
+             </span>
+           </div>
+           {selectedCustomers.size > 0 && (
+             <Button 
+               variant="destructive" 
+               size="sm"
+               onClick={() => {
+                 if (confirm(`Delete ${selectedCustomers.size} customer(s)?`)) {
+                   deleteSelectedMutation.mutate();
+                 }
+               }}
+               disabled={deleteSelectedMutation.isPending}
+               className="gap-2"
+             >
+               <Trash2 className="w-4 h-4" /> Delete
+             </Button>
+           )}
+         </div>
+       )}
 
       {isLoading ? (
         <div className="flex justify-center py-12"><div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>
@@ -74,30 +136,39 @@ export default function Customers() {
         <Card><CardContent className="py-12 text-center"><Users className="w-10 h-10 text-muted-foreground mx-auto mb-3" /><p className="text-muted-foreground">No customers found</p></CardContent></Card>
       ) : (
         <div className="grid gap-3">
-          {filtered.map((c) => (
-            <Card key={c.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-4 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <span className="text-sm font-bold text-primary">{(c.name || "?")[0].toUpperCase()}</span>
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-medium truncate">{c.name}</p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {[c.city, c.tel].filter(Boolean).join(" · ") || "No details"}
-                    </p>
-                  </div>
-                </div>
-                {isAdmin && (
-                  <div className="flex gap-1 shrink-0">
-                    <Button variant="ghost" size="icon" onClick={() => openEdit(c)}><Pencil className="w-4 h-4" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(c.id)} className="text-destructive hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+           {filtered.map((c) => (
+             <Card 
+               key={c.id} 
+               className={`hover:shadow-md transition-shadow cursor-pointer ${selectedCustomers.has(c.id) ? 'ring-2 ring-primary bg-primary/5' : ''}`}
+               onClick={() => toggleCustomer(c.id)}
+             >
+               <CardContent className="p-4 flex items-center justify-between gap-3">
+                 <div className="flex items-center gap-3 min-w-0 flex-1">
+                   <Checkbox 
+                     checked={selectedCustomers.has(c.id)}
+                     onCheckedChange={() => {}}
+                     className="flex-shrink-0"
+                   />
+                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                     <span className="text-sm font-bold text-primary">{(c.name || "?")[0].toUpperCase()}</span>
+                   </div>
+                   <div className="min-w-0">
+                     <p className="font-medium truncate">{c.name}</p>
+                     <p className="text-xs text-muted-foreground truncate">
+                       {[c.city, c.tel].filter(Boolean).join(" · ") || "No details"}
+                     </p>
+                   </div>
+                 </div>
+                 {isAdmin && (
+                   <div className="flex gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
+                     <Button variant="ghost" size="icon" onClick={() => openEdit(c)}><Pencil className="w-4 h-4" /></Button>
+                     <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(c.id)} className="text-destructive hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
+                   </div>
+                 )}
+               </CardContent>
+             </Card>
+           ))}
+         </div>
       )}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
