@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Navigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,11 +14,15 @@ import { useRole } from "@/hooks/useRole";
 import { useAuth } from "@/lib/AuthContext";
 
 export default function Technicians() {
+  const { isAdmin } = useRole();
+  
+  if (!isAdmin) {
+    return <Navigate to="/" replace />;
+  }
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ hourly_rate: 0, specialization: "" });
   const queryClient = useQueryClient();
-  const { isAdmin } = useRole();
   const { user } = useAuth();
 
   const { data: technicians = [], isLoading } = useQuery({
