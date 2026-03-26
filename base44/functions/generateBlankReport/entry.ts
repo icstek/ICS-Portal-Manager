@@ -180,10 +180,10 @@ Deno.serve(async (req) => {
     pdf.setFontSize(8);
     pdf.setFont(undefined, 'normal');
     pdf.text('Technician Signature:', margin, yPos);
-    pdf.rect(margin, yPos + 3, contentWidth * 0.5, 15);
+    pdf.rect(margin, yPos + 3, contentWidth * 0.5, 20);
     
-    pdf.text('Date:', margin + contentWidth * 0.5 + 5, yPos);
-    pdf.rect(margin + contentWidth * 0.5 + 15, yPos + 3, contentWidth * 0.5 - 20, 15);
+    pdf.text('Customer Signature:', margin + contentWidth * 0.5 + 5, yPos);
+    pdf.rect(margin + contentWidth * 0.5 + 15, yPos + 3, contentWidth * 0.5 - 20, 20);
 
     const pdfBlob = pdf.output('blob');
     
