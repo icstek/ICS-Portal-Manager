@@ -41,6 +41,10 @@ export default function TechnicianSection({ form, setForm }) {
           </SelectContent>
         </Select>
       </div>
+      <div>
+        <Label className="text-xs text-muted-foreground">Service Description (Technician Comments)</Label>
+        <Textarea value={form.service_description || ""} onChange={(e) => handleChange("service_description", e.target.value)} className="mt-1 min-h-[80px]" placeholder="Describe the repair work performed..." />
+      </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div>
           <Label className="text-xs text-muted-foreground">Total Hours</Label>
@@ -66,10 +70,6 @@ export default function TechnicianSection({ form, setForm }) {
             ${((form.total_time_hours || 0) * (form.hourly_rate || 0) + (form.misc_charge || 0)).toFixed(2)}
           </div>
         </div>
-      </div>
-      <div>
-        <Label className="text-xs text-muted-foreground">Service Description (Technician Comments)</Label>
-        <Textarea value={form.service_description || ""} onChange={(e) => handleChange("service_description", e.target.value)} className="mt-1 min-h-[80px]" placeholder="Describe the repair work performed..." />
       </div>
     </div>
   );
