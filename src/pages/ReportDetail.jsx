@@ -55,7 +55,7 @@ export default function ReportDetail() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 print:space-y-2">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between print:hidden">
         <Button variant="ghost" onClick={() => navigate("/reports")} className="gap-2">
           <ArrowLeft className="w-4 h-4" /> Back
         </Button>
