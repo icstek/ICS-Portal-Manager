@@ -4,7 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Printer, Trash2 } from "lucide-react";
+import { ArrowLeft, Printer, Trash2, Download } from "lucide-react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { format } from "date-fns";
 import { useRole } from "@/hooks/useRole";
 import { toast } from "sonner";
@@ -15,6 +17,35 @@ export default function ReportDetail() {
   const navigate = useNavigate();
   const { isAdmin } = useRole();
   const queryClient = useQueryClient();
+
+  const handleExportPDF = async () => {
+    try {
+      const cardElement = document.querySelector('[data-report-card]');
+      if (!cardElement) return;
+
+      const canvas = await html2canvas(cardElement, { scale: 2, useCORS: true });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 210;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      let yPos = 0;
+      pdf.addImage(imgData, 'PNG', 0, yPos, imgWidth, imgHeight);
+      
+      let remainingHeight = imgHeight - 297;
+      while (remainingHeight > 0) {
+        yPos = remainingHeight - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, yPos, imgWidth, imgHeight);
+        remainingHeight -= 297;
+      }
+
+      pdf.save(`report-${r.report_number || id}.pdf`);
+      toast.success('Report exported as PDF');
+    } catch (error) {
+      toast.error('Failed to export PDF');
+    }
+  };
 
   const deleteMutation = useMutation({
     mutationFn: () => base44.entities.ServiceReport.delete(id),
@@ -60,6 +91,9 @@ export default function ReportDetail() {
           <ArrowLeft className="w-4 h-4" /> Back
         </Button>
         <div className="flex gap-2">
+          <Button variant="outline" onClick={handleExportPDF} className="gap-2">
+            <Download className="w-4 h-4" /> Export to PDF
+          </Button>
           <Button variant="outline" onClick={() => window.print()} className="gap-2">
             <Printer className="w-4 h-4" /> Print
           </Button>
@@ -76,7 +110,7 @@ export default function ReportDetail() {
         </div>
       </div>
 
-      <Card className="print:shadow-none print:border">
+      <Card className="print:shadow-none print:border" data-report-card>
         <CardHeader className="border-b print:py-2 print:px-4">
           <div className="hidden print:flex print:items-center print:justify-between print:gap-4 print:mb-2">
             <div className="text-xs font-bold">ICS, INC</div>
