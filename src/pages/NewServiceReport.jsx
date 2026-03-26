@@ -14,6 +14,7 @@ import CustomerSection from "@/components/service-report/CustomerSection";
 import TechnicianSection from "@/components/service-report/TechnicianSection";
 import PartsSection from "@/components/service-report/PartsSection";
 import ChargesSection from "@/components/service-report/ChargesSection";
+import EquipmentSection from "@/components/service-report/EquipmentSection";
 
 const initialForm = {
   report_type: "repair",
@@ -155,6 +156,13 @@ export default function NewServiceReport() {
         <Card>
           <CardContent className="p-6">
             <CustomerSection form={form} setForm={setForm} />
+          </CardContent>
+        </Card>
+
+        {/* Equipment Description */}
+        <Card>
+          <CardContent className="p-6">
+            <EquipmentSection form={form} setForm={setForm} />
           </CardContent>
         </Card>
 
