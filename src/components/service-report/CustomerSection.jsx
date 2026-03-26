@@ -65,9 +65,9 @@ export default function CustomerSection({ form, setForm }) {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Search by name, phone..."
-            value={search}
+            value={form.customer_id && !search ? form.customer_name : search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9"
+            className={`pl-9 ${form.customer_id && !search ? "text-muted-foreground" : ""}`}
           />
           {search && (
             <div className="absolute top-full left-0 right-0 border rounded-lg bg-card max-h-48 overflow-y-auto z-10 mt-1">
@@ -86,9 +86,6 @@ export default function CustomerSection({ form, setForm }) {
                 <div className="px-3 py-2 text-sm text-muted-foreground">No customers found</div>
               )}
             </div>
-          )}
-          {form.customer_id && !search && (
-            <div className="text-xs text-muted-foreground mt-1">{form.customer_name}</div>
           )}
         </div>
         <Button
