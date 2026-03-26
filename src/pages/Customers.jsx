@@ -78,10 +78,10 @@ export default function Customers() {
   };
 
   const toggleSelectAll = () => {
-    if (selectedCustomers.size === paginatedCustomers.length) {
+    if (selectedCustomers.size === filtered.length) {
       setSelectedCustomers(new Set());
     } else {
-      setSelectedCustomers(new Set(paginatedCustomers.map(c => c.id)));
+      setSelectedCustomers(new Set(filtered.map(c => c.id)));
     }
   };
 
@@ -109,11 +109,11 @@ export default function Customers() {
          <div className="flex items-center justify-between">
            <div className="flex items-center gap-2">
              <Checkbox 
-               checked={selectedCustomers.size === paginatedCustomers.length && paginatedCustomers.length > 0}
+               checked={selectedCustomers.size === filtered.length && filtered.length > 0}
                onCheckedChange={toggleSelectAll}
              />
              <span className="text-sm text-muted-foreground">
-               {selectedCustomers.size > 0 ? `${selectedCustomers.size} selected` : `Select all on page (${paginatedCustomers.length})`}
+               {selectedCustomers.size > 0 ? `${selectedCustomers.size} selected` : `Select all (${filtered.length})`}
              </span>
            </div>
            {selectedCustomers.size > 0 && (
