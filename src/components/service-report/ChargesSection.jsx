@@ -38,8 +38,8 @@ export default function ChargesSection({ form, setForm, partsTotal }) {
                 onChange={(e) => setForm && setForm((f) => ({ ...f, tax_rate: parseFloat(parseFloat(e.target.value).toFixed(2)) || 0 }))}
                 className="h-7 w-16 text-xs px-2 inline-flex" />
               
-                %):
-              </span>
+                %)
+                </span>
               <span className="font-medium">${taxAmount.toFixed(2)}</span>
             </div>
             <hr className="border-border" />
