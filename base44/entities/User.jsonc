@@ -1,0 +1,62 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "technician"
+      ],
+      "default": "technician",
+      "description": "User role"
+    },
+    "settings": {
+      "type": "object",
+      "description": "Per-user application settings",
+      "properties": {
+        "darkMode": {
+          "type": "boolean",
+          "default": false
+        },
+        "dashboardLayout": {
+          "type": "string",
+          "enum": [
+            "grid",
+            "list"
+          ],
+          "default": "grid"
+        }
+      }
+    },
+    "hourly_rate": {
+      "type": "number",
+      "description": "Hourly rate for technician"
+    },
+    "specialization": {
+      "type": "string",
+      "description": "Area of specialization"
+    }
+  },
+  "required": [
+    "settings"
+  ],
+  "rls": [
+    {
+      "role": "technician",
+      "operations": [
+        "read"
+      ],
+      "allowSelf": true
+    },
+    {
+      "role": "admin",
+      "operations": [
+        "read",
+        "update",
+        "delete",
+        "create"
+      ]
+    }
+  ]
+}

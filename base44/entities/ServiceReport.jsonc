@@ -1,0 +1,176 @@
+{
+  "name": "ServiceReport",
+  "type": "object",
+  "properties": {
+    "report_number": {
+      "type": "string",
+      "description": "Unique report/invoice number"
+    },
+    "report_type": {
+      "type": "string",
+      "enum": [
+        "repair",
+        "estimate"
+      ],
+      "description": "Repair or Estimate"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Service date"
+    },
+    "customer_id": {
+      "type": "string",
+      "description": "Reference to customer"
+    },
+    "customer_name": {
+      "type": "string",
+      "description": "Customer name snapshot"
+    },
+    "customer_address": {
+      "type": "string"
+    },
+    "customer_city": {
+      "type": "string"
+    },
+    "customer_zip": {
+      "type": "string"
+    },
+    "customer_tel": {
+      "type": "string"
+    },
+    "customer_cell": {
+      "type": "string"
+    },
+    "problem_description": {
+      "type": "string",
+      "description": "Problem described by customer"
+    },
+    "technician_id": {
+      "type": "string",
+      "description": "Reference to technician"
+    },
+    "technician_name": {
+      "type": "string",
+      "description": "Technician name snapshot"
+    },
+    "time_arrive": {
+      "type": "string",
+      "description": "Time arrived"
+    },
+    "time_left": {
+      "type": "string",
+      "description": "Time left"
+    },
+    "wait_time": {
+      "type": "number",
+      "description": "Wait time in hours"
+    },
+    "total_time_hours": {
+      "type": "number",
+      "description": "Total hours worked"
+    },
+    "hourly_rate": {
+      "type": "number",
+      "description": "Hourly rate charged"
+    },
+    "misc_charge": {
+      "type": "number",
+      "description": "Miscellaneous charges"
+    },
+    "total_labor": {
+      "type": "number",
+      "description": "Total labor cost"
+    },
+    "service_description": {
+      "type": "string",
+      "description": "Technician comments / repair description"
+    },
+    "items_replaced": {
+      "type": "array",
+      "description": "Parts replaced",
+      "items": {
+        "type": "object",
+        "properties": {
+          "part_name": {
+            "type": "string"
+          },
+          "part_id": {
+            "type": "string"
+          },
+          "qty": {
+            "type": "number"
+          },
+          "unit_cost": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "system_password": {
+      "type": "string",
+      "description": "System password if provided"
+    },
+    "service_status": {
+      "type": "string",
+      "enum": [
+        "complete",
+        "incomplete"
+      ],
+      "description": "Service status"
+    },
+    "received_items": {
+      "type": "array",
+      "description": "Items received",
+      "items": {
+        "type": "string",
+        "enum": [
+          "computer",
+          "printer",
+          "laptop",
+          "screen"
+        ]
+      }
+    },
+    "equipment_model": {
+      "type": "string",
+      "description": "Equipment model"
+    },
+    "equipment_serial": {
+      "type": "string",
+      "description": "Equipment serial number"
+    },
+    "labor_charge": {
+      "type": "number"
+    },
+    "parts_charge": {
+      "type": "number"
+    },
+    "travel_charge": {
+      "type": "number"
+    },
+    "sub_total": {
+      "type": "number"
+    },
+    "tax_rate": {
+      "type": "number",
+      "default": 9.5
+    },
+    "tax_amount": {
+      "type": "number"
+    },
+    "parts_total": {
+      "type": "number"
+    },
+    "total_charges": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "customer_name",
+    "report_type"
+  ]
+}
