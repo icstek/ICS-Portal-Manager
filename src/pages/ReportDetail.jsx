@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Printer, Trash2, Download, Mail } from "lucide-react";
+import { ArrowLeft, Printer, Trash2, Download, Mail, AlertCircle, CheckCircle2, ChevronDown } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useState } from "react";
@@ -54,6 +54,9 @@ export default function ReportDetail() {
     }
   };
 
+  const [emailResult, setEmailResult] = useState(null);
+  const [showEmailDetails, setShowEmailDetails] = useState(false);
+
   const openEmailDialog = () => {
     setEmailData({
       to: report?.customer_email || '',
@@ -62,6 +65,7 @@ export default function ReportDetail() {
       body: `Service Report for ${r.customer_name}\n\nDate: ${r.date ? format(new Date(r.date), "MMMM d, yyyy") : ""}\nTotal: $${(r.total_charges || 0).toFixed(2)}\n\nReport Number: ${r.report_number}`
     });
     setEditMode(false);
+    setEmailResult(null);
     setShowEmailDialog(true);
   };
 
@@ -107,15 +111,31 @@ export default function ReportDetail() {
       });
       
       if (response.data.success) {
+        setEmailResult({
+          success: true,
+          message: response.data.message,
+          details: response.data.details
+        });
         toast.success('Email sent successfully');
       } else {
+        setEmailResult({
+          success: false,
+          message: response.data.error,
+          details: response.data.details
+        });
         toast.error(response.data.error || 'Failed to send email');
       }
-      setShowEmailDialog(false);
     } catch (error) {
+      const errorData = error.response?.data || {};
+      setEmailResult({
+        success: false,
+        message: errorData.error || error.message || 'Failed to send email',
+        details: errorData.details
+      });
       toast.error('Failed to send email');
     } finally {
       setSendingEmail(false);
+      setShowEmailDetails(false);
     }
   };
 
@@ -327,6 +347,54 @@ export default function ReportDetail() {
               </Button>
             </div>
           </DialogHeader>
+
+          {emailResult && (
+            <div className="space-y-3">
+              <div className={`flex items-start gap-3 p-3 rounded-md ${emailResult.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+                {emailResult.success ? (
+                  <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                ) : (
+                  <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                )}
+                <div className="text-sm flex-1">
+                  <p className={emailResult.success ? 'text-green-800' : 'text-red-800'}>{emailResult.message}</p>
+                </div>
+              </div>
+
+              {emailResult.details && !emailResult.success && (
+                <button
+                  onClick={() => setShowEmailDetails(!showEmailDetails)}
+                  className="w-full flex items-center justify-between px-3 py-2 border rounded-md text-sm hover:bg-slate-50"
+                >
+                  <span>Details</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform ${showEmailDetails ? 'rotate-180' : ''}`} />
+                </button>
+              )}
+
+              {showEmailDetails && emailResult.details && (
+                <div className="bg-slate-900 text-slate-100 rounded-md p-3 font-mono text-xs space-y-2 max-h-64 overflow-auto">
+                  {emailResult.details.timestamp && (
+                    <div><span className="text-slate-400">Timestamp:</span> {emailResult.details.timestamp}</div>
+                  )}
+                  {emailResult.details.code && (
+                    <div><span className="text-slate-400">Error Code:</span> {emailResult.details.code}</div>
+                  )}
+                  {emailResult.details.errorMessage && (
+                    <div><span className="text-slate-400">Error Message:</span> {emailResult.details.errorMessage}</div>
+                  )}
+                  {emailResult.details.fullError && (
+                    <div><span className="text-slate-400">Full Error:</span> {emailResult.details.fullError}</div>
+                  )}
+                  {emailResult.details.errorStack && (
+                    <div className="mt-2 pt-2 border-t border-slate-700">
+                      <div className="text-slate-400 mb-1">Stack Trace:</div>
+                      <pre className="whitespace-pre-wrap break-words">{emailResult.details.errorStack}</pre>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="space-y-4">
             <div>
