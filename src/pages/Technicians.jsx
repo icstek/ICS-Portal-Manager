@@ -72,11 +72,11 @@ export default function Technicians() {
                     </p>
                   </div>
                 </div>
-                {isAdmin && t.role === "admin" && (
-                  <div className="flex gap-1 shrink-0">
-                    <Button variant="ghost" size="icon" onClick={() => openEdit(t)}><Pencil className="w-4 h-4" /></Button>
-                  </div>
-                )}
+                {isAdmin && (
+                   <div className="flex gap-1 shrink-0">
+                     <Button variant="ghost" size="icon" onClick={() => openEdit(t)}><Pencil className="w-4 h-4" /></Button>
+                   </div>
+                 )}
               </CardContent>
             </Card>
           ))}
