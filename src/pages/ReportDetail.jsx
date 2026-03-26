@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { format } from "date-fns";
 import { useRole } from "@/hooks/useRole";
 import { toast } from "sonner";
+import { Edit2, Check } from "lucide-react";
 
 export default function ReportDetail() {
   const params = new URLSearchParams(window.location.search);
@@ -20,7 +21,8 @@ export default function ReportDetail() {
   const { isAdmin } = useRole();
   const queryClient = useQueryClient();
   const [showEmailDialog, setShowEmailDialog] = useState(false);
-  const [emailAddress, setEmailAddress] = useState('');
+  const [emailData, setEmailData] = useState({ to: '', cc: '', subject: '', body: '' });
+  const [editMode, setEditMode] = useState(false);
   const [sendingEmail, setSendingEmail] = useState(false);
 
   const handleExportPDF = async () => {
@@ -52,15 +54,25 @@ export default function ReportDetail() {
     }
   };
 
+  const openEmailDialog = () => {
+    setEmailData({
+      to: report?.customer_email || '',
+      cc: '',
+      subject: `Service Report #${r.report_number}`,
+      body: `Service Report for ${r.customer_name}\n\nDate: ${r.date ? format(new Date(r.date), "MMMM d, yyyy") : ""}\nTotal: $${(r.total_charges || 0).toFixed(2)}\n\nReport Number: ${r.report_number}`
+    });
+    setEditMode(false);
+    setShowEmailDialog(true);
+  };
+
   const handleSendEmail = async () => {
-    if (!emailAddress) {
+    if (!emailData.to) {
       toast.error('Please enter a recipient email');
       return;
     }
 
     setSendingEmail(true);
     try {
-      // Generate PDF
       const cardElement = document.querySelector('[data-report-card]');
       const canvas = await html2canvas(cardElement, { scale: 2, useCORS: true });
       const imgData = canvas.toDataURL('image/png');
@@ -80,28 +92,28 @@ export default function ReportDetail() {
       }
 
       const pdfBlob = pdf.output('blob');
-      
-      // Upload PDF
+      const pdfFile = new File([pdfBlob], `report-${r.report_number || id}.pdf`, { type: 'application/pdf' });
       const fileResponse = await base44.integrations.Core.UploadFile({
-        file: pdfBlob
+        file: pdfFile
       });
 
       const response = await base44.functions.invoke('emailReport', {
         reportId: id,
-        recipientEmail: emailAddress,
-        ccEmail: report?.customer_email || undefined,
+        recipientEmail: emailData.to,
+        ccEmail: emailData.cc || undefined,
+        subject: emailData.subject,
+        body: emailData.body,
         pdfUrl: fileResponse.file_url,
       });
       
       if (response.data.success) {
-        toast.success('Successful');
+        toast.success('Email sent successfully');
       } else {
-        toast.error('Unsuccessful');
+        toast.error(response.data.error || 'Failed to send email');
       }
       setShowEmailDialog(false);
-      setEmailAddress('');
     } catch (error) {
-      toast.error('Unsuccessful');
+      toast.error('Failed to send email');
     } finally {
       setSendingEmail(false);
     }
@@ -151,7 +163,7 @@ export default function ReportDetail() {
           <ArrowLeft className="w-4 h-4" /> Back
         </Button>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setShowEmailDialog(true)} className="gap-2">
+          <Button variant="outline" onClick={openEmailDialog} className="gap-2">
             <Mail className="w-4 h-4" /> Email
           </Button>
           <Button variant="outline" onClick={handleExportPDF} className="gap-2">
@@ -300,22 +312,79 @@ export default function ReportDetail() {
       </Card>
 
       <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
-        <DialogContent aria-describedby="email-dialog-description">
+        <DialogContent aria-describedby="email-dialog-description" className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Email Report</DialogTitle>
+            <div className="flex items-center justify-between">
+              <DialogTitle>Email Report</DialogTitle>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setEditMode(!editMode)}
+                className="gap-1"
+              >
+                {editMode ? <Check className="w-4 h-4" /> : <Edit2 className="w-4 h-4" />}
+                {editMode ? 'Done' : 'Edit'}
+              </Button>
+            </div>
           </DialogHeader>
+
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Recipient Email</label>
-              <input
-                type="email"
-                placeholder="recipient@example.com"
-                value={emailAddress}
-                onChange={(e) => setEmailAddress(e.target.value)}
-                className="w-full mt-1 px-3 py-2 border rounded-md text-sm"
-              />
+              <label className="text-sm font-medium text-muted-foreground">To</label>
+              {editMode ? (
+                <input
+                  type="email"
+                  value={emailData.to}
+                  onChange={(e) => setEmailData({ ...emailData, to: e.target.value })}
+                  className="w-full mt-1 px-3 py-2 border rounded-md text-sm"
+                />
+              ) : (
+                <div className="mt-1 px-3 py-2 bg-muted rounded-md text-sm">{emailData.to}</div>
+              )}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">CC (Optional)</label>
+              {editMode ? (
+                <input
+                  type="email"
+                  value={emailData.cc}
+                  onChange={(e) => setEmailData({ ...emailData, cc: e.target.value })}
+                  className="w-full mt-1 px-3 py-2 border rounded-md text-sm"
+                />
+              ) : (
+                <div className="mt-1 px-3 py-2 bg-muted rounded-md text-sm">{emailData.cc || '—'}</div>
+              )}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">Subject</label>
+              {editMode ? (
+                <input
+                  type="text"
+                  value={emailData.subject}
+                  onChange={(e) => setEmailData({ ...emailData, subject: e.target.value })}
+                  className="w-full mt-1 px-3 py-2 border rounded-md text-sm"
+                />
+              ) : (
+                <div className="mt-1 px-3 py-2 bg-muted rounded-md text-sm">{emailData.subject}</div>
+              )}
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">Body</label>
+              {editMode ? (
+                <textarea
+                  value={emailData.body}
+                  onChange={(e) => setEmailData({ ...emailData, body: e.target.value })}
+                  className="w-full mt-1 px-3 py-2 border rounded-md text-sm h-32"
+                />
+              ) : (
+                <div className="mt-1 px-3 py-2 bg-muted rounded-md text-sm whitespace-pre-wrap text-xs">{emailData.body}</div>
+              )}
             </div>
           </div>
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowEmailDialog(false)}>Cancel</Button>
             <Button onClick={handleSendEmail} disabled={sendingEmail}>
