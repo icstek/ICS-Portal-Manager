@@ -11,10 +11,10 @@ Deno.serve(async (req) => {
 
     // Helper to add section title
     const addSectionTitle = (title) => {
-      pdf.setFontSize(10);
+      pdf.setFontSize(9);
       pdf.setFont(undefined, 'bold');
       pdf.text(title, margin, yPos);
-      yPos += 5;
+      yPos += 4;
       pdf.setFont(undefined, 'normal');
     };
 
@@ -55,6 +55,23 @@ Deno.serve(async (req) => {
       yPos += 11;
     };
 
+    // Helper to add four fields
+    const addFourFields = (label1, label2, label3, label4) => {
+      pdf.setFontSize(8);
+      const colWidth = (contentWidth - 6) / 4;
+      
+      yPos += 2;
+      pdf.text(label1, margin, yPos);
+      pdf.text(label2, margin + colWidth + 2, yPos);
+      pdf.text(label3, margin + (colWidth + 2) * 2, yPos);
+      pdf.text(label4, margin + (colWidth + 2) * 3, yPos);
+      pdf.rect(margin, yPos + 3, colWidth, 6);
+      pdf.rect(margin + colWidth + 2, yPos + 3, colWidth, 6);
+      pdf.rect(margin + (colWidth + 2) * 2, yPos + 3, colWidth, 6);
+      pdf.rect(margin + (colWidth + 2) * 3, yPos + 3, colWidth, 6);
+      yPos += 11;
+    };
+
     // HEADER
     pdf.setFontSize(14);
     pdf.setFont(undefined, 'bold');
@@ -70,38 +87,33 @@ Deno.serve(async (req) => {
 
     // REPORT INFO
     addTwoFields('Report #:', 'Date:');
-    addTwoFields('Report Type:', 'Status:');
-    yPos += 4;
+    yPos += 2;
 
     // CUSTOMER SECTION
     addSectionTitle('CUSTOMER');
     addField('Name:');
     addField('Address:');
     addThreeFields('City:', 'Zip:', 'Tel:');
-    addField('Cell:');
-    addField('Email:');
+    addTwoFields('Cell:', 'Email:');
     
     pdf.setFontSize(8);
     pdf.text('Items Received:', margin, yPos + 1.5);
     pdf.text('[ ] Computer   [ ] Printer   [ ] Laptop   [ ] Screen   [ ] Other', margin + 35, yPos + 1.5);
     yPos += 4;
-    yPos += 8;
+    yPos += 4;
 
     // EQUIPMENT SECTION
     addSectionTitle('EQUIPMENT');
-    addField('Received Item:');
-    addField('Model:');
-    addField('Serial #:');
-    addField('Problem Description:', 8);
-    yPos += 8;
+    addThreeFields('Received Item:', 'Model:', 'Serial #:');
+    addField('Problem Description:', 6);
+    yPos += 4;
 
     // LABOR SECTION
     addSectionTitle('LABOR');
-    addTwoFields('Technician:', 'Rate:');
-    addTwoFields('Arrive Time:', 'Left Time:');
-    addTwoFields('Wait Hours:', 'Total Hours:');
+    addThreeFields('Technician:', 'Arrive Time:', 'Left Time:');
+    addThreeFields('Wait Hours:', 'Rate:', 'Total Hours:');
     addField('Password:');
-    yPos += 8;
+    yPos += 4;
 
     // PAGE BREAK
     pdf.addPage();
