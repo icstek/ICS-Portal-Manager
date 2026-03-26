@@ -19,12 +19,12 @@ Deno.serve(async (req) => {
     };
 
     // Helper to add a single field with label on left
-    const addField = (label, boxHeight = 5) => {
+    const addField = (label, boxHeight = 7) => {
       pdf.setFontSize(8);
       const labelWidth = 30;
-      pdf.text(label, margin, yPos + 1.5);
+      pdf.text(label, margin, yPos + 2);
       pdf.rect(margin + labelWidth, yPos, contentWidth - labelWidth, boxHeight);
-      yPos += boxHeight + 2;
+      yPos += boxHeight + 3;
     };
 
     // Helper to add two fields side by side
@@ -33,11 +33,11 @@ Deno.serve(async (req) => {
       const labelWidth = 30;
       const colWidth = (contentWidth - labelWidth - 3) / 2;
       
-      pdf.text(label1, margin, yPos + 1.5);
-      pdf.text(label2, margin + labelWidth + colWidth + 3, yPos + 1.5);
-      pdf.rect(margin + labelWidth, yPos, colWidth, 5);
-      pdf.rect(margin + labelWidth + colWidth + 3, yPos, colWidth, 5);
-      yPos += 7;
+      pdf.text(label1, margin, yPos + 2);
+      pdf.text(label2, margin + labelWidth + colWidth + 3, yPos + 2);
+      pdf.rect(margin + labelWidth, yPos, colWidth, 7);
+      pdf.rect(margin + labelWidth + colWidth + 3, yPos, colWidth, 7);
+      yPos += 10;
     };
 
     // Helper to add three fields
@@ -46,13 +46,13 @@ Deno.serve(async (req) => {
       const labelWidth = 20;
       const colWidth = (contentWidth - labelWidth - 6) / 3;
       
-      pdf.text(label1, margin, yPos + 1.5);
-      pdf.text(label2, margin + labelWidth + colWidth + 3, yPos + 1.5);
-      pdf.text(label3, margin + labelWidth + (colWidth + 3) * 2, yPos + 1.5);
-      pdf.rect(margin + labelWidth, yPos, colWidth, 5);
-      pdf.rect(margin + labelWidth + colWidth + 3, yPos, colWidth, 5);
-      pdf.rect(margin + labelWidth + (colWidth + 3) * 2, yPos, colWidth, 5);
-      yPos += 7;
+      pdf.text(label1, margin, yPos + 2);
+      pdf.text(label2, margin + labelWidth + colWidth + 3, yPos + 2);
+      pdf.text(label3, margin + labelWidth + (colWidth + 3) * 2, yPos + 2);
+      pdf.rect(margin + labelWidth, yPos, colWidth, 7);
+      pdf.rect(margin + labelWidth + colWidth + 3, yPos, colWidth, 7);
+      pdf.rect(margin + labelWidth + (colWidth + 3) * 2, yPos, colWidth, 7);
+      yPos += 10;
     };
 
     // HEADER
