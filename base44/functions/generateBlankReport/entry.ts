@@ -160,8 +160,20 @@ Deno.serve(async (req) => {
       chargeY += 6;
     });
 
+    // TERMS OF SERVICE SECTION
+    yPos = chargeY + 8;
+    pdf.setFontSize(7);
+    pdf.setFont(undefined, 'bold');
+    pdf.text('Terms of Service:', margin, yPos);
+    yPos += 3;
+    pdf.setFont(undefined, 'normal');
+    pdf.setFontSize(6);
+    const tosText = "Payment is due upon completion of service. We accept cash, check, and credit cards. All equipment left for repair after 30 days will be considered abandoned and will be disposed of or donated at the discretion of the company.";
+    pdf.text(tosText, margin, yPos, { maxWidth: contentWidth, align: 'left' });
+    yPos += 8;
+
     // SIGNATURE SECTION
-    yPos = chargeY + 15;
+    yPos += 3;
     pdf.setFontSize(8);
     pdf.setFont(undefined, 'normal');
     pdf.text('Technician Signature:', margin, yPos);
