@@ -98,7 +98,16 @@ Deno.serve(async (req) => {
     addTwoFields('Arrive Time:', 'Left Time:');
     addTwoFields('Wait Hours:', 'Total Hours:');
     addField('Password:');
-    addField('Service Description:', 7);
+
+    // PAGE BREAK
+    pdf.addPage();
+    yPos = margin;
+
+    // Continue with Service Description on page 2
+    pdf.setFontSize(8);
+    pdf.text('Service Description:', margin, yPos + 1.5);
+    pdf.rect(margin + 35, yPos, contentWidth - 35, 8);
+    yPos += 10;
 
     // PARTS SECTION
     addSectionTitle('PARTS');
