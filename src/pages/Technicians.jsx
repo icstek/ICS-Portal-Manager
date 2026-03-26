@@ -9,12 +9,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Plus, Wrench, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import QuickBooksEmployeesImport from "@/components/technicians/QuickBooksEmployeesImport";
+import { useRole } from "@/hooks/useRole";
 
 export default function Technicians() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ name: "", hourly_rate: 0, phone: "", specialization: "" });
   const queryClient = useQueryClient();
+  const { isAdmin } = useRole();
 
   const { data: technicians = [], isLoading } = useQuery({
     queryKey: ["technicians"],
@@ -50,10 +52,12 @@ export default function Technicians() {
           <h1 className="text-2xl md:text-3xl font-bold font-inter tracking-tight">Technicians</h1>
           <p className="text-muted-foreground text-sm mt-1">{technicians.length} technicians</p>
         </div>
-        <div className="flex gap-2">
-          <QuickBooksEmployeesImport onImported={() => queryClient.invalidateQueries({ queryKey: ["technicians"] })} />
-          <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" /> Add Technician</Button>
-        </div>
+        {isAdmin && (
+          <div className="flex gap-2">
+            <QuickBooksEmployeesImport onImported={() => queryClient.invalidateQueries({ queryKey: ["technicians"] })} />
+            <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" /> Add Technician</Button>
+          </div>
+        )}
       </div>
 
       {isLoading ? (
@@ -76,10 +80,12 @@ export default function Technicians() {
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-1 shrink-0">
-                  <Button variant="ghost" size="icon" onClick={() => openEdit(t)}><Pencil className="w-4 h-4" /></Button>
-                  <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(t.id)} className="text-destructive hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
-                </div>
+                {isAdmin && (
+                  <div className="flex gap-1 shrink-0">
+                    <Button variant="ghost" size="icon" onClick={() => openEdit(t)}><Pencil className="w-4 h-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(t.id)} className="text-destructive hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           ))}

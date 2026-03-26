@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Plus, Search, Package, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import QuickBooksPartsImport from "@/components/parts/QuickBooksPartsImport";
+import { useRole } from "@/hooks/useRole";
 
 const categories = ["hardware", "cable", "peripheral", "storage", "memory", "display", "battery", "other"];
 
@@ -20,6 +21,7 @@ export default function Parts() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ name: "", sku: "", unit_cost: 0, stock_quantity: 0, category: "other" });
   const queryClient = useQueryClient();
+  const { isAdmin } = useRole();
 
   const { data: parts = [], isLoading } = useQuery({
     queryKey: ["parts"],
@@ -57,10 +59,12 @@ export default function Parts() {
           <h1 className="text-2xl md:text-3xl font-bold font-inter tracking-tight">Parts Catalog</h1>
           <p className="text-muted-foreground text-sm mt-1">{parts.length} parts</p>
         </div>
-        <div className="flex gap-2">
-          <QuickBooksPartsImport onImported={() => queryClient.invalidateQueries({ queryKey: ["parts"] })} />
-          <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" /> Add Part</Button>
-        </div>
+        {isAdmin && (
+          <div className="flex gap-2">
+            <QuickBooksPartsImport onImported={() => queryClient.invalidateQueries({ queryKey: ["parts"] })} />
+            <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" /> Add Part</Button>
+          </div>
+        )}
       </div>
 
       <div className="relative">
@@ -82,10 +86,12 @@ export default function Parts() {
                     <p className="font-medium truncate">{p.name}</p>
                     <p className="text-xs text-muted-foreground">{p.sku || "No SKU"}</p>
                   </div>
-                  <div className="flex gap-1 shrink-0">
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(p)}><Pencil className="w-3 h-3" /></Button>
-                    <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => deleteMutation.mutate(p.id)}><Trash2 className="w-3 h-3" /></Button>
-                  </div>
+                  {isAdmin && (
+                    <div className="flex gap-1 shrink-0">
+                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(p)}><Pencil className="w-3 h-3" /></Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => deleteMutation.mutate(p.id)}><Trash2 className="w-3 h-3" /></Button>
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center justify-between mt-3">
                   <Badge variant="secondary" className="text-[10px] capitalize">{p.category || "other"}</Badge>

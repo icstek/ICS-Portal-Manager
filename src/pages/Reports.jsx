@@ -8,9 +8,11 @@ import { Input } from "@/components/ui/input";
 import { Plus, Search, FileText } from "lucide-react";
 import { format } from "date-fns";
 import { useState } from "react";
+import { useRole } from "@/hooks/useRole";
 
 export default function Reports() {
   const [search, setSearch] = useState("");
+  const { isAdmin } = useRole();
   const { data: reports = [], isLoading } = useQuery({
     queryKey: ["reports"],
     queryFn: () => base44.entities.ServiceReport.list("-created_date"),
@@ -29,9 +31,11 @@ export default function Reports() {
           <h1 className="text-2xl md:text-3xl font-bold font-inter tracking-tight">Service Reports</h1>
           <p className="text-muted-foreground text-sm mt-1">{reports.length} total reports</p>
         </div>
-        <Link to="/reports/new">
-          <Button className="gap-2"><Plus className="w-4 h-4" /> New Report</Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link to="/reports/new">
+            <Button className="gap-2"><Plus className="w-4 h-4" /> New Report</Button>
+          </Link>
+        </div>
       </div>
 
       <div className="relative">

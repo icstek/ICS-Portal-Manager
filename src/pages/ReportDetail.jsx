@@ -1,16 +1,29 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Printer } from "lucide-react";
+import { ArrowLeft, Printer, Trash2 } from "lucide-react";
 import { format } from "date-fns";
+import { useRole } from "@/hooks/useRole";
+import { toast } from "sonner";
 
 export default function ReportDetail() {
   const params = new URLSearchParams(window.location.search);
   const id = window.location.pathname.split("/").pop();
   const navigate = useNavigate();
+  const { isAdmin } = useRole();
+  const queryClient = useQueryClient();
+
+  const deleteMutation = useMutation({
+    mutationFn: () => base44.entities.ServiceReport.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["reports"] });
+      toast.success("Report deleted");
+      navigate("/reports");
+    },
+  });
 
   const { data: report, isLoading } = useQuery({
     queryKey: ["report", id],
@@ -46,9 +59,21 @@ export default function ReportDetail() {
         <Button variant="ghost" onClick={() => navigate("/reports")} className="gap-2">
           <ArrowLeft className="w-4 h-4" /> Back
         </Button>
-        <Button variant="outline" onClick={() => window.print()} className="gap-2">
-          <Printer className="w-4 h-4" /> Print
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => window.print()} className="gap-2">
+            <Printer className="w-4 h-4" /> Print
+          </Button>
+          {isAdmin && (
+            <Button
+              variant="destructive"
+              onClick={() => { if (confirm("Delete this report?")) deleteMutation.mutate(); }}
+              className="gap-2"
+              disabled={deleteMutation.isPending}
+            >
+              <Trash2 className="w-4 h-4" /> Delete
+            </Button>
+          )}
+        </div>
       </div>
 
       <Card>
