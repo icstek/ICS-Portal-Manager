@@ -106,16 +106,16 @@ export default function ReportDetail() {
 
           {/* Problem */}
           {r.problem_description && (
-            <div className="print:py-1">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 print:mb-1 print:text-[10px]">Problem Description</h3>
-              <p className="text-sm bg-muted/50 rounded-lg p-3 print:bg-transparent print:p-1 print:text-xs">{r.problem_description}</p>
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Problem Description</h3>
+              <p className="text-sm bg-muted/50 rounded-lg p-3">{r.problem_description}</p>
             </div>
           )}
 
           {/* Technician */}
-          <div className="print:py-1">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 print:mb-1 print:text-[10px]">Technician & Labor</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 print:grid-cols-3 gap-3 print:gap-2 text-sm print:text-xs">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Technician & Labor</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
               {r.technician_name && <div><span className="text-muted-foreground">Technician:</span> <span className="font-medium">{r.technician_name}</span></div>}
               {r.time_arrive && <div><span className="text-muted-foreground">Arrive:</span> {r.time_arrive}</div>}
               {r.time_left && <div><span className="text-muted-foreground">Left:</span> {r.time_left}</div>}
@@ -127,33 +127,33 @@ export default function ReportDetail() {
 
           {/* Service Description */}
           {r.service_description && (
-            <div className="print:py-1">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 print:mb-1 print:text-[10px]">Service Description</h3>
-              <p className="text-sm bg-muted/50 rounded-lg p-3 print:bg-transparent print:p-1 print:text-xs">{r.service_description}</p>
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Service Description</h3>
+              <p className="text-sm bg-muted/50 rounded-lg p-3">{r.service_description}</p>
             </div>
           )}
 
           {/* Parts */}
           {r.items_replaced?.length > 0 && (
-            <div className="print:py-1">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 print:mb-1 print:text-[10px]">Parts Replaced</h3>
-              <div className="border rounded-lg overflow-hidden print:border print:rounded-none">
-                <table className="w-full text-sm print:text-xs">
-                  <thead className="bg-muted print:bg-muted">
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Parts Replaced</h3>
+              <div className="border rounded-lg overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead className="bg-muted">
                     <tr>
-                      <th className="text-left p-2 print:p-1 font-medium">Part</th>
-                      <th className="text-right p-2 print:p-1 font-medium">Qty</th>
-                      <th className="text-right p-2 print:p-1 font-medium">Cost</th>
-                      <th className="text-right p-2 print:p-1 font-medium">Total</th>
+                      <th className="text-left p-2 font-medium">Part</th>
+                      <th className="text-right p-2 font-medium">Qty</th>
+                      <th className="text-right p-2 font-medium">Unit Cost</th>
+                      <th className="text-right p-2 font-medium">Total</th>
                     </tr>
                   </thead>
                   <tbody>
                     {r.items_replaced.map((item, i) => (
-                      <tr key={i} className="border-t print:border-t">
-                        <td className="p-2 print:p-1">{item.part_name}</td>
-                        <td className="p-2 print:p-1 text-right">{item.qty}</td>
-                        <td className="p-2 print:p-1 text-right">${(item.unit_cost || 0).toFixed(2)}</td>
-                        <td className="p-2 print:p-1 text-right font-medium">${(item.total || 0).toFixed(2)}</td>
+                      <tr key={i} className="border-t">
+                        <td className="p-2">{item.part_name}</td>
+                        <td className="p-2 text-right">{item.qty}</td>
+                        <td className="p-2 text-right">${(item.unit_cost || 0).toFixed(2)}</td>
+                        <td className="p-2 text-right font-medium">${(item.total || 0).toFixed(2)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -163,29 +163,29 @@ export default function ReportDetail() {
           )}
 
           {/* Charges Summary */}
-          <div className="bg-muted/50 rounded-lg p-4 print:bg-transparent print:p-2 space-y-2 print:space-y-1">
-            <div className="flex justify-between text-sm print:text-xs"><span className="text-muted-foreground">Labor</span><span>${(r.labor_charge || 0).toFixed(2)}</span></div>
-            <div className="flex justify-between text-sm print:text-xs"><span className="text-muted-foreground">Parts</span><span>${(r.parts_charge || 0).toFixed(2)}</span></div>
-            <div className="flex justify-between text-sm print:text-xs"><span className="text-muted-foreground">Travel</span><span>${(r.travel_charge || 0).toFixed(2)}</span></div>
-            <hr className="border-border print:my-0.5" />
-            <div className="flex justify-between text-sm print:text-xs"><span className="text-muted-foreground">Sub Total</span><span>${(r.sub_total || 0).toFixed(2)}</span></div>
-            <div className="flex justify-between text-sm print:text-xs"><span className="text-muted-foreground">Tax ({r.tax_rate || 9.5}%)</span><span>${(r.tax_amount || 0).toFixed(2)}</span></div>
-            <hr className="border-border print:my-0.5" />
-            <div className="flex justify-between font-bold text-base print:text-sm"><span>Total</span><span>${(r.total_charges || 0).toFixed(2)}</span></div>
+          <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Labor</span><span>${(r.labor_charge || 0).toFixed(2)}</span></div>
+            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Parts</span><span>${(r.parts_charge || 0).toFixed(2)}</span></div>
+            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Travel</span><span>${(r.travel_charge || 0).toFixed(2)}</span></div>
+            <hr className="border-border" />
+            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Sub Total</span><span>${(r.sub_total || 0).toFixed(2)}</span></div>
+            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Tax ({r.tax_rate || 9.5}%)</span><span>${(r.tax_amount || 0).toFixed(2)}</span></div>
+            <hr className="border-border" />
+            <div className="flex justify-between font-bold text-base"><span>Total</span><span>${(r.total_charges || 0).toFixed(2)}</span></div>
           </div>
 
           {/* Terms & Conditions (print only, full width) */}
-          <div className="hidden print:block space-y-2 border-t pt-2">
+          <div className="hidden print:block space-y-6 border-t pt-6">
             <div>
-              <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">Terms & Conditions</h3>
-              <p className="text-[9px] text-muted-foreground leading-tight">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Terms & Conditions</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 The service and repair estimates indicated herein are hereby acceptable to the undersigned. Items not picked up within 30 calendar days from the date below will be subject to sale in order to recover ICS expenses. Customer understands that ICS is not responsible for loss or damage to any equipment in case of fire, theft, or any other causes beyond ICS control. In addition, ICS is not responsible for loss of Customer's programs or data for any reason. Customer is solely responsible to make backup of computer system data, software and applications prior to ICS services herein. All Spyware and Virus Cleanups do not carry warranty for labor due to the nature of the system use with the internet. All returned checks will be charged a $25.00 fee. All returned Sales are subject to a 20% restocking fee. I hereby authorize the repair work herein set forth, to be done with all necessary materials and grants ICS and its employees permission to operate the computer system and other equipment herein described for the purposes of repair and testing at my sole and exclusive risk. An express mechanic's lien is hereby acknowledged on the above equipment to secure the amount of repairs and parts listed in, or hereafter added in, this invoice.
               </p>
             </div>
-            <div className="space-y-0.5">
-              <p className="text-[9px] text-muted-foreground">Customer Signature</p>
-              <div className="h-6 border-b border-foreground"></div>
-              <p className="text-[9px] text-muted-foreground">Date: {r.date ? format(new Date(r.date), "MMMM d, yyyy") : ""}</p>
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground">Customer Signature</p>
+              <div className="h-12 border-b border-foreground"></div>
+              <p className="text-xs text-muted-foreground">Date: {r.date ? format(new Date(r.date), "MMMM d, yyyy") : ""}</p>
             </div>
           </div>
         </CardContent>
