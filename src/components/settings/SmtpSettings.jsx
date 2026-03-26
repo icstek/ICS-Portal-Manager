@@ -7,10 +7,7 @@ import { Mail, Loader2, CheckCircle2, AlertCircle, ChevronDown } from "lucide-re
 
 export default function SmtpSettings() {
   const [smtpConfig, setSmtpConfig] = useState({
-    host: '',
-    port: '587',
-    user: '',
-    password: '',
+    apiKey: '',
     fromEmail: ''
   });
   const [testing, setTesting] = useState(false);
@@ -22,18 +19,15 @@ export default function SmtpSettings() {
   };
 
   const handleTestConfig = async () => {
-    if (!smtpConfig.host || !smtpConfig.user || !smtpConfig.password || !smtpConfig.fromEmail) {
-      toast.error('Please fill in all SMTP fields');
+    if (!smtpConfig.apiKey || !smtpConfig.fromEmail) {
+      toast.error('Please fill in all fields');
       return;
     }
 
     setTesting(true);
     try {
       const response = await base44.functions.invoke('testSmtpConfig', {
-        host: smtpConfig.host,
-        port: parseInt(smtpConfig.port),
-        user: smtpConfig.user,
-        password: smtpConfig.password,
+        apiKey: smtpConfig.apiKey,
         fromEmail: smtpConfig.fromEmail
       });
 
@@ -71,52 +65,21 @@ export default function SmtpSettings() {
       <CardHeader>
         <div className="flex items-center gap-2">
           <Mail className="w-5 h-5" />
-          <CardTitle>SMTP Configuration</CardTitle>
+          <CardTitle>Email Configuration (Resend)</CardTitle>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-3">
           <div>
-            <label className="text-sm font-medium">SMTP Host</label>
-            <input
-              type="text"
-              placeholder="smtp.gmail.com"
-              value={smtpConfig.host}
-              onChange={(e) => handleInputChange('host', e.target.value)}
-              className="w-full mt-1 px-3 py-2 border rounded-md text-sm"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-sm font-medium">Port</label>
-              <input
-                type="number"
-                value={smtpConfig.port}
-                onChange={(e) => handleInputChange('port', e.target.value)}
-                className="w-full mt-1 px-3 py-2 border rounded-md text-sm"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium">Username</label>
-              <input
-                type="text"
-                placeholder="your-email@gmail.com"
-                value={smtpConfig.user}
-                onChange={(e) => handleInputChange('user', e.target.value)}
-                className="w-full mt-1 px-3 py-2 border rounded-md text-sm"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="text-sm font-medium">Password</label>
+            <label className="text-sm font-medium">Resend API Key</label>
             <input
               type="password"
-              value={smtpConfig.password}
-              onChange={(e) => handleInputChange('password', e.target.value)}
+              placeholder="re_xxxxxxxxxxxx"
+              value={smtpConfig.apiKey}
+              onChange={(e) => handleInputChange('apiKey', e.target.value)}
               className="w-full mt-1 px-3 py-2 border rounded-md text-sm"
             />
+            <p className="text-xs text-muted-foreground mt-1">Get your API key from <a href="https://resend.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">resend.com</a></p>
           </div>
 
           <div>
@@ -194,7 +157,7 @@ export default function SmtpSettings() {
           <p className="font-medium mb-2">After testing:</p>
           <ol className="list-decimal list-inside space-y-1 text-xs">
             <li>Go to Dashboard Settings → Environment Variables</li>
-            <li>Update: SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, SMTP_FROM_EMAIL</li>
+            <li>Update: RESEND_API_KEY, RESEND_FROM_EMAIL</li>
             <li>Save the changes</li>
           </ol>
         </div>
