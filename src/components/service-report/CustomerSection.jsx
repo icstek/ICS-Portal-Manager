@@ -21,6 +21,7 @@ export default function CustomerSection({ form, setForm }) {
         customer_zip: "",
         customer_tel: "",
         customer_cell: "",
+        customer_email: "",
       }));
       return;
     }
@@ -35,6 +36,7 @@ export default function CustomerSection({ form, setForm }) {
         customer_zip: c.zip || "",
         customer_tel: c.tel || "",
         customer_cell: c.cell || "",
+        customer_email: c.email || "",
       }));
     }
   };
@@ -82,6 +84,10 @@ export default function CustomerSection({ form, setForm }) {
         <div>
           <Label className="text-xs text-muted-foreground">Cell</Label>
           <Input value={form.customer_cell || ""} onChange={(e) => handleChange("customer_cell", e.target.value)} className="mt-1" />
+        </div>
+        <div>
+          <Label className="text-xs text-muted-foreground">Email</Label>
+          <Input type="email" value={form.customer_email || ""} onChange={(e) => handleChange("customer_email", e.target.value)} className="mt-1" />
         </div>
       </div>
     </div>
