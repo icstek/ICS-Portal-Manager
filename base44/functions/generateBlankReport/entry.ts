@@ -21,6 +21,7 @@ Deno.serve(async (req) => {
     // Helper to add a single field with label on left
     const addField = (label, boxHeight = 9) => {
       pdf.setFontSize(8);
+      yPos += 2;
       pdf.text(label, margin, yPos);
       pdf.rect(margin, yPos + 3, contentWidth, boxHeight);
       yPos += boxHeight + 5;
@@ -31,6 +32,7 @@ Deno.serve(async (req) => {
       pdf.setFontSize(8);
       const colWidth = (contentWidth - 2) / 2;
       
+      yPos += 2;
       pdf.text(label1, margin, yPos);
       pdf.text(label2, margin + colWidth + 2, yPos);
       pdf.rect(margin, yPos + 3, colWidth, 9);
@@ -43,6 +45,7 @@ Deno.serve(async (req) => {
       pdf.setFontSize(8);
       const colWidth = (contentWidth - 4) / 3;
       
+      yPos += 2;
       pdf.text(label1, margin, yPos);
       pdf.text(label2, margin + colWidth + 2, yPos);
       pdf.text(label3, margin + (colWidth + 2) * 2, yPos);
@@ -102,6 +105,7 @@ Deno.serve(async (req) => {
 
     // Continue with Service Description on page 2
     pdf.setFontSize(8);
+    yPos += 2;
     pdf.text('Service Description:', margin, yPos);
     pdf.rect(margin, yPos + 3, contentWidth, 10);
     yPos += 14;
