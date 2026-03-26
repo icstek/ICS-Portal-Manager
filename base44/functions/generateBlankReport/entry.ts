@@ -84,8 +84,7 @@ Deno.serve(async (req) => {
 
     // CUSTOMER SECTION
     addSectionTitle('CUSTOMER');
-    addField('Name:');
-    addField('Address:');
+    addTwoFields('Name:', 'Address:');
     addThreeFields('City:', 'Zip:', 'Tel:');
     addTwoFields('Cell:', 'Email:');
     
