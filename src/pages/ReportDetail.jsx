@@ -64,6 +64,7 @@ export default function ReportDetail() {
       await base44.functions.invoke('emailReport', {
         reportId: id,
         recipientEmail: emailAddress,
+        ccEmail: report?.customer_email || undefined,
       });
       toast.success('Email sent successfully');
       setShowEmailDialog(false);
