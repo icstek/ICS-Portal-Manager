@@ -155,8 +155,8 @@ Deno.serve(async (req) => {
     let chargeY = yPos;
     
     chargeLabels.forEach((label) => {
-      pdf.text(label, chargesX + labelWidth, chargeY + 1.5, { align: 'right' });
-      pdf.rect(chargesX + labelWidth + 2, chargeY, chargesWidth - labelWidth - 2, 5);
+      pdf.rect(chargesX, chargeY, chargesWidth, 5);
+      pdf.text(label, chargesX - 2, chargeY + 3.5, { align: 'right' });
       chargeY += 6;
     });
 
