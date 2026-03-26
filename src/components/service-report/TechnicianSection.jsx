@@ -51,7 +51,7 @@ export default function TechnicianSection({ form, setForm }) {
           <Input type="number" step="0.01" value={form.hourly_rate || ""} onChange={(e) => handleChange("hourly_rate", parseFloat(e.target.value) || 0)} className="mt-1" />
         </div>
         <div>
-          <Label className="text-xs text-muted-foreground">Misc. ($)</Label>
+          <Label className="text-xs text-muted-foreground">Travel Time ($)</Label>
           <Input type="number" step="0.01" value={form.misc_charge || ""} onChange={(e) => handleChange("misc_charge", parseFloat(e.target.value) || 0)} className="mt-1" />
         </div>
         <div className="col-span-2">
