@@ -64,15 +64,29 @@ Deno.serve(async (req) => {
         const pdfResponse = await fetch(pdfUrl);
         const pdfBuffer = await pdfResponse.arrayBuffer();
         const uint8Array = new Uint8Array(pdfBuffer);
-        const binaryString = String.fromCharCode.apply(null, uint8Array);
+        
+        // FIX: Process the array in chunks to avoid call stack limits
+        let binaryString = '';
+        const chunkSize = 8192; // Safe chunk size
+        for (let i = 0; i < uint8Array.length; i += chunkSize) {
+          const chunk = uint8Array.subarray(i, i + chunkSize);
+          binaryString += String.fromCharCode.apply(null, chunk);
+        }
+        
         const base64String = btoa(binaryString);
         
         attachments = [{
           filename: `report-${report.report_number}.pdf`,
           content: base64String
         }];
+        console.log('PDF attachment prepared successfully:', { filename: `report-${report.report_number}.pdf`, size: pdfBuffer.byteLength });
       } catch (attachError) {
         console.error('PDF attachment error:', attachError);
+        console.error('Attachment error details:', { 
+          message: attachError.message, 
+          stack: attachError.stack,
+          pdfUrl: pdfUrl 
+        });
       }
     }
 
