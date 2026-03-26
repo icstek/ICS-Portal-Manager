@@ -23,7 +23,7 @@ export default function Sidebar({ open, onClose }) {
         <div className="fixed inset-0 bg-black/30 z-40 lg:hidden" onClick={onClose} />
       )}
       <aside className={cn(
-        "fixed top-0 left-0 z-50 h-full w-64 bg-card border-r border-border flex flex-col transition-transform duration-300 lg:translate-x-0 lg:static lg:z-auto",
+        "fixed top-0 left-0 z-50 h-screen w-64 bg-card border-r border-border flex flex-col transition-transform duration-300 lg:translate-x-0 lg:sticky lg:top-0 lg:z-auto",
         open ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="p-6 border-b border-border">
@@ -78,9 +78,7 @@ export default function Sidebar({ open, onClose }) {
             <LogOut className="w-4 h-4" />
             Logout
           </button>
-          <p className="text-[10px] text-muted-foreground text-center pt-2">
-            6038 Tampa Ave., Tarzana, CA 91356
-          </p>
+
         </div>
       </aside>
     </>
