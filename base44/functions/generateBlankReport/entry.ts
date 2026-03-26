@@ -71,6 +71,7 @@ Deno.serve(async (req) => {
     // REPORT INFO
     addTwoFields('Report #:', 'Date:');
     addTwoFields('Report Type:', 'Status:');
+    yPos += 4;
 
     // CUSTOMER SECTION
     addSectionTitle('CUSTOMER');
