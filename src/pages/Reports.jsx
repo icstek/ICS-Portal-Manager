@@ -41,17 +41,9 @@ export default function Reports() {
       
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'blank-service-report.pdf';
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-      
-      toast.success('Blank PDF downloaded');
+      window.open(url);
     } catch (error) {
-      toast.error('Failed to download blank PDF');
+      toast.error('Failed to open blank PDF');
     } finally {
       setDownloading(false);
     }
