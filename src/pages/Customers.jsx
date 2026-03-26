@@ -25,7 +25,7 @@ export default function Customers() {
 
   const { data: customers = [], isLoading } = useQuery({
     queryKey: ["customers"],
-    queryFn: () => base44.entities.Customer.list("name", 10000),
+    queryFn: () => base44.entities.Customer.list("name", 999999),
   });
 
   const saveMutation = useMutation({

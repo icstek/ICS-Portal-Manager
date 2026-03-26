@@ -17,15 +17,15 @@ export default function Dashboard() {
   });
   const { data: customers = [] } = useQuery({
     queryKey: ["customers"],
-    queryFn: () => base44.entities.Customer.list(),
+    queryFn: () => base44.entities.Customer.list("name", 999999),
   });
   const { data: technicians = [] } = useQuery({
     queryKey: ["technicians"],
-    queryFn: () => base44.entities.Technician.list(),
+    queryFn: () => base44.entities.Technician.list("name", 999999),
   });
   const { data: parts = [] } = useQuery({
     queryKey: ["parts"],
-    queryFn: () => base44.entities.Part.list(),
+    queryFn: () => base44.entities.Part.list("name", 999999),
   });
 
   const stats = [
