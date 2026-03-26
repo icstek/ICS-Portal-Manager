@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
-import { Mail, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { Mail, Loader2, CheckCircle2, AlertCircle, ChevronDown } from "lucide-react";
 
 export default function SmtpSettings() {
   const [smtpConfig, setSmtpConfig] = useState({
@@ -15,6 +15,7 @@ export default function SmtpSettings() {
   });
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState(null);
+  const [showDetails, setShowDetails] = useState(false);
 
   const handleInputChange = (field, value) => {
     setSmtpConfig(prev => ({ ...prev, [field]: value }));
@@ -37,10 +38,18 @@ export default function SmtpSettings() {
       });
 
       if (response.data.success) {
-        setTestResult({ success: true, message: response.data.message });
+        setTestResult({ 
+          success: true, 
+          message: response.data.message,
+          details: response.data.details 
+        });
         toast.success('SMTP configuration is valid');
       } else {
-        setTestResult({ success: false, message: response.data.error });
+        setTestResult({ 
+          success: false, 
+          message: response.data.error,
+          details: response.data.details 
+        });
         toast.error('SMTP test failed: ' + response.data.error);
       }
     } catch (error) {
@@ -48,6 +57,7 @@ export default function SmtpSettings() {
       toast.error('Failed to test SMTP configuration');
     } finally {
       setTesting(false);
+      setShowDetails(false);
     }
   };
 
@@ -117,15 +127,61 @@ export default function SmtpSettings() {
         </div>
 
         {testResult && (
-          <div className={`flex items-start gap-3 p-3 rounded-md ${testResult.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
-            {testResult.success ? (
-              <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-            ) : (
-              <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
-            )}
-            <div className="text-sm">
-              <p className={testResult.success ? 'text-green-800' : 'text-red-800'}>{testResult.message}</p>
+          <div className="space-y-3">
+            <div className={`flex items-start gap-3 p-3 rounded-md ${testResult.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+              {testResult.success ? (
+                <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+              ) : (
+                <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+              )}
+              <div className="text-sm flex-1">
+                <p className={testResult.success ? 'text-green-800' : 'text-red-800'}>{testResult.message}</p>
+              </div>
             </div>
+
+            {testResult.details && !testResult.success && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowDetails(!showDetails)}
+                className="w-full flex items-center justify-between"
+              >
+                <span>Details</span>
+                <ChevronDown className={`w-4 h-4 transition-transform ${showDetails ? 'rotate-180' : ''}`} />
+              </Button>
+            )}
+
+            {showDetails && testResult.details && (
+              <div className="bg-slate-900 text-slate-100 rounded-md p-3 font-mono text-xs space-y-2 max-h-64 overflow-auto">
+                {testResult.details.timestamp && (
+                  <div><span className="text-slate-400">Timestamp:</span> {testResult.details.timestamp}</div>
+                )}
+                {testResult.details.code && (
+                  <div><span className="text-slate-400">Error Code:</span> {testResult.details.code}</div>
+                )}
+                {testResult.details.errorName && (
+                  <div><span className="text-slate-400">Error Name:</span> {testResult.details.errorName}</div>
+                )}
+                {testResult.details.errorMessage && (
+                  <div><span className="text-slate-400">Error Message:</span> {testResult.details.errorMessage}</div>
+                )}
+                {testResult.details.fullError && (
+                  <div><span className="text-slate-400">Full Error:</span> {testResult.details.fullError}</div>
+                )}
+                {testResult.details.errorStack && (
+                  <div className="mt-2 pt-2 border-t border-slate-700">
+                    <div className="text-slate-400 mb-1">Stack Trace:</div>
+                    <pre className="whitespace-pre-wrap break-words">{testResult.details.errorStack}</pre>
+                  </div>
+                )}
+                {testResult.details.fields && (
+                  <div className="mt-2 pt-2 border-t border-slate-700">
+                    <div className="text-slate-400 mb-1">Field Status:</div>
+                    <pre className="whitespace-pre-wrap">{JSON.stringify(testResult.details.fields, null, 2)}</pre>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
