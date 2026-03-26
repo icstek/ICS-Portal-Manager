@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, FileText, Printer } from "lucide-react";
+import { Plus, Search, FileText } from "lucide-react";
 import { format } from "date-fns";
 import { useState } from "react";
 import { useRole } from "@/hooks/useRole";
@@ -32,9 +32,6 @@ export default function Reports() {
           <p className="text-muted-foreground text-sm mt-1">{reports.length} total reports</p>
         </div>
         <div className="flex gap-2">
-          <Link to="/reports/print-empty">
-            <Button variant="outline" className="gap-2"><Printer className="w-4 h-4" /> Print Empty Form</Button>
-          </Link>
           <Link to="/reports/new">
             <Button className="gap-2"><Plus className="w-4 h-4" /> New Report</Button>
           </Link>
