@@ -84,7 +84,7 @@ Deno.serve(async (req) => {
     pdf.text('Items Received:', margin, yPos + 1.5);
     pdf.text('☐ Computer   ☐ Printer   ☐ Laptop   ☐ Screen   ☐ Other', margin + 35, yPos + 1.5);
     yPos += 4;
-    yPos += 4;
+    yPos += 8;
 
     // EQUIPMENT SECTION
     addSectionTitle('EQUIPMENT');
@@ -92,7 +92,7 @@ Deno.serve(async (req) => {
     addField('Model:');
     addField('Serial #:');
     addField('Problem Description:', 8);
-    yPos += 4;
+    yPos += 8;
 
     // LABOR SECTION
     addSectionTitle('LABOR');
@@ -100,7 +100,7 @@ Deno.serve(async (req) => {
     addTwoFields('Arrive Time:', 'Left Time:');
     addTwoFields('Wait Hours:', 'Total Hours:');
     addField('Password:');
-    yPos += 4;
+    yPos += 8;
 
     // PAGE BREAK
     pdf.addPage();
@@ -140,7 +140,7 @@ Deno.serve(async (req) => {
     }
 
     yPos = tableY + 15;
-    yPos += 4;
+    yPos += 8;
 
     // CHARGES SECTION
     const chargesX = margin + contentWidth * 0.6;
