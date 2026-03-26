@@ -30,7 +30,7 @@ export default function Sidebar({ open, onClose }) {
           <img
             src="https://media.base44.com/images/public/69c3f70dbcee7c1afb484046/41d498c1a_ICS-Color-Logo.png"
             alt="ICS Inc."
-            className="w-10 h-10 rounded-lg object-contain bg-white"
+            className="w-16 h-16 rounded-lg object-contain bg-white"
           />
           <div>
             <h1 className="text-xl font-bold font-inter tracking-tight text-foreground">
