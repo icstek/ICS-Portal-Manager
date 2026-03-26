@@ -159,6 +159,16 @@ Deno.serve(async (req) => {
       chargeY += 6;
     });
 
+    // SIGNATURE SECTION
+    yPos += 15;
+    pdf.setFontSize(8);
+    pdf.setFont(undefined, 'normal');
+    pdf.text('Technician Signature:', margin, yPos);
+    pdf.rect(margin, yPos + 3, contentWidth * 0.5, 10);
+    
+    pdf.text('Date:', margin + contentWidth * 0.5 + 5, yPos);
+    pdf.rect(margin + contentWidth * 0.5 + 15, yPos + 3, contentWidth * 0.5 - 20, 10);
+
     const pdfBlob = pdf.output('blob');
     
     return new Response(pdfBlob, {
