@@ -26,11 +26,18 @@ export default function Sidebar({ open, onClose }) {
         "fixed top-0 left-0 z-50 h-screen w-64 bg-card border-r border-border flex flex-col transition-transform duration-300 lg:translate-x-0 lg:sticky lg:top-0 lg:z-auto",
         open ? "translate-x-0" : "-translate-x-full"
       )}>
-        <div className="p-6 border-b border-border">
-          <h1 className="text-xl font-bold font-inter tracking-tight text-foreground">
-            ICS<span className="text-primary">,</span> Inc.
-          </h1>
-          <p className="text-xs text-muted-foreground mt-1">Service Management</p>
+        <div className="p-4 border-b border-border flex items-center gap-3">
+          <img
+            src="https://media.base44.com/images/public/69c3f70dbcee7c1afb484046/449d546f0_generated_image.png"
+            alt="ICS Inc."
+            className="w-10 h-10 rounded-lg object-contain bg-white"
+          />
+          <div>
+            <h1 className="text-xl font-bold font-inter tracking-tight text-foreground">
+              ICS<span className="text-primary">,</span> Inc.
+            </h1>
+            <p className="text-xs text-muted-foreground">Service Management</p>
+          </div>
         </div>
 
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto">

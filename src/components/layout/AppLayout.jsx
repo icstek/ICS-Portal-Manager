@@ -17,6 +17,11 @@ export default function AppLayout() {
           <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)}>
             <Menu className="w-5 h-5" />
           </Button>
+          <img
+            src="https://media.base44.com/images/public/69c3f70dbcee7c1afb484046/449d546f0_generated_image.png"
+            alt="ICS Inc."
+            className="w-8 h-8 rounded-md object-contain bg-white"
+          />
           <h1 className="text-lg font-bold font-inter">ICS<span className="text-primary">,</span> Inc.</h1>
         </header>
         <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto">
