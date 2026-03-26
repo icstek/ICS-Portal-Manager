@@ -1,5 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
-import nodemailer from 'npm:nodemailer@6.9.7';
 
 Deno.serve(async (req) => {
   try {
@@ -24,33 +23,17 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Report not found' }, { status: 404 });
     }
 
-    // Create SMTP transporter
-    const transporter = nodemailer.createTransport({
-      host: Deno.env.get('SMTP_HOST'),
-      port: parseInt(Deno.env.get('SMTP_PORT')),
-      secure: Deno.env.get('SMTP_PORT') === '465',
-      auth: {
-        user: Deno.env.get('SMTP_USER'),
-        pass: Deno.env.get('SMTP_PASSWORD'),
-      },
-    });
-
-    // Send email
-    await transporter.sendMail({
-      from: Deno.env.get('SMTP_FROM_EMAIL'),
+    // Use Base44 built-in email integration
+    const emailResponse = await base44.integrations.Core.SendEmail({
       to: recipientEmail,
       subject: `Service Report #${report.report_number}`,
-      html: `<p>Please find attached the service report #${report.report_number} for ${report.customer_name}.</p>`,
-      attachments: [
-        {
-          filename: `report-${report.report_number}.pdf`,
-          content: Buffer.from('PDF content placeholder'),
-        }
-      ]
+      body: `Service Report #${report.report_number}\n\nCustomer: ${report.customer_name}\nDate: ${report.date}\nTotal: $${(report.total_charges || 0).toFixed(2)}\n\nPlease find the detailed report in your portal.`,
+      from_name: 'Service Reports'
     });
 
     return Response.json({ success: true, message: 'Email sent successfully' });
   } catch (error) {
+    console.error('Email error:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
