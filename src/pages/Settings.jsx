@@ -5,9 +5,12 @@ import { Button } from "@/components/ui/button";
 import { LayoutGrid, List, Moon, Sun } from "lucide-react";
 import { useUserSettings } from "@/hooks/useUserSettings";
 import { cn } from "@/lib/utils";
+import SmtpSettings from "@/components/settings/SmtpSettings";
+import { useRole } from "@/hooks/useRole";
 
 export default function Settings() {
   const { settings, updateSetting, loading } = useUserSettings();
+  const { isAdmin } = useRole();
 
   if (loading) return (
     <div className="flex items-center justify-center h-40">
@@ -81,7 +84,10 @@ export default function Settings() {
             </button>
           </div>
         </CardContent>
-      </Card>
-    </div>
-  );
-}
+        </Card>
+
+        {/* SMTP Configuration - Admin only */}
+        {isAdmin && <SmtpSettings />}
+        </div>
+        );
+        }
