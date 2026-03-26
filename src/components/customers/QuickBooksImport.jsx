@@ -86,17 +86,22 @@ export default function QuickBooksImport({ onImported }) {
 
   const handleImport = async () => {
     setImporting(true);
-    let count = 0;
-    for (const customer of preview) {
-      await base44.entities.Customer.create(customer);
-      count++;
+    try {
+      // Use bulk creation to avoid rate limits
+      if (preview.length > 0) {
+        await base44.entities.Customer.bulkCreate(preview);
+      }
+      setImporting(false);
+      setOpen(false);
+      setPreview([]);
+      setFileName("");
+      toast.success(`${preview.length} customers imported from QuickBooks`);
+      onImported();
+    } catch (error) {
+      console.error('Import error:', error);
+      toast.error('Failed to import customers. Please try again.');
+      setImporting(false);
     }
-    setImporting(false);
-    setOpen(false);
-    setPreview([]);
-    setFileName("");
-    toast.success(`${count} customers imported from QuickBooks`);
-    onImported();
   };
 
   return (
