@@ -60,10 +60,37 @@ export default function ReportDetail() {
 
     setSendingEmail(true);
     try {
+      // Generate PDF
+      const cardElement = document.querySelector('[data-report-card]');
+      const canvas = await html2canvas(cardElement, { scale: 2, useCORS: true });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 210;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      let yPos = 0;
+      pdf.addImage(imgData, 'PNG', 0, yPos, imgWidth, imgHeight);
+      
+      let remainingHeight = imgHeight - 297;
+      while (remainingHeight > 0) {
+        yPos = remainingHeight - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, yPos, imgWidth, imgHeight);
+        remainingHeight -= 297;
+      }
+
+      const pdfBlob = pdf.output('blob');
+      
+      // Upload PDF
+      const fileResponse = await base44.integrations.Core.UploadFile({
+        file: pdfBlob
+      });
+
       const response = await base44.functions.invoke('emailReport', {
         reportId: id,
         recipientEmail: emailAddress,
         ccEmail: report?.customer_email || undefined,
+        pdfUrl: fileResponse.file_url,
       });
       
       if (response.data.success) {
