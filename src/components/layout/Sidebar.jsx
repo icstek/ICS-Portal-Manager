@@ -91,8 +91,8 @@ export default function Sidebar({ open, onClose }) {
            {user && (
              <div className="pt-3 border-t border-border flex items-center gap-3">
                <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center overflow-hidden shrink-0">
-                 {user.profile_picture ? (
-                   <img src={user.profile_picture} alt={user.full_name} className="w-full h-full object-cover" />
+                 {user.picture || user.profile_picture ? (
+                   <img src={user.picture || user.profile_picture} alt={user.full_name} className="w-full h-full object-cover" />
                  ) : (
                    <div className="text-sm font-medium text-amber-600">
                      {user.full_name?.[0]?.toUpperCase()}
