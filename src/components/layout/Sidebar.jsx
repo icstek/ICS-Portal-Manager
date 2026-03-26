@@ -15,7 +15,7 @@ export default function Sidebar({ open, onClose }) {
   { label: "New Report", path: "/reports/new", icon: Plus, always: true },
   { label: "Reports", path: "/reports", icon: FileText, always: true },
   { label: "Customers", path: "/customers", icon: Users, always: true },
-  { label: "Technicians", path: "/technicians", icon: Wrench, always: true },
+  { label: "Technicians", path: "/technicians", icon: Wrench, adminOnly: true },
   { label: "Parts", path: "/parts", icon: Package, adminOnly: true }].
   filter((item) => item.always || item.adminOnly && isAdmin);
 

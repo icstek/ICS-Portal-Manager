@@ -22,31 +22,22 @@ export default function Technicians() {
 
   const { data: technicians = [], isLoading } = useQuery({
     queryKey: ["technicians"],
-    queryFn: async () => {
-      try {
-        return await base44.entities.User.list();
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        return [];
-      }
-    },
+    queryFn: () => base44.entities.User.list(),
   });
 
   const saveMutation = useMutation({
-   mutationFn: (data) => {
-     if (isAdmin) {
-       return base44.entities.User.update(editing.id, { hourly_rate: data.hourly_rate, specialization: data.specialization });
-     } else if (user?.id === editing?.id) {
-       return base44.auth.updateMe(data);
-     } else {
-       throw new Error("You can only edit your own profile");
-     }
-   },
-   onSuccess: () => {
-     queryClient.invalidateQueries({ queryKey: ["technicians"] });
-     setDialogOpen(false);
-     toast.success("User updated");
-   },
+    mutationFn: (data) => {
+      if (isAdmin) {
+        return base44.entities.User.update(editing.id, data);
+      } else {
+        return base44.auth.updateMe(data);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["technicians"] });
+      setDialogOpen(false);
+      toast.success("User updated");
+    },
   });
 
   const openEdit = (t) => { setEditing(t); setForm({ hourly_rate: t.hourly_rate || 0, specialization: t.specialization || "" }); setDialogOpen(true); };
