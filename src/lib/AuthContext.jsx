@@ -94,6 +94,15 @@ export const AuthProvider = ({ children }) => {
       const currentUser = await base44.auth.me();
       setUser(currentUser);
       setIsAuthenticated(true);
+      
+      // Capture profile picture from social login if not already set
+      if (currentUser && !currentUser.profile_picture) {
+        const profilePicture = extractProfilePicture(currentUser);
+        if (profilePicture) {
+          await base44.auth.updateMe({ profile_picture: profilePicture });
+        }
+      }
+      
       setIsLoadingAuth(false);
     } catch (error) {
       console.error('User auth check failed:', error);
@@ -108,6 +117,15 @@ export const AuthProvider = ({ children }) => {
         });
       }
     }
+  };
+
+  const extractProfilePicture = (user) => {
+    // Check common social login profile picture fields
+    if (user?.picture) return user.picture;
+    if (user?.profile_picture_url) return user.profile_picture_url;
+    if (user?.avatar) return user.avatar;
+    if (user?.photoUrl) return user.photoUrl;
+    return null;
   };
 
   const logout = (shouldRedirect = true) => {
