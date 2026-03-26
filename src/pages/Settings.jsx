@@ -4,12 +4,15 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { LayoutGrid, List, Moon, Sun } from "lucide-react";
 import { useUserSettings } from "@/hooks/useUserSettings";
+import { useAuth } from "@/lib/AuthContext";
 import { cn } from "@/lib/utils";
 import SmtpSettings from "@/components/settings/SmtpSettings";
+import ProfileSettings from "@/components/settings/ProfileSettings";
 import { useRole } from "@/hooks/useRole";
 
 export default function Settings() {
   const { settings, updateSetting, loading } = useUserSettings();
+  const { user } = useAuth();
   const { isAdmin } = useRole();
 
   if (loading) return (
@@ -24,6 +27,9 @@ export default function Settings() {
         <h1 className="text-2xl font-bold font-inter tracking-tight">Settings</h1>
         <p className="text-muted-foreground text-sm mt-1">Personalize your experience</p>
       </div>
+
+      {/* Profile */}
+      {user && <ProfileSettings user={user} />}
 
       {/* Appearance */}
       <Card>
