@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
-import { Mail, Loader2, CheckCircle2, AlertCircle, ChevronDown } from "lucide-react";
+import { Mail, Loader2, CheckCircle2, AlertCircle, ChevronDown, Save } from "lucide-react";
 
 export default function SmtpSettings() {
   const [smtpConfig, setSmtpConfig] = useState({
@@ -11,11 +11,52 @@ export default function SmtpSettings() {
     fromEmail: ''
   });
   const [testing, setTesting] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [testResult, setTestResult] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
 
+  // Load configuration from user settings on mount
+  useEffect(() => {
+    const loadConfig = async () => {
+      try {
+        const user = await base44.auth.me();
+        if (user?.resend_api_key || user?.resend_from_email) {
+          setSmtpConfig({
+            apiKey: user.resend_api_key || '',
+            fromEmail: user.resend_from_email || ''
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load config:', error);
+      }
+    };
+    loadConfig();
+  }, []);
+
   const handleInputChange = (field, value) => {
     setSmtpConfig(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSaveConfig = async () => {
+    if (!smtpConfig.apiKey || !smtpConfig.fromEmail) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await base44.auth.updateMe({
+        resend_api_key: smtpConfig.apiKey,
+        resend_from_email: smtpConfig.fromEmail
+      });
+      toast.success('Configuration saved successfully');
+      setTestResult(null);
+    } catch (error) {
+      toast.error('Failed to save configuration');
+      console.error(error);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleTestConfig = async () => {
@@ -153,29 +194,40 @@ export default function SmtpSettings() {
           </div>
         )}
 
-        <div className="bg-blue-50 border border-blue-200 rounded-md p-3 text-sm text-blue-900">
-          <p className="font-medium mb-2">After testing:</p>
-          <ol className="list-decimal list-inside space-y-1 text-xs">
-            <li>Go to Dashboard Settings → Environment Variables</li>
-            <li>Update: RESEND_API_KEY, RESEND_FROM_EMAIL</li>
-            <li>Save the changes</li>
-          </ol>
+        <div className="flex gap-2">
+          <Button 
+            onClick={handleSaveConfig} 
+            disabled={saving}
+            className="flex-1"
+            variant="outline"
+          >
+            {saving ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4 mr-2" />
+                Save Configuration
+              </>
+            )}
+          </Button>
+          <Button 
+            onClick={handleTestConfig} 
+            disabled={testing}
+            className="flex-1"
+          >
+            {testing ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                Testing...
+              </>
+            ) : (
+              'Test Configuration'
+            )}
+          </Button>
         </div>
-
-        <Button 
-          onClick={handleTestConfig} 
-          disabled={testing}
-          className="w-full"
-        >
-          {testing ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin mr-2" />
-              Testing...
-            </>
-          ) : (
-            'Test Configuration'
-          )}
-        </Button>
       </CardContent>
     </Card>
   );

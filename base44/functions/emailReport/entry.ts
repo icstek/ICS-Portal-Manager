@@ -38,14 +38,15 @@ Deno.serve(async (req) => {
       }, { status: 404 });
     }
 
-    // Initialize Resend client
-    const apiKey = Deno.env.get('RESEND_API_KEY');
-    const fromEmail = Deno.env.get('RESEND_FROM_EMAIL');
+    // Get Resend configuration from user settings
+    const me = await base44.auth.me();
+    const apiKey = me?.resend_api_key;
+    const fromEmail = me?.resend_from_email;
 
     if (!apiKey || !fromEmail) {
       return Response.json({ 
         success: false,
-        error: 'Resend configuration missing',
+        error: 'Resend configuration missing. Please configure settings first.',
         details: {
           timestamp: new Date().toISOString(),
           code: 'MISSING_CONFIG',
