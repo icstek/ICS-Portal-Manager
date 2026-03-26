@@ -9,8 +9,7 @@ export default function ChargesSection({ form, setForm, partsTotal }) {
   const handleChange = (field, value) => setForm((f) => ({ ...f, [field]: value }));
 
   const laborCharge = (form.total_time_hours || 0) * (form.hourly_rate || 0) + (form.misc_charge || 0);
-  const travelCharge = form.travel_charge || 0;
-  const subTotal = laborCharge + partsTotal + travelCharge;
+  const subTotal = laborCharge + partsTotal;
   const taxRate = form.tax_rate ?? 9.5;
   const taxAmount = subTotal * (taxRate / 100);
   const totalCharges = subTotal + taxAmount;
@@ -70,10 +69,6 @@ export default function ChargesSection({ form, setForm, partsTotal }) {
         </div>
 
         <div className="space-y-3">
-          <div>
-            <Label className="text-xs text-muted-foreground">Travel Charge ($)</Label>
-            <Input type="number" step="0.01" value={form.travel_charge || ""} onChange={(e) => handleChange("travel_charge", parseFloat(e.target.value) || 0)} className="mt-1" />
-          </div>
           <div className="bg-muted/50 rounded-lg p-4 space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Labor</span>
@@ -82,10 +77,6 @@ export default function ChargesSection({ form, setForm, partsTotal }) {
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Parts</span>
               <span className="font-medium">${partsTotal.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Travel</span>
-              <span className="font-medium">${travelCharge.toFixed(2)}</span>
             </div>
             <hr className="border-border" />
             <div className="flex justify-between text-sm">
