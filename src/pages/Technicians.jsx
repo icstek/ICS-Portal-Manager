@@ -58,8 +58,12 @@ export default function Technicians() {
             <Card key={t.id} className="hover:shadow-md transition-shadow">
               <CardContent className="p-4 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
-                    <Wrench className="w-4 h-4 text-amber-600" />
+                  <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center shrink-0 overflow-hidden">
+                    {t.profile_picture ? (
+                      <img src={t.profile_picture} alt={t.full_name} className="w-full h-full object-cover" />
+                    ) : (
+                      <Wrench className="w-4 h-4 text-amber-600" />
+                    )}
                   </div>
                   <div className="min-w-0">
                     <p className="font-medium truncate">{t.full_name}</p>
