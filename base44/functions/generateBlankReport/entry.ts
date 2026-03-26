@@ -161,7 +161,7 @@ Deno.serve(async (req) => {
     });
 
     // SIGNATURE SECTION
-    yPos += 15;
+    yPos = chargeY + 15;
     pdf.setFontSize(8);
     pdf.setFont(undefined, 'normal');
     pdf.text('Technician Signature:', margin, yPos);
