@@ -16,11 +16,13 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing required SMTP configuration fields' }, { status: 400 });
     }
 
+    const portNum = parseInt(port);
+
     // Create transporter with provided config
     const transporter = nodemailer.createTransport({
       host,
-      port,
-      secure: port === 465,
+      port: portNum,
+      secure: portNum === 465,
       auth: {
         user: smtpUser,
         pass: password
