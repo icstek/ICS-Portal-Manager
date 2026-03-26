@@ -59,12 +59,20 @@ export default function PartsSection({ items, setItems, taxRate = 9.5 }) {
       {items.length === 0 && (
         <p className="text-sm text-muted-foreground text-center py-4">No parts added yet.</p>
       )}
+      {items.length > 0 && (
+        <div className="grid grid-cols-12 gap-2 px-1">
+          <div className="col-span-12 md:col-span-4"><Label className="text-xs text-muted-foreground">Part</Label></div>
+          <div className="col-span-4 md:col-span-2"><Label className="text-xs text-muted-foreground">Qty</Label></div>
+          <div className="col-span-4 md:col-span-2"><Label className="text-xs text-muted-foreground">Unit Cost</Label></div>
+          <div className="col-span-3 md:col-span-3"><Label className="text-xs text-muted-foreground">Total</Label></div>
+          <div className="col-span-1" />
+        </div>
+      )}
       {items.map((item, idx) => (
-        <div key={idx} className="grid grid-cols-12 gap-2 items-end">
+        <div key={idx} className="grid grid-cols-12 gap-2 items-center">
           <div className="col-span-12 md:col-span-4">
-            <Label className="text-xs text-muted-foreground">Part</Label>
             <Select value={item.part_id || ""} onValueChange={(v) => handlePartSelect(idx, v)}>
-              <SelectTrigger className="mt-1">
+              <SelectTrigger>
                 <SelectValue placeholder="Select part..." />
               </SelectTrigger>
               <SelectContent>
@@ -75,16 +83,13 @@ export default function PartsSection({ items, setItems, taxRate = 9.5 }) {
             </Select>
           </div>
           <div className="col-span-4 md:col-span-2">
-            <Label className="text-xs text-muted-foreground">Qty</Label>
-            <Input type="number" min="1" value={item.qty || ""} onChange={(e) => updateItem(idx, "qty", parseInt(e.target.value) || 0)} className="mt-1" />
+            <Input type="number" min="1" value={item.qty || ""} onChange={(e) => updateItem(idx, "qty", parseInt(e.target.value) || 0)} />
           </div>
           <div className="col-span-4 md:col-span-2">
-            <Label className="text-xs text-muted-foreground">Unit Cost</Label>
-            <Input type="number" step="0.01" value={item.unit_cost || ""} onChange={(e) => updateItem(idx, "unit_cost", parseFloat(e.target.value) || 0)} className="mt-1" />
+            <Input type="number" step="0.01" value={item.unit_cost || ""} onChange={(e) => updateItem(idx, "unit_cost", parseFloat(e.target.value) || 0)} />
           </div>
           <div className="col-span-3 md:col-span-3">
-            <Label className="text-xs text-muted-foreground">Total</Label>
-            <div className="mt-1 h-9 flex items-center px-3 rounded-md bg-muted text-sm font-semibold">
+            <div className="h-9 flex items-center px-3 rounded-md bg-muted text-sm font-semibold">
               ${(item.total || 0).toFixed(2)}
             </div>
           </div>
