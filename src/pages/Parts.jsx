@@ -93,20 +93,6 @@ export default function Parts() {
            <p className="text-muted-foreground text-sm mt-1">{parts.length} parts</p>
          </div>
          <div className="flex gap-2">
-           {selectedParts.size > 0 && (
-             <Button 
-               variant="destructive" 
-               onClick={() => {
-                 if (confirm(`Delete ${selectedParts.size} part(s)?`)) {
-                   deleteSelectedMutation.mutate();
-                 }
-               }}
-               disabled={deleteSelectedMutation.isPending}
-               className="gap-2"
-             >
-               <Trash2 className="w-4 h-4" /> Delete ({selectedParts.size})
-             </Button>
-           )}
            {isAdmin && (
              <>
                <QuickBooksPartsImport onImported={() => queryClient.invalidateQueries({ queryKey: ["parts"] })} />
@@ -122,14 +108,31 @@ export default function Parts() {
        </div>
 
        {filtered.length > 0 && (
-         <div className="flex items-center gap-2">
-           <Checkbox 
-             checked={selectedParts.size === filtered.length && filtered.length > 0}
-             onCheckedChange={toggleSelectAll}
-           />
-           <span className="text-sm text-muted-foreground">
-             {selectedParts.size > 0 ? `${selectedParts.size} selected` : "Select all"}
-           </span>
+         <div className="flex items-center justify-between">
+           <div className="flex items-center gap-2">
+             <Checkbox 
+               checked={selectedParts.size === filtered.length && filtered.length > 0}
+               onCheckedChange={toggleSelectAll}
+             />
+             <span className="text-sm text-muted-foreground">
+               {selectedParts.size > 0 ? `${selectedParts.size} selected` : "Select all"}
+             </span>
+           </div>
+           {selectedParts.size > 0 && (
+             <Button 
+               variant="destructive" 
+               size="sm"
+               onClick={() => {
+                 if (confirm(`Delete ${selectedParts.size} part(s)?`)) {
+                   deleteSelectedMutation.mutate();
+                 }
+               }}
+               disabled={deleteSelectedMutation.isPending}
+               className="gap-2"
+             >
+               <Trash2 className="w-4 h-4" /> Delete
+             </Button>
+           )}
          </div>
        )}
 
