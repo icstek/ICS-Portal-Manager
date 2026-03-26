@@ -194,7 +194,6 @@ export default function ReportDetail() {
                 <div className="h-12 border-b border-foreground"></div>
               </div>
               <div className="space-y-1">
-                <div className="h-12 border-b border-foreground"></div>
                 <p className="text-xs text-muted-foreground">Date: {r.date ? format(new Date(r.date), "MMMM d, yyyy") : ""}</p>
               </div>
             </div>
