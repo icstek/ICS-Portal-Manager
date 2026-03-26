@@ -53,8 +53,13 @@ export default function SmtpSettings() {
         toast.error('SMTP test failed: ' + response.data.error);
       }
     } catch (error) {
-      setTestResult({ success: false, message: error.message });
-      toast.error('Failed to test SMTP configuration');
+      const errorData = error.response?.data || {};
+      setTestResult({ 
+        success: false, 
+        message: errorData.error || error.message || 'Failed to test SMTP configuration',
+        details: errorData.details 
+      });
+      toast.error('SMTP test failed');
     } finally {
       setTesting(false);
       setShowDetails(false);
