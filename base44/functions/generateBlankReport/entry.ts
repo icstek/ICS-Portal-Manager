@@ -19,12 +19,12 @@ Deno.serve(async (req) => {
     };
 
     // Helper to add a single field with label on left
-    const addField = (label, boxHeight = 9) => {
+    const addField = (label, boxHeight = 6) => {
       pdf.setFontSize(8);
       yPos += 2;
       pdf.text(label, margin, yPos);
       pdf.rect(margin, yPos + 3, contentWidth, boxHeight);
-      yPos += boxHeight + 5;
+      yPos += boxHeight + 4;
     };
 
     // Helper to add two fields side by side
@@ -35,9 +35,9 @@ Deno.serve(async (req) => {
       yPos += 2;
       pdf.text(label1, margin, yPos);
       pdf.text(label2, margin + colWidth + 2, yPos);
-      pdf.rect(margin, yPos + 3, colWidth, 9);
-      pdf.rect(margin + colWidth + 2, yPos + 3, colWidth, 9);
-      yPos += 14;
+      pdf.rect(margin, yPos + 3, colWidth, 6);
+      pdf.rect(margin + colWidth + 2, yPos + 3, colWidth, 6);
+      yPos += 11;
     };
 
     // Helper to add three fields
@@ -49,10 +49,10 @@ Deno.serve(async (req) => {
       pdf.text(label1, margin, yPos);
       pdf.text(label2, margin + colWidth + 2, yPos);
       pdf.text(label3, margin + (colWidth + 2) * 2, yPos);
-      pdf.rect(margin, yPos + 3, colWidth, 9);
-      pdf.rect(margin + colWidth + 2, yPos + 3, colWidth, 9);
-      pdf.rect(margin + (colWidth + 2) * 2, yPos + 3, colWidth, 9);
-      yPos += 14;
+      pdf.rect(margin, yPos + 3, colWidth, 6);
+      pdf.rect(margin + colWidth + 2, yPos + 3, colWidth, 6);
+      pdf.rect(margin + (colWidth + 2) * 2, yPos + 3, colWidth, 6);
+      yPos += 11;
     };
 
     // HEADER
@@ -107,8 +107,8 @@ Deno.serve(async (req) => {
     pdf.setFontSize(8);
     yPos += 2;
     pdf.text('Service Description:', margin, yPos);
-    pdf.rect(margin, yPos + 3, contentWidth, 10);
-    yPos += 14;
+    pdf.rect(margin, yPos + 3, contentWidth, 7);
+    yPos += 11;
 
     // PARTS SECTION
     addSectionTitle('PARTS');
