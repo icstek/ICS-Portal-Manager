@@ -22,22 +22,24 @@ export default function Technicians() {
 
   const { data: technicians = [], isLoading } = useQuery({
     queryKey: ["technicians"],
-    queryFn: () => base44.entities.Technician.list(),
+    queryFn: () => base44.entities.User.list(),
   });
 
   const saveMutation = useMutation({
-    mutationFn: (data) => {
-      if (isAdmin) {
-        return base44.entities.User.update(editing.id, data);
-      } else {
-        return base44.auth.updateMe(data);
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["technicians"] });
-      setDialogOpen(false);
-      toast.success("User updated");
-    },
+   mutationFn: (data) => {
+     if (isAdmin) {
+       return base44.entities.User.update(editing.id, { hourly_rate: data.hourly_rate, specialization: data.specialization });
+     } else if (user?.id === editing?.id) {
+       return base44.auth.updateMe(data);
+     } else {
+       throw new Error("You can only edit your own profile");
+     }
+   },
+   onSuccess: () => {
+     queryClient.invalidateQueries({ queryKey: ["technicians"] });
+     setDialogOpen(false);
+     toast.success("User updated");
+   },
   });
 
   const openEdit = (t) => { setEditing(t); setForm({ hourly_rate: t.hourly_rate || 0, specialization: t.specialization || "" }); setDialogOpen(true); };
@@ -74,9 +76,9 @@ export default function Technicians() {
                     )}
                   </div>
                   <div className="min-w-0">
-                    <p className="font-medium truncate">{t.name}</p>
+                    <p className="font-medium truncate">{t.full_name}</p>
                     <p className="text-xs text-muted-foreground">
-                      {t.phone || "No phone"} · ${t.hourly_rate || 0}/hr
+                      {t.email} · {t.role}
                     </p>
                   </div>
                 </div>
