@@ -10,7 +10,7 @@ export default function ChargesSection({ form, setForm, partsTotal }) {
 
   const laborCharge = (form.total_time_hours || 0) * (form.hourly_rate || 0) + (form.misc_charge || 0);
   const subTotal = laborCharge + partsTotal;
-  const taxRate = form.tax_rate ?? 9.5;
+  const taxRate = form.tax_rate ?? 9.75;
   const taxAmount = subTotal * (taxRate / 100);
   const totalCharges = subTotal + taxAmount;
 
