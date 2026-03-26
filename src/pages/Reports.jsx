@@ -97,9 +97,6 @@ export default function Reports() {
                     <Badge variant={r.service_status === "complete" ? "default" : "secondary"} className="text-[10px] capitalize">
                       {r.service_status || "incomplete"}
                     </Badge>
-                    <span className="text-sm font-bold min-w-[70px] text-right">
-                      ${(r.total_charges || 0).toFixed(2)}
-                    </span>
                   </div>
                 </CardContent>
               </Card>
