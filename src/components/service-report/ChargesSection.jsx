@@ -31,24 +31,24 @@ export default function ChargesSection({ form, setForm, partsTotal }) {
               <span className="text-muted-foreground flex items-center gap-1">
                 Tax (
                 <Input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={taxRate}
-                  onChange={(e) => setForm && setForm((f) => ({ ...f, tax_rate: parseFloat(parseFloat(e.target.value).toFixed(2)) || 0 }))}
-                  className="h-7 w-16 text-xs px-2 inline-flex"
-                />
+                type="number"
+                min="0"
+                step="0.01"
+                value={taxRate}
+                onChange={(e) => setForm && setForm((f) => ({ ...f, tax_rate: parseFloat(parseFloat(e.target.value).toFixed(2)) || 0 }))}
+                className="h-7 w-16 text-xs px-2 inline-flex" />
+              
                 %):
               </span>
               <span className="font-medium">${taxAmount.toFixed(2)}</span>
             </div>
             <hr className="border-border" />
             <div className="flex justify-between text-base font-bold">
-              <span>Total Service & Travel Charge</span>
+              <span>Total
+</span>
               <span>${totalCharges.toFixed(2)}</span>
             </div>
           </div>
       </div>
-    </div>
-  );
+    </div>);
 }
