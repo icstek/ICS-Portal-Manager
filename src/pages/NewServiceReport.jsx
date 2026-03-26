@@ -201,7 +201,7 @@ export default function NewServiceReport() {
         {/* Equipment & Charges */}
         <Card>
           <CardContent className="p-6">
-            <ChargesSection form={form} setForm={setForm} partsTotal={partsTotal} />
+            <ChargesSection form={form} partsTotal={partsTotal} />
           </CardContent>
         </Card>
 
