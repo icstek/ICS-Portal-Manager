@@ -162,33 +162,30 @@ export default function ReportDetail() {
             </div>
           )}
 
-          {/* Charges Summary with Terms & Conditions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Terms & Conditions (left, visible on print) */}
-            <div className="hidden md:block print:block space-y-8">
-              <div>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Terms & Conditions</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  The service and repair estimates indicated herein are hereby acceptable to the undersigned. Items not picked up within 30 calendar days from the date below will be subject to sale in order to recover ICS expenses. Customer understands that ICS is not responsible for loss or damage to any equipment in case of fire, theft, or any other causes beyond ICS control. In addition, ICS is not responsible for loss of Customer's programs or data for any reason. Customer is solely responsible to make backup of computer system data, software and applications prior to ICS services herein. All Spyware and Virus Cleanups do not carry warranty for labor due to the nature of the system use with the internet. All returned checks will be charged a $25.00 fee. All returned Sales are subject to a 20% restocking fee. I hereby authorize the repair work herein set forth, to be done with all necessary materials and grants ICS and its employees permission to operate the computer system and other equipment herein described for the purposes of repair and testing at my sole and exclusive risk. An express mechanic's lien is hereby acknowledged on the above equipment to secure the amount of repairs and parts listed in, or hereafter added in, this invoice.
-                </p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-xs text-muted-foreground">Customer Signature</p>
-                <div className="h-12 border-b border-foreground"></div>
-                <p className="text-xs text-muted-foreground">Date: {r.date ? format(new Date(r.date), "MMMM d, yyyy") : ""}</p>
-              </div>
-            </div>
+          {/* Charges Summary */}
+          <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Labor</span><span>${(r.labor_charge || 0).toFixed(2)}</span></div>
+            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Parts</span><span>${(r.parts_charge || 0).toFixed(2)}</span></div>
+            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Travel</span><span>${(r.travel_charge || 0).toFixed(2)}</span></div>
+            <hr className="border-border" />
+            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Sub Total</span><span>${(r.sub_total || 0).toFixed(2)}</span></div>
+            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Tax ({r.tax_rate || 9.5}%)</span><span>${(r.tax_amount || 0).toFixed(2)}</span></div>
+            <hr className="border-border" />
+            <div className="flex justify-between font-bold text-base"><span>Total</span><span>${(r.total_charges || 0).toFixed(2)}</span></div>
+          </div>
 
-            {/* Charges Summary (right) */}
-            <div className="bg-muted/50 rounded-lg p-4 space-y-2">
-              <div className="flex justify-between text-sm"><span className="text-muted-foreground">Labor</span><span>${(r.labor_charge || 0).toFixed(2)}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-muted-foreground">Parts</span><span>${(r.parts_charge || 0).toFixed(2)}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-muted-foreground">Travel</span><span>${(r.travel_charge || 0).toFixed(2)}</span></div>
-              <hr className="border-border" />
-              <div className="flex justify-between text-sm"><span className="text-muted-foreground">Sub Total</span><span>${(r.sub_total || 0).toFixed(2)}</span></div>
-              <div className="flex justify-between text-sm"><span className="text-muted-foreground">Tax ({r.tax_rate || 9.5}%)</span><span>${(r.tax_amount || 0).toFixed(2)}</span></div>
-              <hr className="border-border" />
-              <div className="flex justify-between font-bold text-base"><span>Total</span><span>${(r.total_charges || 0).toFixed(2)}</span></div>
+          {/* Terms & Conditions (print only, full width) */}
+          <div className="hidden print:block space-y-6 border-t pt-6">
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Terms & Conditions</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                The service and repair estimates indicated herein are hereby acceptable to the undersigned. Items not picked up within 30 calendar days from the date below will be subject to sale in order to recover ICS expenses. Customer understands that ICS is not responsible for loss or damage to any equipment in case of fire, theft, or any other causes beyond ICS control. In addition, ICS is not responsible for loss of Customer's programs or data for any reason. Customer is solely responsible to make backup of computer system data, software and applications prior to ICS services herein. All Spyware and Virus Cleanups do not carry warranty for labor due to the nature of the system use with the internet. All returned checks will be charged a $25.00 fee. All returned Sales are subject to a 20% restocking fee. I hereby authorize the repair work herein set forth, to be done with all necessary materials and grants ICS and its employees permission to operate the computer system and other equipment herein described for the purposes of repair and testing at my sole and exclusive risk. An express mechanic's lien is hereby acknowledged on the above equipment to secure the amount of repairs and parts listed in, or hereafter added in, this invoice.
+              </p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground">Customer Signature</p>
+              <div className="h-12 border-b border-foreground"></div>
+              <p className="text-xs text-muted-foreground">Date: {r.date ? format(new Date(r.date), "MMMM d, yyyy") : ""}</p>
             </div>
           </div>
         </CardContent>
