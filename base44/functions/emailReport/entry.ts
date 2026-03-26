@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
       const pdfBuffer = await pdfResponse.arrayBuffer();
       mailOptions.attachments = [{
         filename: `report-${report.report_number}.pdf`,
-        content: Buffer.from(pdfBuffer)
+        content: new Uint8Array(pdfBuffer)
       }];
     }
 
