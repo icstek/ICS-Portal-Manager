@@ -57,7 +57,7 @@ export default function TechnicianSection({ form, setForm }) {
         <div>
           <Label className="text-xs text-muted-foreground">Total Labor</Label>
           <div className="mt-1 h-9 flex items-center px-3 rounded-md bg-muted text-sm font-semibold">
-            ${((form.total_time_hours || 0) * (form.hourly_rate || 0) + (form.misc_charge || 0)).toFixed(2)}
+            ${((form.total_time_hours || 0) * (form.hourly_rate || 0)).toFixed(2)}
           </div>
         </div>
         <div>
