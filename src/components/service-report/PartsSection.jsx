@@ -80,35 +80,38 @@ export default function PartsSection({ items, setItems }) {
         <div key={idx} className="grid grid-cols-12 gap-2 items-center">
           <div className="col-span-12 md:col-span-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Search part by name or SKU..."
-                value={searches[idx] || ""}
-                onChange={(e) => setSearches({ ...searches, [idx]: e.target.value })}
-                className="pl-9"
-              />
-              {(searches[idx] || "") && (
-                <div className="absolute top-full left-0 right-0 border rounded-lg bg-card max-h-48 overflow-y-auto z-10 mt-1">
-                  {getFilteredParts(idx).length > 0 ? (
-                    getFilteredParts(idx).map((p) => (
-                      <button
-                        key={p.id}
-                        onClick={() => handlePartSelect(idx, p.id)}
-                        className="w-full text-left px-3 py-2 hover:bg-muted border-b last:border-b-0 text-sm"
-                      >
-                        <p className="font-medium">{p.name}</p>
-                        <p className="text-xs text-muted-foreground">{p.sku} · ${p.unit_cost}</p>
-                      </button>
-                    ))
-                  ) : (
-                    <div className="px-3 py-2 text-sm text-muted-foreground">No parts found</div>
-                  )}
-                </div>
-              )}
-              {item.part_name && !searches[idx] && (
-                <div className="text-xs text-muted-foreground mt-1">{item.part_name}</div>
-              )}
-            </div>
+                {!item.part_name ? (
+                  <>
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search part by name or SKU..."
+                      value={searches[idx] || ""}
+                      onChange={(e) => setSearches({ ...searches, [idx]: e.target.value })}
+                      className="pl-9"
+                    />
+                    {(searches[idx] || "") && (
+                      <div className="absolute top-full left-0 right-0 border rounded-lg bg-card max-h-48 overflow-y-auto z-10 mt-1">
+                        {getFilteredParts(idx).length > 0 ? (
+                          getFilteredParts(idx).map((p) => (
+                            <button
+                              key={p.id}
+                              onClick={() => handlePartSelect(idx, p.id)}
+                              className="w-full text-left px-3 py-2 hover:bg-muted border-b last:border-b-0 text-sm"
+                            >
+                              <p className="font-medium">{p.name}</p>
+                              <p className="text-xs text-muted-foreground">{p.sku} · ${p.unit_cost}</p>
+                            </button>
+                          ))
+                        ) : (
+                          <div className="px-3 py-2 text-sm text-muted-foreground">No parts found</div>
+                        )}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="text-sm font-medium">{item.part_name}</div>
+                )}
+              </div>
           </div>
           <div className="col-span-4 md:col-span-2">
             <Input type="number" min="1" value={item.qty || ""} onChange={(e) => updateItem(idx, "qty", parseInt(e.target.value) || 0)} />
