@@ -97,32 +97,38 @@ export default function CustomerSection({ form, setForm }) {
           <Plus className="w-4 h-4" /> Quick Add Customer
         </Button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div>
-          <Label className="text-xs text-muted-foreground">Name *</Label>
-          <Input value={form.customer_name || ""} onChange={(e) => handleChange("customer_name", e.target.value)} className="mt-1" />
+      {form.customer_id && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <Label className="text-xs text-muted-foreground">Name</Label>
+            <Input value={form.customer_name || ""} disabled className="mt-1" />
+          </div>
+          <div>
+            <Label className="text-xs text-muted-foreground">Address</Label>
+            <Input value={form.customer_address || ""} disabled className="mt-1" />
+          </div>
+          <div>
+            <Label className="text-xs text-muted-foreground">City</Label>
+            <Input value={form.customer_city || ""} disabled className="mt-1" />
+          </div>
+          <div>
+            <Label className="text-xs text-muted-foreground">Zip</Label>
+            <Input value={form.customer_zip || ""} disabled className="mt-1" />
+          </div>
+          <div>
+            <Label className="text-xs text-muted-foreground">Phone</Label>
+            <Input value={form.customer_tel || ""} disabled className="mt-1" />
+          </div>
+          <div>
+            <Label className="text-xs text-muted-foreground">Cell</Label>
+            <Input value={form.customer_cell || ""} disabled className="mt-1" />
+          </div>
+          <div className="md:col-span-2">
+            <Label className="text-xs text-muted-foreground">Email</Label>
+            <Input type="email" value={form.customer_email || ""} disabled className="mt-1" />
+          </div>
         </div>
-        <div>
-          <Label className="text-xs text-muted-foreground">Address</Label>
-          <Input value={form.customer_address || ""} onChange={(e) => handleChange("customer_address", e.target.value)} className="mt-1" />
-        </div>
-        <div>
-          <Label className="text-xs text-muted-foreground">City</Label>
-          <Input value={form.customer_city || ""} onChange={(e) => handleChange("customer_city", e.target.value)} className="mt-1" />
-        </div>
-        <div>
-          <Label className="text-xs text-muted-foreground">Zip</Label>
-          <Input value={form.customer_zip || ""} onChange={(e) => handleChange("customer_zip", e.target.value)} className="mt-1" />
-        </div>
-        <div>
-          <Label className="text-xs text-muted-foreground">Cell</Label>
-          <Input value={form.customer_cell || ""} onChange={(e) => handleChange("customer_cell", e.target.value)} className="mt-1" />
-        </div>
-        <div>
-          <Label className="text-xs text-muted-foreground">Email</Label>
-          <Input type="email" value={form.customer_email || ""} onChange={(e) => handleChange("customer_email", e.target.value)} className="mt-1" />
-        </div>
-        </div>
+      )}
 
         <Dialog open={showQuickAdd} onOpenChange={setShowQuickAdd}>
          <DialogContent>
