@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
-import { Mail, CheckCircle2, AlertCircle } from "lucide-react";
+import { Mail, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function SmtpSettings() {
   const [smtpConfig, setSmtpConfig] = useState({
@@ -12,34 +13,42 @@ export default function SmtpSettings() {
     password: '',
     fromEmail: ''
   });
+  const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState(null);
 
   const handleInputChange = (field, value) => {
     setSmtpConfig(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleTestConfig = () => {
+  const handleTestConfig = async () => {
     if (!smtpConfig.host || !smtpConfig.user || !smtpConfig.password || !smtpConfig.fromEmail) {
-      setTestResult({ success: false, message: 'Please fill in all SMTP fields' });
       toast.error('Please fill in all SMTP fields');
       return;
     }
 
-    if (isNaN(smtpConfig.port) || smtpConfig.port < 1 || smtpConfig.port > 65535) {
-      setTestResult({ success: false, message: 'Port must be a valid number between 1 and 65535' });
-      toast.error('Invalid port number');
-      return;
-    }
+    setTesting(true);
+    try {
+      const response = await base44.functions.invoke('testSmtpConfig', {
+        host: smtpConfig.host,
+        port: parseInt(smtpConfig.port),
+        user: smtpConfig.user,
+        password: smtpConfig.password,
+        fromEmail: smtpConfig.fromEmail
+      });
 
-    if (!smtpConfig.fromEmail.includes('@')) {
-      setTestResult({ success: false, message: 'Please enter a valid email address' });
-      toast.error('Invalid email address');
-      return;
+      if (response.data.success) {
+        setTestResult({ success: true, message: response.data.message });
+        toast.success('SMTP configuration is valid');
+      } else {
+        setTestResult({ success: false, message: response.data.error });
+        toast.error('SMTP test failed: ' + response.data.error);
+      }
+    } catch (error) {
+      setTestResult({ success: false, message: error.message });
+      toast.error('Failed to test SMTP configuration');
+    } finally {
+      setTesting(false);
     }
-
-    // Validation passed
-    setTestResult({ success: true, message: 'SMTP configuration validated. Now save these settings in Dashboard Settings → Environment Variables.' });
-    toast.success('Configuration is valid. Save to environment variables.');
   };
 
   return (
@@ -131,9 +140,17 @@ export default function SmtpSettings() {
 
         <Button 
           onClick={handleTestConfig} 
+          disabled={testing}
           className="w-full"
         >
-          Validate Configuration
+          {testing ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              Testing...
+            </>
+          ) : (
+            'Test Configuration'
+          )}
         </Button>
       </CardContent>
     </Card>
