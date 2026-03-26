@@ -3,13 +3,14 @@ import { base44 } from "@/api/base44Client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Search } from "lucide-react";
+import { useState } from "react";
 
 export default function PartsSection({ items, setItems }) {
+  const [searches, setSearches] = useState({});
   const { data: parts = [] } = useQuery({
     queryKey: ["parts"],
-    queryFn: () => base44.entities.Part.list("name"),
+    queryFn: () => base44.entities.Part.list("name", 999999),
   });
 
   const addItem = () => {
@@ -41,7 +42,16 @@ export default function PartsSection({ items, setItems }) {
         total: (updated[idx].qty || 1) * (p.unit_cost || 0),
       };
       setItems(updated);
+      setSearches({ ...searches, [idx]: "" });
     }
+  };
+
+  const getFilteredParts = (idx) => {
+    const search = searches[idx] || "";
+    return parts.filter((p) =>
+      (p.name || "").toLowerCase().includes(search.toLowerCase()) ||
+      (p.sku || "").toLowerCase().includes(search.toLowerCase())
+    );
   };
 
   const itemsSubTotal = items.reduce((sum, it) => sum + (it.total || 0), 0);
@@ -69,16 +79,36 @@ export default function PartsSection({ items, setItems }) {
       {items.map((item, idx) => (
         <div key={idx} className="grid grid-cols-12 gap-2 items-center">
           <div className="col-span-12 md:col-span-4">
-            <Select value={item.part_id || ""} onValueChange={(v) => handlePartSelect(idx, v)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select part..." />
-              </SelectTrigger>
-              <SelectContent>
-                {parts.map((p) => (
-                  <SelectItem key={p.id} value={p.id}>{p.name} (${p.unit_cost})</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search part by name or SKU..."
+                value={searches[idx] || ""}
+                onChange={(e) => setSearches({ ...searches, [idx]: e.target.value })}
+                className="pl-9"
+              />
+              {(searches[idx] || "") && (
+                <div className="absolute top-full left-0 right-0 border rounded-lg bg-card max-h-48 overflow-y-auto z-10 mt-1">
+                  {getFilteredParts(idx).length > 0 ? (
+                    getFilteredParts(idx).map((p) => (
+                      <button
+                        key={p.id}
+                        onClick={() => handlePartSelect(idx, p.id)}
+                        className="w-full text-left px-3 py-2 hover:bg-muted border-b last:border-b-0 text-sm"
+                      >
+                        <p className="font-medium">{p.name}</p>
+                        <p className="text-xs text-muted-foreground">{p.sku} · ${p.unit_cost}</p>
+                      </button>
+                    ))
+                  ) : (
+                    <div className="px-3 py-2 text-sm text-muted-foreground">No parts found</div>
+                  )}
+                </div>
+              )}
+              {item.part_name && !searches[idx] && (
+                <div className="text-xs text-muted-foreground mt-1">{item.part_name}</div>
+              )}
+            </div>
           </div>
           <div className="col-span-4 md:col-span-2">
             <Input type="number" min="1" value={item.qty || ""} onChange={(e) => updateItem(idx, "qty", parseInt(e.target.value) || 0)} />
