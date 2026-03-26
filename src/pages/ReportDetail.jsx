@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Printer, Trash2, Download } from "lucide-react";
+import { ArrowLeft, Printer, Trash2, Download, Mail } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import { useRole } from "@/hooks/useRole";
 import { toast } from "sonner";
@@ -17,6 +19,9 @@ export default function ReportDetail() {
   const navigate = useNavigate();
   const { isAdmin } = useRole();
   const queryClient = useQueryClient();
+  const [showEmailDialog, setShowEmailDialog] = useState(false);
+  const [emailAddress, setEmailAddress] = useState('');
+  const [sendingEmail, setSendingEmail] = useState(false);
 
   const handleExportPDF = async () => {
     try {
@@ -44,6 +49,29 @@ export default function ReportDetail() {
       toast.success('Report exported as PDF');
     } catch (error) {
       toast.error('Failed to export PDF');
+    }
+  };
+
+  const handleSendEmail = async () => {
+    if (!emailAddress) {
+      toast.error('Please enter a recipient email');
+      return;
+    }
+
+    setSendingEmail(true);
+    try {
+      const { base44 } = await import('@/api/base44Client');
+      await base44.functions.invoke('emailReport', {
+        reportId: id,
+        recipientEmail: emailAddress,
+      });
+      toast.success('Email sent successfully');
+      setShowEmailDialog(false);
+      setEmailAddress('');
+    } catch (error) {
+      toast.error('Failed to send email');
+    } finally {
+      setSendingEmail(false);
     }
   };
 
@@ -91,6 +119,9 @@ export default function ReportDetail() {
           <ArrowLeft className="w-4 h-4" /> Back
         </Button>
         <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setShowEmailDialog(true)} className="gap-2">
+            <Mail className="w-4 h-4" /> Email
+          </Button>
           <Button variant="outline" onClick={handleExportPDF} className="gap-2">
             <Download className="w-4 h-4" /> Export to PDF
           </Button>
@@ -235,6 +266,32 @@ export default function ReportDetail() {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Email Report</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium">Recipient Email</label>
+              <input
+                type="email"
+                placeholder="recipient@example.com"
+                value={emailAddress}
+                onChange={(e) => setEmailAddress(e.target.value)}
+                className="w-full mt-1 px-3 py-2 border rounded-md text-sm"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEmailDialog(false)}>Cancel</Button>
+            <Button onClick={handleSendEmail} disabled={sendingEmail}>
+              {sendingEmail ? 'Sending...' : 'Send Email'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
