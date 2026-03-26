@@ -54,13 +54,61 @@ function parseCSV(text) {
   });
 }
 
-function mapRow(row) {
+async function mapRow(row) {
   const customer = { name: "", address: "", city: "", zip: "", tel: "", cell: "", email: "" };
+
+  // First try standard field mapping
   for (const [qbField, ourField] of Object.entries(QB_FIELD_MAP)) {
     if (row[qbField] && !customer[ourField]) {
       customer[ourField] = row[qbField];
     }
   }
+
+  // If we have a name, use AI to extract missing fields from raw data
+  if (customer.name) {
+    const missingFields = Object.keys(customer).filter(field => !customer[field]);
+    if (missingFields.length > 0) {
+      try {
+        const result = await base44.integrations.Core.InvokeLLM({
+          prompt: `Extract customer information from the following data. Return only the JSON object without markdown formatting. Missing fields should be empty strings.
+
+Available data: ${JSON.stringify(row)}
+
+Extract and return a JSON object with these fields (only return these exact fields):
+- address: street address
+- city: city name
+- zip: zip/postal code
+- tel: phone number
+- cell: mobile/cell phone number
+- email: email address
+
+Return ONLY valid JSON, no markdown code blocks or extra text.`,
+          response_json_schema: {
+            type: "object",
+            properties: {
+              address: { type: "string" },
+              city: { type: "string" },
+              zip: { type: "string" },
+              tel: { type: "string" },
+              cell: { type: "string" },
+              email: { type: "string" }
+            }
+          }
+        });
+
+        // Merge AI results with existing data
+        Object.keys(result).forEach(key => {
+          if (!customer[key] && result[key]) {
+            customer[key] = result[key];
+          }
+        });
+      } catch (error) {
+        console.error('AI extraction failed for row:', error);
+        // Continue with partial data if AI fails
+      }
+    }
+  }
+
   return customer;
 }
 
@@ -72,17 +120,17 @@ export default function QuickBooksImport({ onImported }) {
   const fileRef = useRef();
 
   const handleFile = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setFileName(file.name);
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const rows = parseCSV(ev.target.result);
-      const mapped = rows.map(mapRow).filter((c) => c.name);
-      setPreview(mapped);
-    };
-    reader.readAsText(file);
-  };
+     const file = e.target.files[0];
+     if (!file) return;
+     setFileName(file.name);
+     const reader = new FileReader();
+     reader.onload = async (ev) => {
+       const rows = parseCSV(ev.target.result);
+       const mapped = await Promise.all(rows.map(mapRow));
+       setPreview(mapped.filter((c) => c.name));
+     };
+     reader.readAsText(file);
+   };
 
   const handleImport = async () => {
     setImporting(true);
