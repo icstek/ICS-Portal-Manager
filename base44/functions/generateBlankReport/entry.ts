@@ -155,7 +155,7 @@ Deno.serve(async (req) => {
     pdf.rect(tosBoxX, tosBoxY, tosBoxWidth, tosBoxHeight);
     
     pdf.setFont(undefined, 'normal');
-    pdf.setFontSize(4.5);
+    pdf.setFontSize(8);
     const tosText = "The service and repair estimates indicated herein are hereby acceptable to the undersigned. Items not picked up within 30 calendar days from the date below will be subject to sale in order to recover ICS expenses. Customer understands that ICS is not responsible for loss or damage to any equipment in case of fire, theft, or any other causes beyond ICS control. In addition, ICS is not responsible for loss of Customer's programs or data for any reason. Customer is solely responsible to make backup of computer system data, software and applications prior to ICS services herein. All Spyware and Virus Cleanups do not carry warranty for labor due to the nature of the system use with the internet. All returned checks will be charged a $25.00 fee. All returned Sales are subject to a 20% restocking fee. I hereby authorize the repair work herein set forth, to be done with all necessary materials and grants ICS and its employees permission to operate the computer system and other equipment herein described for the purposes of repair and testing at my sole and exclusive risk. An express mechanic's lien is hereby acknowledged on the above equipment to secure the amount of repairs and parts listed in, or hereafter added in, this invoice.";
     pdf.text(tosText, tosBoxX + 1, tosBoxY + 6, { maxWidth: tosBoxWidth - 2, align: 'left' });
 
