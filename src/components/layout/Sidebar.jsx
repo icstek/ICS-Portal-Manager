@@ -2,11 +2,13 @@ import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, FileText, Users, Wrench, Package, Plus, Settings, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRole } from "@/hooks/useRole";
+import { useAuth } from "@/lib/AuthContext";
 import { base44 } from "@/api/base44Client";
 
 export default function Sidebar({ open, onClose }) {
   const location = useLocation();
   const { isAdmin } = useRole();
+  const { user } = useAuth();
 
   const navItems = [
   { label: "Dashboard", path: "/", icon: LayoutDashboard, always: true },
@@ -65,28 +67,45 @@ export default function Sidebar({ open, onClose }) {
         </nav>
 
         <div className="p-3 border-t border-border space-y-1">
-          <Link
-            to="/settings"
-            onClick={onClose}
-            className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
-              location.pathname === "/settings" ?
-              "bg-primary text-primary-foreground shadow-sm" :
-              "text-muted-foreground hover:text-foreground hover:bg-muted"
-            )}>
-            
-            <Settings className="w-4 h-4" />
-            Settings
-          </Link>
-          <button
-            onClick={() => base44.auth.logout()}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all">
-            
-            <LogOut className="w-4 h-4" />
-            Logout
-          </button>
+           <Link
+             to="/settings"
+             onClick={onClose}
+             className={cn(
+               "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+               location.pathname === "/settings" ?
+               "bg-primary text-primary-foreground shadow-sm" :
+               "text-muted-foreground hover:text-foreground hover:bg-muted"
+             )}>
 
-        </div>
+             <Settings className="w-4 h-4" />
+             Settings
+           </Link>
+           <button
+             onClick={() => base44.auth.logout()}
+             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all">
+
+             <LogOut className="w-4 h-4" />
+             Logout
+           </button>
+
+           {user && (
+             <div className="pt-3 border-t border-border flex items-center gap-3">
+               <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center overflow-hidden shrink-0">
+                 {user.profile_picture ? (
+                   <img src={user.profile_picture} alt={user.full_name} className="w-full h-full object-cover" />
+                 ) : (
+                   <div className="text-sm font-medium text-amber-600">
+                     {user.full_name?.[0]?.toUpperCase()}
+                   </div>
+                 )}
+               </div>
+               <div className="min-w-0 flex-1">
+                 <p className="text-xs font-medium truncate">{user.full_name}</p>
+                 <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+               </div>
+             </div>
+           )}
+         </div>
       </aside>
     </>);
 
