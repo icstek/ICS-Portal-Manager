@@ -146,6 +146,7 @@ Deno.serve(async (req) => {
     // CHARGES SECTION
     const chargesX = margin + contentWidth * 0.6;
     const chargesWidth = contentWidth * 0.35;
+    const labelWidth = 25;
     
     pdf.setFontSize(8);
     pdf.setFont(undefined, 'normal');
@@ -154,8 +155,8 @@ Deno.serve(async (req) => {
     let chargeY = yPos;
     
     chargeLabels.forEach((label) => {
-      pdf.text(label, chargesX, chargeY + 1.5);
-      pdf.rect(chargesX + 25, chargeY, chargesWidth - 25, 5);
+      pdf.text(label, chargesX + labelWidth, chargeY + 1.5, { align: 'right' });
+      pdf.rect(chargesX + labelWidth + 2, chargeY, chargesWidth - labelWidth - 2, 5);
       chargeY += 6;
     });
 
