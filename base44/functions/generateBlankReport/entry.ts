@@ -174,7 +174,7 @@ Deno.serve(async (req) => {
       chargeY += 6;
     });
 
-    yPos = tosBoxY + tosBoxHeight + 2;
+    yPos = tosBoxY + tosBoxHeight + 6;
 
     // SIGNATURE SECTION
     pdf.setFontSize(8);
