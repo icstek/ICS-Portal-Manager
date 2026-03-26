@@ -193,8 +193,9 @@ export default function ReportDetail() {
                 <p className="text-xs text-muted-foreground">Customer Signature</p>
                 <div className="h-12 border-b border-foreground"></div>
               </div>
-              <div className="space-y-1">
-                <p className="text-xs text-muted-foreground">Date: {r.date ? format(new Date(r.date), "MMMM d, yyyy") : ""}</p>
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground">Date:</p>
+                <p className="text-xs text-muted-foreground">{r.date ? format(new Date(r.date), "MMMM d, yyyy") : ""}</p>
               </div>
             </div>
           </div>
