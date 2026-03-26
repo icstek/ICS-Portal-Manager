@@ -10,6 +10,7 @@ import { Plus, Wrench, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import QuickBooksEmployeesImport from "@/components/technicians/QuickBooksEmployeesImport";
 import { useRole } from "@/hooks/useRole";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function Technicians() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -17,6 +18,7 @@ export default function Technicians() {
   const [form, setForm] = useState({ hourly_rate: 0, specialization: "" });
   const queryClient = useQueryClient();
   const { isAdmin } = useRole();
+  const { user } = useAuth();
 
   const { data: technicians = [], isLoading } = useQuery({
     queryKey: ["technicians"],
@@ -24,7 +26,13 @@ export default function Technicians() {
   });
 
   const saveMutation = useMutation({
-    mutationFn: (data) => base44.auth.updateMe(data),
+    mutationFn: (data) => {
+      if (isAdmin) {
+        return base44.entities.User.update(editing.id, data);
+      } else {
+        return base44.auth.updateMe(data);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["technicians"] });
       setDialogOpen(false);
@@ -72,7 +80,7 @@ export default function Technicians() {
                     </p>
                   </div>
                 </div>
-                {isAdmin && (
+                {(isAdmin || user?.id === t.id) && (
                    <div className="flex gap-1 shrink-0">
                      <Button variant="ghost" size="icon" onClick={() => openEdit(t)}><Pencil className="w-4 h-4" /></Button>
                    </div>
