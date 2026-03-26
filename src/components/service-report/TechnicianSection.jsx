@@ -43,18 +43,6 @@ export default function TechnicianSection({ form, setForm }) {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div>
-          <Label className="text-xs text-muted-foreground">Time Arrive</Label>
-          <Input type="time" value={form.time_arrive || ""} onChange={(e) => handleChange("time_arrive", e.target.value)} className="mt-1" />
-        </div>
-        <div>
-          <Label className="text-xs text-muted-foreground">Time Left</Label>
-          <Input type="time" value={form.time_left || ""} onChange={(e) => handleChange("time_left", e.target.value)} className="mt-1" />
-        </div>
-        <div>
-          <Label className="text-xs text-muted-foreground">Wait Time (hrs)</Label>
-          <Input type="number" step="0.25" value={form.wait_time || ""} onChange={(e) => handleChange("wait_time", parseFloat(e.target.value) || 0)} className="mt-1" />
-        </div>
-        <div>
           <Label className="text-xs text-muted-foreground">Total Hours</Label>
           <Input type="number" step="0.25" value={form.total_time_hours || ""} onChange={(e) => handleChange("total_time_hours", parseFloat(e.target.value) || 0)} className="mt-1" />
         </div>
