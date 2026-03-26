@@ -111,7 +111,7 @@ Deno.serve(async (req) => {
     yPos += 2;
     pdf.text('Service Description:', margin, yPos);
     pdf.rect(margin, yPos + 3, contentWidth, 7);
-    yPos += 11;
+    yPos += 15;
 
     // PARTS SECTION
     addSectionTitle('PARTS');
