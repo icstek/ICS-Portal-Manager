@@ -111,17 +111,21 @@ export default function QuickBooksPartsImport({ onImported }) {
 
   const handleImport = async () => {
     setImporting(true);
-    let count = 0;
-    for (const part of preview) {
-      await base44.entities.Part.create(part);
-      count++;
+    try {
+      if (preview.length > 0) {
+        await base44.entities.Part.bulkCreate(preview);
+      }
+      setImporting(false);
+      setOpen(false);
+      setPreview([]);
+      setFileName("");
+      toast.success(`${preview.length} parts imported from QuickBooks`);
+      onImported();
+    } catch (error) {
+      console.error('Import error:', error);
+      toast.error('Failed to import parts. Please try again.');
+      setImporting(false);
     }
-    setImporting(false);
-    setOpen(false);
-    setPreview([]);
-    setFileName("");
-    toast.success(`${count} parts imported from QuickBooks`);
-    onImported();
   };
 
   const handleClose = () => { setOpen(false); setPreview([]); setFileName(""); };
