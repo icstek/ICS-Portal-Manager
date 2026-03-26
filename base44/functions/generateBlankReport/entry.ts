@@ -78,13 +78,6 @@ Deno.serve(async (req) => {
     pdf.text('SERVICE REPORT', margin, yPos);
     yPos += 5;
 
-    pdf.setFontSize(7);
-    pdf.setFont(undefined, 'normal');
-    pdf.text('ICS, INC | 6038 Tampa Ave., Tarzana, CA 91356 | (818) 609-7648 | service@icstek.com', margin, yPos);
-    yPos += 3;
-    pdf.line(margin, yPos, pageWidth - margin, yPos);
-    yPos += 4;
-
     // REPORT INFO
     addTwoFields('Report #:', 'Date:');
     yPos += 2;
@@ -115,16 +108,12 @@ Deno.serve(async (req) => {
     addField('Password:');
     yPos += 4;
 
-    // PAGE BREAK
-    pdf.addPage();
-    yPos = margin;
-
-    // Continue with Service Description on page 2
+    // SERVICE DESCRIPTION
     pdf.setFontSize(8);
     yPos += 2;
     pdf.text('Service Description:', margin, yPos);
-    pdf.rect(margin, yPos + 3, contentWidth, 7);
-    yPos += 15;
+    pdf.rect(margin, yPos + 3, contentWidth, 5);
+    yPos += 12;
 
     // PARTS SECTION
     addSectionTitle('PARTS');
@@ -143,17 +132,15 @@ Deno.serve(async (req) => {
     pdf.rect(margin + colWidths[0] + colWidths[1], tableY, colWidths[2], 5);
     pdf.rect(margin + colWidths[0] + colWidths[1] + colWidths[2], tableY, colWidths[3], 5);
 
-    // Two empty rows for parts
-    for (let i = 0; i < 2; i++) {
-      const rowY = tableY + 5 + (i * 5);
-      pdf.rect(margin, rowY, colWidths[0], 5);
-      pdf.rect(margin + colWidths[0], rowY, colWidths[1], 5);
-      pdf.rect(margin + colWidths[0] + colWidths[1], rowY, colWidths[2], 5);
-      pdf.rect(margin + colWidths[0] + colWidths[1] + colWidths[2], rowY, colWidths[3], 5);
-    }
+    // One empty row for parts
+    const rowY = tableY + 5;
+    pdf.rect(margin, rowY, colWidths[0], 5);
+    pdf.rect(margin + colWidths[0], rowY, colWidths[1], 5);
+    pdf.rect(margin + colWidths[0] + colWidths[1], rowY, colWidths[2], 5);
+    pdf.rect(margin + colWidths[0] + colWidths[1] + colWidths[2], rowY, colWidths[3], 5);
 
-    yPos = tableY + 15;
-    yPos += 8;
+    yPos = tableY + 10;
+    yPos += 4;
 
     // CHARGES SECTION
     const chargesX = margin + contentWidth * 0.6;
@@ -173,27 +160,25 @@ Deno.serve(async (req) => {
     });
 
     // TERMS OF SERVICE SECTION
-    yPos = chargeY + 8;
-    const tosStartY = yPos;
-    pdf.setFontSize(7);
+    yPos = chargeY + 4;
+    pdf.setFontSize(6.5);
     pdf.setFont(undefined, 'bold');
     pdf.text('Terms & Conditions:', margin, yPos);
-    yPos += 3;
+    yPos += 2;
     pdf.setFont(undefined, 'normal');
-    pdf.setFontSize(5.5);
-    const tosText = "The service and repair estimates indicated herein are hereby acceptable to the undersigned. Items not picked up within 30 calendar days from the date below will be subject to sale in order to recover ICS expenses. Customer understands that ICS is not responsible for loss or damage to any equipment in case of fire, theft, or any other causes beyond ICS control. In addition, ICS is not responsible for loss of Customer's programs or data for any reason. Customer is solely responsible to make backup of computer system data, software and applications prior to ICS services herein. All Spyware and Virus Cleanups do not carry warranty for labor due to the nature of the system use with the internet. All returned checks will be charged a $25.00 fee. All returned Sales are subject to a 20% restocking fee. I hereby authorize the repair work herein set forth, to be done with all necessary materials and grants ICS and its employees permission to operate the computer system and other equipment herein described for the purposes of repair and testing at my sole and exclusive risk. An express mechanic's lien is hereby acknowledged on the above equipment to secure the amount of repairs and parts listed in, or hereafter added in, this invoice.";
-    const tosHeight = pdf.getTextDimensions(tosText, { maxWidth: contentWidth }).h;
+    pdf.setFontSize(5);
+    const tosText = "The service and repair estimates indicated herein are hereby acceptable to the undersigned. Items not picked up within 30 calendar days from the date below will be subject to sale in order to recover ICS expenses. Customer understands that ICS is not responsible for loss or damage to any equipment in case of fire, theft, or any other causes beyond ICS control.";
     pdf.text(tosText, margin, yPos, { maxWidth: contentWidth, align: 'left' });
-    yPos = tosStartY + tosHeight + 6;
+    yPos += 10;
 
     // SIGNATURE SECTION
     pdf.setFontSize(8);
     pdf.setFont(undefined, 'normal');
     pdf.text('Technician Signature:', margin, yPos);
-    pdf.rect(margin, yPos + 3, contentWidth * 0.5, 30);
+    pdf.rect(margin, yPos + 3, contentWidth * 0.5, 15);
     
     pdf.text('Date:', margin + contentWidth * 0.5 + 5, yPos);
-    pdf.rect(margin + contentWidth * 0.5 + 15, yPos + 3, contentWidth * 0.5 - 20, 30);
+    pdf.rect(margin + contentWidth * 0.5 + 15, yPos + 3, contentWidth * 0.5 - 20, 15);
 
     const pdfBlob = pdf.output('blob');
     
