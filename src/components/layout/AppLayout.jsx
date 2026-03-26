@@ -18,7 +18,7 @@ export default function AppLayout() {
             <Menu className="w-5 h-5" />
           </Button>
           <img
-            src="https://media.base44.com/images/public/69c3f70dbcee7c1afb484046/449d546f0_generated_image.png"
+            src="https://media.base44.com/images/public/69c3f70dbcee7c1afb484046/41d498c1a_ICS-Color-Logo.png"
             alt="ICS Inc."
             className="w-8 h-8 rounded-md object-contain bg-white"
           />
