@@ -7,27 +7,32 @@ Deno.serve(async (req) => {
     const margin = 8;
     const contentWidth = pageWidth - margin * 2;
     let yPos = margin;
+    const labelWidth = 28;
 
-    // Helper function to add a text field
-    const addTextField = (label, width, height = 5) => {
+    // Helper function to add a text field with label
+    const addTextField = (label, width, height = 6) => {
       pdf.setFontSize(8);
-      pdf.text(label, margin, yPos);
-      yPos += 3;
-      pdf.rect(margin, yPos, width, height);
-      yPos += height + 1;
+      const labelX = margin;
+      const boxX = margin + labelWidth;
+      const boxWidth = width - labelWidth;
+      
+      pdf.text(label, labelX, yPos + 1);
+      pdf.rect(boxX, yPos, boxWidth, height);
+      yPos += height + 2;
     };
 
     // Helper function to add a two-column layout
     const addTwoColumnFields = (label1, label2) => {
       pdf.setFontSize(8);
-      const colWidth = (contentWidth - 2) / 2;
+      const col1Width = (contentWidth - 2) / 2;
+      const col2Width = col1Width;
       
-      pdf.text(label1, margin, yPos);
-      pdf.text(label2, margin + colWidth + 2, yPos);
+      pdf.text(label1, margin, yPos + 1);
+      pdf.text(label2, margin + col1Width + 2, yPos + 1);
       yPos += 3;
       
-      pdf.rect(margin, yPos, colWidth, 5);
-      pdf.rect(margin + colWidth + 2, yPos, colWidth, 5);
+      pdf.rect(margin + labelWidth, yPos - 2, col1Width - labelWidth, 6);
+      pdf.rect(margin + col1Width + 2 + labelWidth, yPos - 2, col2Width - labelWidth, 6);
       yPos += 7;
     };
 
@@ -45,10 +50,22 @@ Deno.serve(async (req) => {
     yPos += 3;
 
     // Report Number and Date
-    addTwoColumnFields('Report #:', 'Date:');
+    pdf.setFontSize(8);
+    const col1Width = (contentWidth - 2) / 2;
+    pdf.text('Report #:', margin, yPos + 1);
+    pdf.text('Date:', margin + col1Width + 2, yPos + 1);
+    yPos += 3;
+    pdf.rect(margin + labelWidth, yPos, col1Width - labelWidth, 6);
+    pdf.rect(margin + col1Width + 2 + labelWidth, yPos, col1Width - labelWidth, 6);
+    yPos += 8;
 
     // Report Type and Status
-    addTwoColumnFields('Report Type:', 'Status:');
+    pdf.text('Report Type:', margin, yPos + 1);
+    pdf.text('Status:', margin + col1Width + 2, yPos + 1);
+    yPos += 3;
+    pdf.rect(margin + labelWidth, yPos, col1Width - labelWidth, 6);
+    pdf.rect(margin + col1Width + 2 + labelWidth, yPos, col1Width - labelWidth, 6);
+    yPos += 8;
 
     // Customer Section
     pdf.setFontSize(9);
@@ -60,23 +77,24 @@ Deno.serve(async (req) => {
     addTextField('Name:', contentWidth);
     addTextField('Address:', contentWidth);
 
-    const colWidth = (contentWidth - 2) / 3;
+    const col3Width = (contentWidth - 4) / 3;
     pdf.setFontSize(8);
-    pdf.text('City:', margin, yPos);
-    pdf.text('Zip:', margin + colWidth + 2, yPos);
-    pdf.text('Tel:', margin + (colWidth + 2) * 2, yPos);
+    pdf.text('City:', margin, yPos + 1);
+    pdf.text('Zip:', margin + col3Width + 2, yPos + 1);
+    pdf.text('Tel:', margin + (col3Width + 2) * 2, yPos + 1);
     yPos += 3;
-    pdf.rect(margin, yPos, colWidth, 5);
-    pdf.rect(margin + colWidth + 2, yPos, colWidth, 5);
-    pdf.rect(margin + (colWidth + 2) * 2, yPos, colWidth, 5);
-    yPos += 7;
+    pdf.rect(margin + 16, yPos, col3Width - 16, 6);
+    pdf.rect(margin + col3Width + 2 + 16, yPos, col3Width - 16, 6);
+    pdf.rect(margin + (col3Width + 2) * 2 + 16, yPos, col3Width - 16, 6);
+    yPos += 8;
 
     addTextField('Cell:', contentWidth);
     addTextField('Email:', contentWidth);
 
     // Items Received
     pdf.setFontSize(8);
-    pdf.text('Items Received: □Computer □Printer □Laptop □Screen □Other', margin, yPos);
+    pdf.text('Items Received:', margin, yPos);
+    pdf.text('☐Computer  ☐Printer  ☐Laptop  ☐Screen  ☐Other', margin + 30, yPos);
     yPos += 4;
 
     // Equipment Section
@@ -104,9 +122,28 @@ Deno.serve(async (req) => {
     yPos += 4;
     pdf.setFont(undefined, 'normal');
 
-    addTwoColumnFields('Technician:', 'Rate:');
-    addTwoColumnFields('Arrive:', 'Left:');
-    addTwoColumnFields('Wait Hours:', 'Total Hours:');
+    pdf.setFontSize(8);
+    pdf.text('Technician:', margin, yPos + 1);
+    pdf.text('Rate:', margin + col1Width + 2, yPos + 1);
+    yPos += 3;
+    pdf.rect(margin + labelWidth, yPos, col1Width - labelWidth, 6);
+    pdf.rect(margin + col1Width + 2 + labelWidth, yPos, col1Width - labelWidth, 6);
+    yPos += 8;
+
+    pdf.text('Arrive:', margin, yPos + 1);
+    pdf.text('Left:', margin + col1Width + 2, yPos + 1);
+    yPos += 3;
+    pdf.rect(margin + labelWidth, yPos, col1Width - labelWidth, 6);
+    pdf.rect(margin + col1Width + 2 + labelWidth, yPos, col1Width - labelWidth, 6);
+    yPos += 8;
+
+    pdf.text('Wait Hours:', margin, yPos + 1);
+    pdf.text('Total Hours:', margin + col1Width + 2, yPos + 1);
+    yPos += 3;
+    pdf.rect(margin + labelWidth, yPos, col1Width - labelWidth, 6);
+    pdf.rect(margin + col1Width + 2 + labelWidth, yPos, col1Width - labelWidth, 6);
+    yPos += 8;
+
     addTextField('Password:', contentWidth);
 
     // Service Description
@@ -196,7 +233,13 @@ Deno.serve(async (req) => {
     pdf.setFontSize(10);
     pdf.text('TOTAL:', chargesX - 15, yPos);
     pdf.rect(chargesX, yPos - 2, chargesWidth, 6);
-    
+
+    // Add form fields to make PDF editable
+    const fields = [
+      { name: 'reportNum', x: margin + labelWidth, y: margin + 15, w: col1Width - labelWidth, h: 6 },
+      { name: 'date', x: margin + col1Width + 2 + labelWidth, y: margin + 15, w: col1Width - labelWidth, h: 6 },
+    ];
+
     // Convert PDF to blob and return
     const pdfBlob = pdf.output('blob');
     
