@@ -63,9 +63,13 @@ Deno.serve(async (req) => {
       try {
         const pdfResponse = await fetch(pdfUrl);
         const pdfBuffer = await pdfResponse.arrayBuffer();
+        const uint8Array = new Uint8Array(pdfBuffer);
+        const binaryString = String.fromCharCode.apply(null, uint8Array);
+        const base64String = btoa(binaryString);
+        
         attachments = [{
           filename: `report-${report.report_number}.pdf`,
-          content: Buffer.from(pdfBuffer)
+          content: base64String
         }];
       } catch (attachError) {
         console.error('PDF attachment error:', attachError);
