@@ -84,9 +84,8 @@ Deno.serve(async (req) => {
 
     // CUSTOMER SECTION
     addSectionTitle('CUSTOMER');
-    addTwoFields('Name:', 'Address:');
-    addThreeFields('City:', 'Zip:', 'Tel:');
-    addTwoFields('Cell:', 'Email:');
+    addThreeFields('Name:', 'Address:', 'Email:');
+    addThreeFields('City:', 'Zip:', 'Cell:');
     
     pdf.setFontSize(8);
     pdf.text('Items Received:', margin, yPos + 1.5);
