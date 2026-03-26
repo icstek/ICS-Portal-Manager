@@ -83,7 +83,7 @@ Deno.serve(async (req) => {
     
     pdf.setFontSize(8);
     pdf.text('Items Received:', margin, yPos + 1.5);
-    pdf.text('☐ Computer   ☐ Printer   ☐ Laptop   ☐ Screen   ☐ Other', margin + 35, yPos + 1.5);
+    pdf.text('[ ] Computer   [ ] Printer   [ ] Laptop   [ ] Screen   [ ] Other', margin + 35, yPos + 1.5);
     yPos += 4;
     yPos += 8;
 
