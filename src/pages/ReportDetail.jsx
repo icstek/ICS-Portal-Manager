@@ -388,6 +388,7 @@ export default function ReportDetail() {
             </div>
             <div className="space-y-4">
               <div className="space-y-1">
+                <p className="text-xs text-muted-foreground italic mb-2">I have read the Terms &amp; Conditions, and agree to pay the above charges in full.</p>
                 <p className="text-xs text-muted-foreground">Customer Signature</p>
                 {r.customer_signature_url ? (
                   <img src={r.customer_signature_url} alt="Customer Signature" className="h-16 border-b border-foreground" />
