@@ -18,6 +18,24 @@
     "resend_from_email": {
       "type": "string",
       "description": "Global from email address"
+    },
+    "company_name": {
+      "type": "string",
+      "description": "Company display name"
+    },
+    "company_logo_url": {
+      "type": "string",
+      "description": "URL to uploaded company logo"
+    },
+    "primary_color": {
+      "type": "string",
+      "description": "Primary brand color hex code",
+      "default": "#3b82f6"
+    },
+    "accent_color": {
+      "type": "string",
+      "description": "Accent brand color hex code",
+      "default": "#f59e0b"
     }
   },
   "required": [

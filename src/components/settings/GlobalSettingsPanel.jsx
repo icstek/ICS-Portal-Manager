@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import { Loader2, Save, Globe } from "lucide-react";
+import CompanyBrandingSettings from "@/components/settings/CompanyBrandingSettings";
 
 export default function GlobalSettingsPanel() {
   const [loading, setLoading] = useState(true);
@@ -15,6 +16,10 @@ export default function GlobalSettingsPanel() {
     default_hourly_rate: 145,
     resend_api_key: "",
     resend_from_email: "",
+    company_name: "",
+    company_logo_url: "",
+    primary_color: "#3b82f6",
+    accent_color: "#f59e0b",
   });
 
   useEffect(() => {
@@ -31,6 +36,10 @@ export default function GlobalSettingsPanel() {
           default_hourly_rate: s.default_hourly_rate ?? 145,
           resend_api_key: s.resend_api_key || "",
           resend_from_email: s.resend_from_email || "",
+          company_name: s.company_name || "",
+          company_logo_url: s.company_logo_url || "",
+          primary_color: s.primary_color || "#3b82f6",
+          accent_color: s.accent_color || "#f59e0b",
         });
       }
     } catch (e) {
@@ -64,6 +73,8 @@ export default function GlobalSettingsPanel() {
   );
 
   return (
+    <div className="space-y-6">
+    <CompanyBrandingSettings form={form} setForm={setForm} onSave={handleSave} saving={saving} />
     <Card>
       <CardHeader>
         <div className="flex items-center gap-2">
@@ -119,5 +130,6 @@ export default function GlobalSettingsPanel() {
         </div>
       </CardContent>
     </Card>
+    </div>
   );
 }
