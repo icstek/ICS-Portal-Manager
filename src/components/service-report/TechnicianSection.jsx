@@ -51,11 +51,11 @@ export default function TechnicianSection({ form, setForm }) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 items-end">
         <div>
           <Label className="text-xs text-muted-foreground block mb-1">Total Hours</Label>
-          <Input type="number" step="0.25" value={form.total_time_hours || ""} onChange={(e) => handleChange("total_time_hours", parseFloat(e.target.value) || 0)} />
+          <Input type="number" step="1" value={form.total_time_hours || ""} onChange={(e) => handleChange("total_time_hours", parseFloat(e.target.value) || 0)} />
         </div>
         <div>
           <Label className="text-xs text-muted-foreground block mb-1">Hr. Rate ($)</Label>
-          <Input type="number" step="0.01" value={form.hourly_rate || ""} onChange={(e) => handleChange("hourly_rate", parseFloat(e.target.value) || 0)} />
+          <Input type="number" step="1" value={form.hourly_rate || ""} onChange={(e) => handleChange("hourly_rate", parseFloat(e.target.value) || 0)} />
         </div>
         <div>
           <div className="flex items-center gap-1.5 mb-1">
@@ -69,7 +69,7 @@ export default function TechnicianSection({ form, setForm }) {
             />
             <Label htmlFor="travel-check" className="text-xs text-muted-foreground cursor-pointer leading-none">Travel Charge ($)</Label>
           </div>
-          <Input type="number" step="0.01" value={form.misc_charge || ""} onChange={(e) => handleChange("misc_charge", parseFloat(e.target.value) || 0)} />
+          <Input type="number" step="1" value={form.misc_charge || ""} onChange={(e) => handleChange("misc_charge", parseFloat(e.target.value) || 0)} />
         </div>
         <div>
           <Label className="text-xs text-muted-foreground block mb-1">Total Labor</Label>
