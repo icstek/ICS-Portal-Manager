@@ -2,12 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plus, X } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Plus, X, Search } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandInput, CommandList, CommandEmpty, CommandItem } from "@/components/ui/command";
 import { useState } from "react";
 
 export default function WorkPerformedSection({ selectedServices = [], onChange }) {
-  const [adding, setAdding] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const { data: services = [] } = useQuery({
     queryKey: ["services"],
@@ -18,12 +19,12 @@ export default function WorkPerformedSection({ selectedServices = [], onChange }
     (s) => !selectedServices.some((sel) => sel.shortname === s.shortname)
   );
 
-  const handleAdd = (serviceId) => {
+  const handleSelect = (serviceId) => {
     const svc = services.find((s) => s.id === serviceId);
     if (svc) {
       onChange([...selectedServices, { shortname: svc.shortname, description: svc.description }]);
     }
-    setAdding(false);
+    setOpen(false);
   };
 
   const handleRemove = (index) => {
@@ -35,29 +36,31 @@ export default function WorkPerformedSection({ selectedServices = [], onChange }
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">Work Performed</h3>
         {availableServices.length > 0 && (
-          <Button type="button" variant="outline" size="sm" className="gap-1.5 h-7 text-xs" onClick={() => setAdding(true)}>
-            <Plus className="w-3 h-3" /> Add Service
-          </Button>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button type="button" variant="outline" size="sm" className="gap-1.5 h-7 text-xs">
+                <Plus className="w-3 h-3" /> Add Service
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-72 p-0" align="end">
+              <Command>
+                <CommandInput placeholder="Search service codes..." />
+                <CommandList>
+                  <CommandEmpty>No services found.</CommandEmpty>
+                  {availableServices.map((s) => (
+                    <CommandItem key={s.id} value={`${s.shortname} ${s.description}`} onSelect={() => handleSelect(s.id)}>
+                      <span className="font-mono font-medium text-xs">{s.shortname}</span>
+                      <span className="text-muted-foreground text-xs ml-2 truncate">— {s.description}</span>
+                    </CommandItem>
+                  ))}
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         )}
       </div>
 
-      {adding && (
-        <Select onValueChange={handleAdd}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select a service code..." />
-          </SelectTrigger>
-          <SelectContent>
-            {availableServices.map((s) => (
-              <SelectItem key={s.id} value={s.id}>
-                <span className="font-mono font-medium">{s.shortname}</span>
-                <span className="text-muted-foreground ml-2">— {s.description}</span>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )}
-
-      {selectedServices.length === 0 && !adding ? (
+      {selectedServices.length === 0 ? (
         <p className="text-xs text-muted-foreground italic">No service codes added yet</p>
       ) : (
         <div className="space-y-2">
