@@ -64,7 +64,7 @@ export default function TechnicianSection({ form, setForm }) {
           <Input type="number" step="0.01" value={form.hourly_rate || ""} onChange={(e) => handleChange("hourly_rate", parseFloat(e.target.value) || 0)} className="mt-1" />
         </div>
         <div>
-          <div className="flex items-center justify-center gap-2 mb-1 h-full">
+          <div className="flex items-center justify-end gap-2 mb-1 h-full">
             <Checkbox id="travel-check" checked={travelEnabled} onCheckedChange={handleTravelToggle} />
             <Label htmlFor="travel-check" className="text-xs text-muted-foreground cursor-pointer">Travel Charge ($)</Label>
           </div>
