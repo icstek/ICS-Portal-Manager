@@ -27,15 +27,15 @@ export default function Dashboard() {
     queryFn: () => base44.entities.ServiceReport.filter({ service_status: "incomplete" }, "-created_date", 2),
   });
 
-  const { data: technicianReports = [] } = useQuery({
-    queryKey: ["reports", "technician", user?.full_name],
+  const { data: myReports = [] } = useQuery({
+    queryKey: ["reports", "mine", user?.email],
     queryFn: () =>
       base44.entities.ServiceReport.filter(
-        { technician_name: user?.full_name },
+        { created_by: user?.email },
         "-created_date",
         8
       ),
-    enabled: !!user?.full_name,
+    enabled: !!user?.email,
   });
 
   const { data: customers = [] } = useQuery({
@@ -142,7 +142,7 @@ export default function Dashboard() {
       </Card>
 
       {/* Recent Technician Reports */}
-      {user?.full_name && technicianReports.length > 0 && (
+      {user?.email && myReports.length > 0 && (
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-4">
             <CardTitle className="text-lg">My Recent Reports</CardTitle>
@@ -154,7 +154,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {technicianReports.map((r) => (
+              {myReports.map((r) => (
                 <Link key={r.id} to={`/reports/${r.id}`}>
                   <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
                     <CardContent className="p-3 flex flex-col gap-2 h-full">
