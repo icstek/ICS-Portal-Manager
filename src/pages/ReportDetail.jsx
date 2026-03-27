@@ -372,8 +372,9 @@ export default function ReportDetail() {
 
           {/* Customer Signature (screen view) */}
           {r.customer_signature_url && (
-            <div className="print:hidden">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Customer Signature</h3>
+            <div className="print:hidden space-y-2">
+              <p className="text-sm text-muted-foreground italic">I have read the Terms &amp; Conditions, and agree to pay the above charges in full.</p>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Customer Signature</h3>
               <img src={r.customer_signature_url} alt="Customer Signature" className="h-20 border rounded-lg p-1 bg-white" />
             </div>
           )}
