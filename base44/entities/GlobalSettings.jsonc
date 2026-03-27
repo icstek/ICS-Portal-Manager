@@ -1,0 +1,26 @@
+{
+  "name": "GlobalSettings",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "Setting key (singleton: 'global')"
+    },
+    "default_hourly_rate": {
+      "type": "number",
+      "description": "Default hourly rate for all invoices",
+      "default": 145
+    },
+    "resend_api_key": {
+      "type": "string",
+      "description": "Global Resend API key for email"
+    },
+    "resend_from_email": {
+      "type": "string",
+      "description": "Global from email address"
+    }
+  },
+  "required": [
+    "key"
+  ]
+}

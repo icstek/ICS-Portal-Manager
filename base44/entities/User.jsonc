@@ -1,0 +1,42 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "global_admin",
+        "admin",
+        "technician",
+        "user"
+      ],
+      "default": "technician",
+      "description": "User role in the application"
+    },
+    "profile_picture": {
+      "type": "string",
+      "description": "Profile picture URL"
+    },
+    "hourly_rate": {
+      "type": "number",
+      "description": "Technician's personal hourly rate override"
+    },
+    "specialization": {
+      "type": "string",
+      "description": "Area of expertise"
+    },
+    "resend_api_key": {
+      "type": "string",
+      "description": "Personal Resend API key (legacy)"
+    },
+    "resend_from_email": {
+      "type": "string",
+      "description": "Personal from email (legacy)"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this account is disabled"
+    }
+  }
+}

@@ -92,6 +92,17 @@ export const AuthProvider = ({ children }) => {
       // Now check if the user is authenticated
       setIsLoadingAuth(true);
       const currentUser = await base44.auth.me();
+      // Block disabled accounts
+      if (currentUser?.disabled) {
+        setIsLoadingAuth(false);
+        setIsAuthenticated(false);
+        setAuthError({
+          type: 'account_disabled',
+          message: 'Your account has been disabled. Please contact your administrator.'
+        });
+        return;
+      }
+
       setUser(currentUser);
       setIsAuthenticated(true);
       

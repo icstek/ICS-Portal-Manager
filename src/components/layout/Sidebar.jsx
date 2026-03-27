@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, FileText, Users, Wrench, Package, Plus, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, FileText, Users, Wrench, Package, Plus, Settings, LogOut, ShieldAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRole } from "@/hooks/useRole";
 import { useAuth } from "@/lib/AuthContext";
@@ -7,7 +7,7 @@ import { base44 } from "@/api/base44Client";
 
 export default function Sidebar({ open, onClose }) {
   const location = useLocation();
-  const { isAdmin } = useRole();
+  const { isAdmin, isGlobalAdmin } = useRole();
   const { user } = useAuth();
 
   const navItems = [
@@ -16,8 +16,9 @@ export default function Sidebar({ open, onClose }) {
   { label: "Reports", path: "/reports", icon: FileText, always: true },
   { label: "Customers", path: "/customers", icon: Users, always: true },
   { label: "Technicians", path: "/technicians", icon: Wrench, adminOnly: true },
-  { label: "Parts", path: "/parts", icon: Package, adminOnly: true }].
-  filter((item) => item.always || item.adminOnly && isAdmin);
+  { label: "Parts", path: "/parts", icon: Package, adminOnly: true },
+  { label: "User Management", path: "/users", icon: ShieldAlert, globalAdminOnly: true }].
+  filter((item) => item.always || (item.adminOnly && isAdmin) || (item.globalAdminOnly && isGlobalAdmin));
 
   return (
     <>

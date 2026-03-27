@@ -12,8 +12,9 @@ export function useRole() {
     }).catch(() => setLoading(false));
   }, []);
 
-  const isAdmin = user?.role === "admin";
-  const isTechnician = user?.role === "technician" || (!loading && user && user.role !== "admin");
+  const isGlobalAdmin = user?.role === "global_admin";
+  const isAdmin = user?.role === "admin" || isGlobalAdmin;
+  const isTechnician = !isAdmin && !loading && !!user;
 
-  return { user, loading, isAdmin, isTechnician };
+  return { user, loading, isAdmin, isGlobalAdmin, isTechnician };
 }

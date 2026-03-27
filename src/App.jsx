@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import AccountDisabledError from '@/components/AccountDisabledError';
 import AppLayout from '@/components/layout/AppLayout';
 import Dashboard from '@/pages/Dashboard';
 import NewServiceReport from '@/pages/NewServiceReport';
@@ -14,6 +15,7 @@ import Customers from '@/pages/Customers';
 import Technicians from '@/pages/Technicians';
 import Parts from '@/pages/Parts';
 import Settings from '@/pages/Settings';
+import UserManagement from '@/pages/UserManagement';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -30,8 +32,10 @@ const AuthenticatedApp = () => {
   // Handle authentication errors
   if (authError) {
     if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
+        return <UserNotRegisteredError />;
+      } else if (authError.type === 'account_disabled') {
+        return <AccountDisabledError />;
+      } else if (authError.type === 'auth_required') {
       // Redirect to login automatically
       navigateToLogin();
       return null;
@@ -50,6 +54,7 @@ const AuthenticatedApp = () => {
         <Route path="/technicians" element={<Technicians />} />
         <Route path="/parts" element={<Parts />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/users" element={<UserManagement />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

@@ -14,7 +14,7 @@ import { useRole } from "@/hooks/useRole";
 import { useAuth } from "@/lib/AuthContext";
 
 export default function Technicians() {
-  const { isAdmin } = useRole();
+  const { isAdmin, isGlobalAdmin } = useRole();
   
   if (!isAdmin) {
     return <Navigate to="/" replace />;

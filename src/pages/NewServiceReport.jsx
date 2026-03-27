@@ -50,6 +50,15 @@ const initialForm = {
 
 export default function NewServiceReport() {
   const [form, setForm] = useState(initialForm);
+
+  // Load global default hourly rate
+  useEffect(() => {
+    base44.entities.GlobalSettings.filter({ key: "global" }).then((records) => {
+      if (records.length > 0 && records[0].default_hourly_rate) {
+        setForm((f) => ({ ...f, hourly_rate: records[0].default_hourly_rate }));
+      }
+    }).catch(() => {});
+  }, []);
   const [items, setItems] = useState([]);
   const [signatureDataUrl, setSignatureDataUrl] = useState(null);
   const navigate = useNavigate();

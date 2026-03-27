@@ -8,12 +8,13 @@ import { useAuth } from "@/lib/AuthContext";
 import { cn } from "@/lib/utils";
 import SmtpSettings from "@/components/settings/SmtpSettings";
 import ProfileSettings from "@/components/settings/ProfileSettings";
+import GlobalSettingsPanel from "@/components/settings/GlobalSettingsPanel";
 import { useRole } from "@/hooks/useRole";
 
 export default function Settings() {
   const { settings, updateSetting, loading } = useUserSettings();
   const { user } = useAuth();
-  const { isAdmin } = useRole();
+  const { isAdmin, isGlobalAdmin } = useRole();
 
   if (loading) return (
     <div className="flex items-center justify-center h-40">
@@ -93,7 +94,10 @@ export default function Settings() {
         </Card>
 
         {/* SMTP Configuration - Admin only */}
-        {isAdmin && <SmtpSettings />}
+        {isAdmin && !isGlobalAdmin && <SmtpSettings />}
+
+        {/* Global Settings - Global Admin only */}
+        {isGlobalAdmin && <GlobalSettingsPanel />}
         </div>
         );
         }
