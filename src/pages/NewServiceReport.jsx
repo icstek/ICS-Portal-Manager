@@ -20,6 +20,7 @@ const initialForm = {
   report_type: "repair",
   date: new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" }),
   report_number: "",
+  memo: "",
   customer_id: "",
   customer_name: "",
   customer_address: "",
@@ -143,6 +144,10 @@ export default function NewServiceReport() {
               <div className="flex-1">
                 <Label className="text-xs text-muted-foreground">Report #</Label>
                 <Input value={form.report_number || ""} onChange={(e) => setForm((f) => ({ ...f, report_number: e.target.value }))} className="mt-1" placeholder="Loading..." />
+              </div>
+              <div className="flex-[2]">
+                <Label className="text-xs text-muted-foreground">Memo</Label>
+                <Input value={form.memo || ""} onChange={(e) => setForm((f) => ({ ...f, memo: e.target.value }))} className="mt-1" placeholder="Short description (internal only)..." />
               </div>
               <div>
                 <Label className="text-xs text-muted-foreground">Date</Label>

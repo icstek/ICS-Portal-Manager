@@ -90,6 +90,7 @@ export default function Reports() {
                         {r.report_number ? `#${r.report_number} · ` : ""}{r.date ? format(new Date(r.date), "MMM d, yyyy") : "No date"}
                         {r.technician_name ? ` · ${r.technician_name}` : ""}
                       </p>
+                      {r.memo && <p className="text-xs text-muted-foreground italic truncate">{r.memo}</p>}
                     </div>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
