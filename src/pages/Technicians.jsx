@@ -15,6 +15,7 @@ import { useAuth } from "@/lib/AuthContext";
 
 export default function Technicians() {
   const { isAdmin, isGlobalAdmin } = useRole();
+  const isReadOnly = isAdmin && !isGlobalAdmin;
   
   if (!isAdmin) {
     return <Navigate to="/" replace />;
@@ -54,11 +55,11 @@ export default function Technicians() {
           <h1 className="text-2xl md:text-3xl font-bold font-inter tracking-tight">Team Members</h1>
           <p className="text-muted-foreground text-sm mt-1">{technicians.length} users</p>
         </div>
-        {isAdmin && (
-          <div className="flex gap-2">
-            <QuickBooksEmployeesImport onImported={() => queryClient.invalidateQueries({ queryKey: ["technicians"] })} />
-          </div>
-        )}
+        {isAdmin && !isReadOnly && (
+           <div className="flex gap-2">
+             <QuickBooksEmployeesImport onImported={() => queryClient.invalidateQueries({ queryKey: ["technicians"] })} />
+           </div>
+         )}
       </div>
 
       {isLoading ? (
@@ -85,7 +86,7 @@ export default function Technicians() {
                     </p>
                   </div>
                 </div>
-                {(isAdmin || user?.id === t.id) && (
+                {!isReadOnly && (isAdmin || user?.id === t.id) && (
                    <div className="flex gap-1 shrink-0">
                      <Button variant="ghost" size="icon" onClick={() => openEdit(t)}><Pencil className="w-4 h-4" /></Button>
                    </div>
