@@ -18,9 +18,11 @@ export default function TechnicianSection({ form, setForm }) {
   });
 
   useEffect(() => {
-    if (autoSelected.current || !user || !technicians.length || form.technician_id) return;
+    if (autoSelected.current || !user?.full_name || !technicians.length) return;
+    if (form.technician_id && form.technician_id !== "") return;
+    const userName = user.full_name.trim().toLowerCase();
     const match = technicians.find(
-      (t) => t.name?.toLowerCase() === user.full_name?.toLowerCase()
+      (t) => t.name?.trim().toLowerCase() === userName
     );
     if (match) {
       autoSelected.current = true;
