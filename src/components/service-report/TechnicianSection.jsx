@@ -18,11 +18,15 @@ export default function TechnicianSection({ form, setForm }) {
   });
 
   useEffect(() => {
-    if (autoSelected.current || !user?.full_name || !technicians.length) return;
+    if (autoSelected.current || !user || !technicians.length) return;
     if (form.technician_id && form.technician_id !== "") return;
-    const userName = user.full_name.trim().toLowerCase();
+    const userName = (user.full_name || "").trim().toLowerCase();
+    const userEmail = (user.email || "").trim().toLowerCase();
+    // Match by name first, then by email (created_by on technician record)
     const match = technicians.find(
       (t) => t.name?.trim().toLowerCase() === userName
+    ) || technicians.find(
+      (t) => t.created_by?.trim().toLowerCase() === userEmail
     );
     if (match) {
       autoSelected.current = true;
