@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Save, Loader2 } from "lucide-react";
+import { Save, Loader2, Printer } from "lucide-react";
 import { toast } from "sonner";
 import CustomerSection from "@/components/service-report/CustomerSection";
 import TechnicianSection from "@/components/service-report/TechnicianSection";
@@ -240,6 +240,19 @@ export default function NewServiceReport() {
         {/* Submit */}
         <div className="flex justify-end gap-3 pb-8">
           <Button type="button" variant="outline" onClick={() => navigate("/reports")}>Cancel</Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="gap-2"
+            onClick={async () => {
+              const response = await base44.functions.invoke("generateBlankReport", {});
+              const blob = new Blob([response.data], { type: "application/pdf" });
+              window.open(URL.createObjectURL(blob));
+            }}
+          >
+            <Printer className="w-4 h-4" />
+            Print Blank
+          </Button>
           <Button type="submit" disabled={saveMutation.isPending} className="gap-2">
             {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             Save Report
