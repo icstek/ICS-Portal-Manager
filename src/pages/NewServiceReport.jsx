@@ -16,6 +16,7 @@ import PartsSection from "@/components/service-report/PartsSection";
 import ChargesSection from "@/components/service-report/ChargesSection";
 import EquipmentSection from "@/components/service-report/EquipmentSection";
 import SignatureCanvas from "@/components/service-report/SignatureCanvas";
+import WorkPerformedSection from "@/components/service-report/WorkPerformedSection";
 
 const initialForm = {
   report_type: "repair",
@@ -60,6 +61,7 @@ export default function NewServiceReport() {
     }).catch(() => {});
   }, []);
   const [items, setItems] = useState([]);
+  const [servicesPerformed, setServicesPerformed] = useState([]);
   const [signatureDataUrl, setSignatureDataUrl] = useState(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -111,6 +113,7 @@ export default function NewServiceReport() {
         customer_id: customerId,
         total_labor: laborCharge,
         items_replaced: items,
+        services_performed: servicesPerformed,
         labor_charge: laborCharge,
         parts_charge: partsTotal,
         sub_total: subTotal,
@@ -209,6 +212,13 @@ export default function NewServiceReport() {
         <Card>
           <CardContent className="p-6">
             <TechnicianSection form={form} setForm={setForm} />
+          </CardContent>
+        </Card>
+
+        {/* Work Performed */}
+        <Card>
+          <CardContent className="p-6">
+            <WorkPerformedSection selectedServices={servicesPerformed} onChange={setServicesPerformed} />
           </CardContent>
         </Card>
 

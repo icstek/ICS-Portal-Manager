@@ -1,0 +1,23 @@
+{
+  "name": "Service",
+  "type": "object",
+  "properties": {
+    "shortname": {
+      "type": "string",
+      "description": "Short code for the service (e.g. PCLoad, CellLoad)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Full description of what this service code means"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Is this service code currently active"
+    }
+  },
+  "required": [
+    "shortname",
+    "description"
+  ]
+}

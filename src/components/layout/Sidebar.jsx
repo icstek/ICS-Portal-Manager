@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, FileText, Users, Wrench, Package, Plus, Settings, LogOut, ShieldAlert, UserPlus } from "lucide-react";
+import { LayoutDashboard, FileText, Users, Wrench, Package, Plus, Settings, LogOut, ShieldAlert, UserPlus, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRole } from "@/hooks/useRole";
 import { useAuth } from "@/lib/AuthContext";
@@ -21,6 +21,7 @@ export default function Sidebar({ open, onClose }) {
     { label: "Customers", path: "/customers", icon: Users, always: true },
     { label: "Parts", path: "/parts", icon: Package, show: isAdmin },
     { label: "Technicians", path: "/technicians", icon: Wrench, show: !isGlobalAdmin && isAdmin },
+    { label: "Services", path: "/services", icon: Tag, show: isAdmin },
     { label: "User Management", path: "/users", icon: ShieldAlert, show: isGlobalAdmin },
   ].filter((item) => item.always || item.show);
 

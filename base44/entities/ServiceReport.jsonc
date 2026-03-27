@@ -90,6 +90,21 @@
       "type": "string",
       "description": "Technician comments / repair description"
     },
+    "services_performed": {
+      "type": "array",
+      "description": "Service codes applied to this report",
+      "items": {
+        "type": "object",
+        "properties": {
+          "shortname": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "items_replaced": {
       "type": "array",
       "description": "Parts replaced",
