@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,6 +25,14 @@ export default function Customers() {
   const pageSize = 50;
   const queryClient = useQueryClient();
   const { isAdmin, isTechnician } = useRole();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("action") === "new") {
+      openNew();
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
 
   const { data: customers = [], isLoading } = useQuery({
     queryKey: ["customers"],

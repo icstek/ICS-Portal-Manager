@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, FileText, Users, Wrench, Package, Plus, Settings, LogOut, ShieldAlert } from "lucide-react";
+import { LayoutDashboard, FileText, Users, Wrench, Package, Plus, Settings, LogOut, ShieldAlert, UserPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRole } from "@/hooks/useRole";
 import { useAuth } from "@/lib/AuthContext";
@@ -15,15 +15,19 @@ export default function Sidebar({ open, onClose }) {
   const displayName = companyName || "ICS Service Report System";
   const displayLogo = companyLogoUrl || "https://media.base44.com/images/public/69c3f70dbcee7c1afb484046/41d498c1a_ICS-Color-Logo.png";
 
-  const navItems = [
-  { label: "Dashboard", path: "/", icon: LayoutDashboard, always: true },
-  { label: "New Report", path: "/reports/new", icon: Plus, always: true },
-  { label: "Reports", path: "/reports", icon: FileText, always: true },
-  { label: "Customers", path: "/customers", icon: Users, always: true },
-  { label: "Technicians", path: "/technicians", icon: Wrench, show: !isGlobalAdmin && isAdmin },
-  { label: "Parts", path: "/parts", icon: Package, show: isAdmin },
-  { label: "User Management", path: "/users", icon: ShieldAlert, show: isGlobalAdmin }].
-  filter((item) => item.always || item.show);
+  const mainNav = [
+    { label: "Dashboard", path: "/", icon: LayoutDashboard, always: true },
+    { label: "Reports", path: "/reports", icon: FileText, always: true },
+    { label: "Customers", path: "/customers", icon: Users, always: true },
+    { label: "Parts", path: "/parts", icon: Package, show: isAdmin },
+    { label: "Technicians", path: "/technicians", icon: Wrench, show: !isGlobalAdmin && isAdmin },
+    { label: "User Management", path: "/users", icon: ShieldAlert, show: isGlobalAdmin },
+  ].filter((item) => item.always || item.show);
+
+  const quickActions = [
+    { label: "New Report", path: "/reports/new", icon: Plus },
+    { label: "Add Customer", path: "/customers?action=new", icon: UserPlus },
+  ];
 
   return (
     <>
@@ -42,28 +46,45 @@ export default function Sidebar({ open, onClose }) {
           <p className="text-foreground text-sm font-bold leading-tight">{displayName}</p>
         </div>
 
-        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-          {navItems.map((item) => {
-            const isActive = item.path === "/" ?
-            location.pathname === "/" :
-            location.pathname.startsWith(item.path);
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={onClose}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
-                  isActive ?
-                  "bg-primary text-primary-foreground shadow-sm" :
-                  "text-muted-foreground hover:text-foreground hover:bg-muted"
-                )}>
-                
-                <item.icon className="w-4 h-4" />
-                {item.label}
-              </Link>);
+        <nav className="flex-1 p-3 overflow-y-auto">
+          <div className="space-y-1">
+            {mainNav.map((item) => {
+              const isActive = item.path === "/" ?
+                location.pathname === "/" :
+                location.pathname.startsWith(item.path);
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={onClose}
+                  className={cn(
+                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+                    isActive ?
+                    "bg-primary text-primary-foreground shadow-sm" :
+                    "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  )}>
+                  <item.icon className="w-4 h-4" />
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
 
-          })}
+          <div className="mt-5">
+            <p className="px-3 mb-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Quick Actions</p>
+            <div className="space-y-1">
+              {quickActions.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={onClose}
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all">
+                  <item.icon className="w-4 h-4" />
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
         </nav>
 
         <div className="p-3 border-t border-border space-y-1">
