@@ -48,17 +48,17 @@ export default function TechnicianSection({ form, setForm }) {
         <Label className="text-xs text-muted-foreground">Service Description (Technician Comments)</Label>
         <Textarea value={form.service_description || ""} onChange={(e) => handleChange("service_description", e.target.value)} className="mt-1 min-h-[80px]" placeholder="Describe the repair work performed..." />
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 items-end">
         <div>
-          <Label className="text-xs text-muted-foreground">Total Hours</Label>
-          <Input type="number" step="0.25" value={form.total_time_hours || ""} onChange={(e) => handleChange("total_time_hours", parseFloat(e.target.value) || 0)} className="mt-1" />
+          <Label className="text-xs text-muted-foreground block mb-1">Total Hours</Label>
+          <Input type="number" step="0.25" value={form.total_time_hours || ""} onChange={(e) => handleChange("total_time_hours", parseFloat(e.target.value) || 0)} />
         </div>
         <div>
-          <Label className="text-xs text-muted-foreground">Hr. Rate ($)</Label>
-          <Input type="number" step="0.01" value={form.hourly_rate || ""} onChange={(e) => handleChange("hourly_rate", parseFloat(e.target.value) || 0)} className="mt-1" />
+          <Label className="text-xs text-muted-foreground block mb-1">Hr. Rate ($)</Label>
+          <Input type="number" step="0.01" value={form.hourly_rate || ""} onChange={(e) => handleChange("hourly_rate", parseFloat(e.target.value) || 0)} />
         </div>
         <div>
-          <div className="flex items-center gap-1.5 h-[18px]">
+          <div className="flex items-center gap-1.5 mb-1">
             <Checkbox
               id="travel-check"
               checked={travelChecked}
@@ -69,17 +69,17 @@ export default function TechnicianSection({ form, setForm }) {
             />
             <Label htmlFor="travel-check" className="text-xs text-muted-foreground cursor-pointer leading-none">Travel Charge ($)</Label>
           </div>
-          <Input type="number" step="0.01" value={form.misc_charge || ""} onChange={(e) => handleChange("misc_charge", parseFloat(e.target.value) || 0)} className="mt-1" />
+          <Input type="number" step="0.01" value={form.misc_charge || ""} onChange={(e) => handleChange("misc_charge", parseFloat(e.target.value) || 0)} />
         </div>
         <div>
-          <Label className="text-xs text-muted-foreground">Total Labor</Label>
-          <div className="mt-1 h-9 flex items-center px-3 rounded-md bg-muted text-sm font-semibold">
+          <Label className="text-xs text-muted-foreground block mb-1">Total Labor</Label>
+          <div className="h-9 flex items-center px-3 rounded-md bg-muted text-sm font-semibold">
             ${((form.total_time_hours || 0) * (form.hourly_rate || 0)).toFixed(2)}
           </div>
         </div>
         <div>
-          <Label className="text-xs text-muted-foreground">Service & Travel Charge</Label>
-          <div className="mt-1 h-9 flex items-center px-3 rounded-md bg-primary/10 text-sm font-semibold text-primary">
+          <Label className="text-xs text-muted-foreground block mb-1">Service & Travel Charge</Label>
+          <div className="h-9 flex items-center px-3 rounded-md bg-primary/10 text-sm font-semibold text-primary">
             ${((form.total_time_hours || 0) * (form.hourly_rate || 0) + (form.misc_charge || 0)).toFixed(2)}
           </div>
         </div>
