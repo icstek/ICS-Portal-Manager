@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const receivedOptions = ["computer", "printer", "laptop", "screen"];
+const receivedOptions = ["computer", "laptop"];
 
 export default function EquipmentSection({ form, setForm }) {
   const handleChange = (field, value) => setForm((f) => ({ ...f, [field]: value }));
