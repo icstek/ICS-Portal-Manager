@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Search, Users } from "lucide-react";
 import TeamMemberCard from "@/components/team/TeamMemberCard";
 import TeamChat from "@/components/team/TeamChat";
+import GeneralChat from "@/components/team/GeneralChat";
 
 export default function Team() {
   const { user } = useAuth();
@@ -69,7 +70,10 @@ export default function Team() {
         </div>
       )}
 
-      {/* Chat Drawer */}
+      {/* General Chat */}
+      <GeneralChat />
+
+      {/* DM Chat Drawer */}
       {chatMember && (
         <div className="fixed inset-y-0 right-0 w-full sm:w-96 bg-card border-l border-border shadow-xl z-50 flex flex-col">
           <TeamChat member={chatMember} onClose={() => setChatMember(null)} />
