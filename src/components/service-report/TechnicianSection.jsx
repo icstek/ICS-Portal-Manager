@@ -58,16 +58,16 @@ export default function TechnicianSection({ form, setForm }) {
           <Input type="number" step="0.01" value={form.hourly_rate || ""} onChange={(e) => handleChange("hourly_rate", parseFloat(e.target.value) || 0)} className="mt-1" />
         </div>
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 h-[18px]">
             <Checkbox
               id="travel-check"
               checked={travelChecked}
               onCheckedChange={(checked) => {
                 setTravelChecked(checked);
-                if (checked) handleChange("misc_charge", 85);
+                handleChange("misc_charge", checked ? 85 : "");
               }}
             />
-            <Label htmlFor="travel-check" className="text-xs text-muted-foreground cursor-pointer">Travel Charge ($)</Label>
+            <Label htmlFor="travel-check" className="text-xs text-muted-foreground cursor-pointer leading-none">Travel Charge ($)</Label>
           </div>
           <Input type="number" step="0.01" value={form.misc_charge || ""} onChange={(e) => handleChange("misc_charge", parseFloat(e.target.value) || 0)} className="mt-1" />
         </div>
