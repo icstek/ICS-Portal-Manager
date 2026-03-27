@@ -21,7 +21,7 @@ export default function TechnicianSection({ form, setForm }) {
         ...f,
         technician_id: t.id,
         technician_name: t.name || "",
-        hourly_rate: t.hourly_rate || f.hourly_rate || 0,
+        hourly_rate: t.hourly_rate || f.hourly_rate || 145,
       }));
     }
   };

@@ -36,7 +36,7 @@ const initialForm = {
   time_left: "",
   wait_time: 0,
   total_time_hours: 0,
-  hourly_rate: 0,
+  hourly_rate: 145,
   misc_charge: 0,
   service_description: "",
   system_password: "",
