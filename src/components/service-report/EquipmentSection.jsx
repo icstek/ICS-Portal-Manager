@@ -20,7 +20,7 @@ export default function EquipmentSection({ form, setForm }) {
 
       <div>
         <Label className="text-xs text-muted-foreground mb-2 block">Received Equipment</Label>
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           {receivedOptions.map((item) => (
             <label key={item} className="flex items-center gap-2 text-sm capitalize cursor-pointer">
               <Checkbox
@@ -30,6 +30,21 @@ export default function EquipmentSection({ form, setForm }) {
               {item}
             </label>
           ))}
+          <label className="flex items-center gap-2 text-sm cursor-pointer">
+            <Checkbox
+              checked={(form.received_items || []).includes("other")}
+              onCheckedChange={() => toggleReceived("other")}
+            />
+            Other
+          </label>
+          {(form.received_items || []).includes("other") && (
+            <Input
+              value={form.other_equipment || ""}
+              onChange={(e) => handleChange("other_equipment", e.target.value)}
+              placeholder="Describe the device..."
+              className="w-56"
+            />
+          )}
         </div>
       </div>
 
