@@ -4,8 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useState } from "react";
 
 export default function TechnicianSection({ form, setForm }) {
+  const [travelChecked, setTravelChecked] = useState(false);
   const { data: technicians = [] } = useQuery({
     queryKey: ["technicians"],
     queryFn: () => base44.entities.Technician.list("name"),
@@ -55,7 +58,17 @@ export default function TechnicianSection({ form, setForm }) {
           <Input type="number" step="0.01" value={form.hourly_rate || ""} onChange={(e) => handleChange("hourly_rate", parseFloat(e.target.value) || 0)} className="mt-1" />
         </div>
         <div>
-          <Label className="text-xs text-muted-foreground">Travel Charge ($)</Label>
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="travel-check"
+              checked={travelChecked}
+              onCheckedChange={(checked) => {
+                setTravelChecked(checked);
+                if (checked) handleChange("misc_charge", 85);
+              }}
+            />
+            <Label htmlFor="travel-check" className="text-xs text-muted-foreground cursor-pointer">Travel Charge ($)</Label>
+          </div>
           <Input type="number" step="0.01" value={form.misc_charge || ""} onChange={(e) => handleChange("misc_charge", parseFloat(e.target.value) || 0)} className="mt-1" />
         </div>
         <div>
