@@ -229,7 +229,10 @@ export default function NewServiceReport() {
 
         {/* Signature */}
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-6 space-y-3">
+            <p className="text-sm text-muted-foreground italic">
+              I have read the Terms &amp; Conditions, and agree to pay the above charges in full.
+            </p>
             <SignatureCanvas onSignatureChange={setSignatureDataUrl} />
           </CardContent>
         </Card>
