@@ -14,7 +14,10 @@ export default function Team() {
 
   const { data: members = [], isLoading } = useQuery({
     queryKey: ["team-members"],
-    queryFn: () => base44.entities.User.list(),
+    queryFn: async () => {
+      const res = await base44.functions.invoke("getTeamMembers", {});
+      return res.data.team;
+    },
   });
 
   const filtered = members.filter((m) => {
