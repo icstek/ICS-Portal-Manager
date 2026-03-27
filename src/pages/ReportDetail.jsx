@@ -30,7 +30,14 @@ export default function ReportDetail() {
       const cardElement = document.querySelector('[data-report-card]');
       if (!cardElement) return null;
 
+      // Hide elements that shouldn't appear in PDF
+      const noPrintEls = cardElement.querySelectorAll('.no-print');
+      noPrintEls.forEach(el => el.style.visibility = 'hidden');
+
       const canvas = await html2canvas(cardElement, { scale: 2, useCORS: true });
+
+      // Restore visibility
+      noPrintEls.forEach(el => el.style.visibility = '');
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       const imgWidth = 210;
@@ -262,7 +269,7 @@ export default function ReportDetail() {
                 {r.date ? format(new Date(r.date), "MMMM d, yyyy") : ""}
               </p>
             </div>
-            <div className="flex gap-2 print:hidden">
+            <div className="flex gap-2 print:hidden no-print">
               <Badge variant="outline" className="capitalize">{r.report_type}</Badge>
               <button
                 onClick={toggleStatus}
