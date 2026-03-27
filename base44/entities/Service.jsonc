@@ -19,5 +19,11 @@
   "required": [
     "shortname",
     "description"
-  ]
+  ],
+  "rls": {
+    "read": "public",
+    "create": "admin",
+    "update": "admin",
+    "delete": "admin"
+  }
 }
