@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Mail, Phone } from "lucide-react";
+import { MessageCircle, Mail, Phone, MessageSquareText } from "lucide-react";
 
 const roleLabels = {
   global_admin: "Global Admin",
@@ -43,23 +43,29 @@ export default function TeamMemberCard({ member, onChat }) {
           </div>
         </div>
 
-        <div className="flex gap-2 mt-4 pt-3 border-t border-border">
-          <Button variant="outline" size="sm" className="flex-1 gap-1.5" onClick={() => onChat(member)}>
+        <div className="grid grid-cols-4 gap-2 mt-4 pt-3 border-t border-border">
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => onChat(member)}>
             <MessageCircle className="w-3.5 h-3.5" />
             Chat
           </Button>
-          <Button variant="ghost" size="sm" asChild>
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs" asChild>
             <a href={`mailto:${member.email}`}>
               <Mail className="w-3.5 h-3.5" />
+              Email
             </a>
           </Button>
-          {member.phone && (
-            <Button variant="ghost" size="sm" asChild>
-              <a href={`tel:${member.phone}`}>
-                <Phone className="w-3.5 h-3.5" />
-              </a>
-            </Button>
-          )}
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs" asChild>
+            <a href={member.phone ? `sms:${member.phone}` : "#"} className={!member.phone ? "pointer-events-none opacity-40" : ""}>
+              <MessageSquareText className="w-3.5 h-3.5" />
+              Text
+            </a>
+          </Button>
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs" asChild>
+            <a href={member.phone ? `tel:${member.phone}` : "#"} className={!member.phone ? "pointer-events-none opacity-40" : ""}>
+              <Phone className="w-3.5 h-3.5" />
+              Call
+            </a>
+          </Button>
         </div>
       </CardContent>
     </Card>
