@@ -12,8 +12,8 @@ export default function Dashboard() {
   const { settings } = useUserSettings();
 
   const { data: reports = [] } = useQuery({
-    queryKey: ["reports"],
-    queryFn: () => base44.entities.ServiceReport.list("-created_date", 5),
+    queryKey: ["reports", "incomplete"],
+    queryFn: () => base44.entities.ServiceReport.filter({ service_status: "incomplete" }, "-created_date", 5),
   });
   const { data: customers = [] } = useQuery({
     queryKey: ["customers"],
@@ -70,7 +70,7 @@ export default function Dashboard() {
       {/* Recent Reports */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-4">
-          <CardTitle className="text-lg">Recent Reports</CardTitle>
+          <CardTitle className="text-lg">Incomplete Reports</CardTitle>
           <Link to="/reports">
             <Button variant="ghost" size="sm" className="gap-1 text-xs">
               View All <ArrowRight className="w-3 h-3" />
@@ -79,7 +79,7 @@ export default function Dashboard() {
         </CardHeader>
         <CardContent>
           {reports.length === 0 ? (
-            <p className="text-muted-foreground text-sm text-center py-8">No service reports yet. Create your first one!</p>
+            <p className="text-muted-foreground text-sm text-center py-8">No incomplete reports. All caught up!</p>
           ) : isListLayout ? (
             /* List Layout */
             <div className="divide-y divide-border">
