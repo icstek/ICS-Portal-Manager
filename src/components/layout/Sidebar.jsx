@@ -38,7 +38,7 @@ export default function Sidebar({ open, onClose }) {
             
 
             
-            <p className="text-muted-foreground text-base font-bold">Service Management</p>
+            <p className="text-muted-foreground text-base font-bold">ICS Service Report System</p>
           </div>
         </div>
 
