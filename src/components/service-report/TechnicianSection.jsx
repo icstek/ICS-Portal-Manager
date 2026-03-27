@@ -5,14 +5,33 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useAuth } from "@/lib/AuthContext";
 
 export default function TechnicianSection({ form, setForm }) {
   const [travelChecked, setTravelChecked] = useState(false);
+  const { user } = useAuth();
+  const autoSelected = useRef(false);
   const { data: technicians = [] } = useQuery({
     queryKey: ["technicians"],
     queryFn: () => base44.entities.Technician.list("name"),
   });
+
+  useEffect(() => {
+    if (autoSelected.current || !user || !technicians.length || form.technician_id) return;
+    const match = technicians.find(
+      (t) => t.name?.toLowerCase() === user.full_name?.toLowerCase()
+    );
+    if (match) {
+      autoSelected.current = true;
+      setForm((f) => ({
+        ...f,
+        technician_id: match.id,
+        technician_name: match.name || "",
+        hourly_rate: match.hourly_rate || f.hourly_rate || 145,
+      }));
+    }
+  }, [technicians, user]);
 
   const handleTechSelect = (techId) => {
     const t = technicians.find((t) => t.id === techId);
