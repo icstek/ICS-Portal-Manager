@@ -1,0 +1,31 @@
+{
+  "name": "TeamMessage",
+  "type": "object",
+  "properties": {
+    "chat_key": {
+      "type": "string",
+      "description": "Sorted pair of emails to identify the conversation"
+    },
+    "sender_email": {
+      "type": "string",
+      "description": "Email of the sender"
+    },
+    "sender_name": {
+      "type": "string",
+      "description": "Display name of the sender"
+    },
+    "recipient_email": {
+      "type": "string",
+      "description": "Email of the recipient"
+    },
+    "text": {
+      "type": "string",
+      "description": "Message content"
+    }
+  },
+  "required": [
+    "chat_key",
+    "sender_email",
+    "text"
+  ]
+}

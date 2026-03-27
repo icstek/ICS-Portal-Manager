@@ -13,7 +13,7 @@ import NewServiceReport from '@/pages/NewServiceReport';
 import Reports from '@/pages/Reports';
 import ReportDetail from '@/pages/ReportDetail';
 import Customers from '@/pages/Customers';
-import Technicians from '@/pages/Technicians';
+import Team from '@/pages/Team';
 import Parts from '@/pages/Parts';
 import Settings from '@/pages/Settings';
 import UserManagement from '@/pages/UserManagement';
@@ -54,7 +54,7 @@ const AuthenticatedApp = () => {
         <Route path="/reports" element={<Reports />} />
         <Route path="/reports/:id" element={<ReportDetail />} />
         <Route path="/customers" element={<Customers />} />
-        <Route path="/technicians" element={<Technicians />} />
+        <Route path="/team" element={<Team />} />
         <Route path="/parts" element={<Parts />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/users" element={<UserManagement />} />
