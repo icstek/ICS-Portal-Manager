@@ -22,8 +22,8 @@
   ],
   "rls": {
     "read": "public",
-    "create": "admin",
-    "update": "admin",
-    "delete": "admin"
+    "create": "authenticated",
+    "update": "authenticated",
+    "delete": "authenticated"
   }
 }
