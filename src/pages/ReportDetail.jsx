@@ -370,6 +370,14 @@ export default function ReportDetail() {
             <div className="flex justify-between font-bold text-base"><span>Total</span><span>${(r.total_charges || 0).toFixed(2)}</span></div>
           </div>
 
+          {/* Customer Signature (screen view) */}
+          {r.customer_signature_url && (
+            <div className="print:hidden">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Customer Signature</h3>
+              <img src={r.customer_signature_url} alt="Customer Signature" className="h-20 border rounded-lg p-1 bg-white" />
+            </div>
+          )}
+
           {/* Terms & Conditions (print only, full width) */}
           <div className="hidden print:block space-y-6 border-t pt-6">
             <div>
@@ -381,7 +389,11 @@ export default function ReportDetail() {
             <div className="space-y-4">
               <div className="space-y-1">
                 <p className="text-xs text-muted-foreground">Customer Signature</p>
-                <div className="h-12 border-b border-foreground"></div>
+                {r.customer_signature_url ? (
+                  <img src={r.customer_signature_url} alt="Customer Signature" className="h-16 border-b border-foreground" />
+                ) : (
+                  <div className="h-12 border-b border-foreground"></div>
+                )}
               </div>
               <div className="space-y-4">
                 <p className="text-xs text-muted-foreground">Date:</p>

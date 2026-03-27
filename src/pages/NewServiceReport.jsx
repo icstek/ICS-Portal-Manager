@@ -15,6 +15,7 @@ import TechnicianSection from "@/components/service-report/TechnicianSection";
 import PartsSection from "@/components/service-report/PartsSection";
 import ChargesSection from "@/components/service-report/ChargesSection";
 import EquipmentSection from "@/components/service-report/EquipmentSection";
+import SignatureCanvas from "@/components/service-report/SignatureCanvas";
 
 const initialForm = {
   report_type: "repair",
@@ -50,6 +51,7 @@ const initialForm = {
 export default function NewServiceReport() {
   const [form, setForm] = useState(initialForm);
   const [items, setItems] = useState([]);
+  const [signatureDataUrl, setSignatureDataUrl] = useState(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -86,6 +88,15 @@ export default function NewServiceReport() {
         customerId = newCustomer.id;
       }
 
+      // Upload signature if present
+      let customer_signature_url = null;
+      if (signatureDataUrl) {
+        const blob = await fetch(signatureDataUrl).then(r => r.blob());
+        const file = new File([blob], "signature.png", { type: "image/png" });
+        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        customer_signature_url = file_url;
+      }
+
       const reportData = {
         ...form,
         customer_id: customerId,
@@ -97,6 +108,7 @@ export default function NewServiceReport() {
         tax_amount: taxAmount,
         parts_total: partsTotal,
         total_charges: totalCharges,
+        customer_signature_url,
       };
 
       await base44.entities.ServiceReport.create(reportData);
@@ -212,6 +224,13 @@ export default function NewServiceReport() {
                 <ChargesSection form={form} setForm={setForm} partsTotal={partsTotal} />
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Signature */}
+        <Card>
+          <CardContent className="p-6">
+            <SignatureCanvas onSignatureChange={setSignatureDataUrl} />
           </CardContent>
         </Card>
 

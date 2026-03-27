@@ -171,6 +171,10 @@
     },
     "total_charges": {
       "type": "number"
+    },
+    "customer_signature_url": {
+      "type": "string",
+      "description": "URL of the customer's signature image"
     }
   },
   "required": [
