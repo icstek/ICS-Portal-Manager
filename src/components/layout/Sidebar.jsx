@@ -4,10 +4,11 @@ import { cn } from "@/lib/utils";
 import { useRole } from "@/hooks/useRole";
 import { useAuth } from "@/lib/AuthContext";
 import { base44 } from "@/api/base44Client";
+import { Navigate } from "react-router-dom";
 
 export default function Sidebar({ open, onClose }) {
   const location = useLocation();
-  const { isAdmin, isGlobalAdmin } = useRole();
+  const { isAdmin, isGlobalAdmin, isTechnician } = useRole();
   const { user } = useAuth();
 
   const navItems = [
@@ -15,10 +16,10 @@ export default function Sidebar({ open, onClose }) {
   { label: "New Report", path: "/reports/new", icon: Plus, always: true },
   { label: "Reports", path: "/reports", icon: FileText, always: true },
   { label: "Customers", path: "/customers", icon: Users, always: true },
-  { label: "Technicians", path: "/technicians", icon: Wrench, adminOnly: !isGlobalAdmin },
-  { label: "Parts", path: "/parts", icon: Package, adminOnly: true },
-  { label: "User Management", path: "/users", icon: ShieldAlert, globalAdminOnly: true }].
-  filter((item) => item.always || (item.adminOnly && isAdmin) || (item.globalAdminOnly && isGlobalAdmin));
+  { label: "Technicians", path: "/technicians", icon: Wrench, show: !isGlobalAdmin && isAdmin },
+  { label: "Parts", path: "/parts", icon: Package, show: isAdmin },
+  { label: "User Management", path: "/users", icon: ShieldAlert, show: isGlobalAdmin }].
+  filter((item) => item.always || item.show);
 
   return (
     <>

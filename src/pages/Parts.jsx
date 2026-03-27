@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Navigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,7 +24,11 @@ export default function Parts() {
   const [form, setForm] = useState({ name: "", sku: "", unit_cost: 0, stock_quantity: 0, category: "other" });
   const [selectedParts, setSelectedParts] = useState(new Set());
   const queryClient = useQueryClient();
-  const { isAdmin } = useRole();
+  const { isAdmin, isTechnician } = useRole();
+
+  if (isTechnician) {
+    return <Navigate to="/" replace />;
+  }
 
   const { data: parts = [], isLoading } = useQuery({
     queryKey: ["parts"],

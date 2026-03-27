@@ -24,7 +24,7 @@ export default function Customers() {
   const [selectedCustomerForReports, setSelectedCustomerForReports] = useState(null);
   const pageSize = 50;
   const queryClient = useQueryClient();
-  const { isAdmin } = useRole();
+  const { isAdmin, isTechnician } = useRole();
 
   const { data: customers = [], isLoading } = useQuery({
     queryKey: ["customers"],
@@ -100,9 +100,9 @@ export default function Customers() {
           <h1 className="text-2xl md:text-3xl font-bold font-inter tracking-tight">Customers</h1>
           <p className="text-muted-foreground text-sm mt-1">{customers.length} customers</p>
         </div>
-        {isAdmin && (
+        {(isAdmin || isTechnician) && (
           <div className="flex gap-2">
-            <QuickBooksImport onImported={() => queryClient.invalidateQueries({ queryKey: ["customers"] })} />
+            {isAdmin && <QuickBooksImport onImported={() => queryClient.invalidateQueries({ queryKey: ["customers"] })} />}
             <Button onClick={openNew} className="gap-2"><Plus className="w-4 h-4" /> Add Customer</Button>
           </div>
         )}
@@ -113,7 +113,7 @@ export default function Customers() {
          <Input placeholder="Search customers..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
        </div>
 
-       {filtered.length > 0 && (
+       {filtered.length > 0 && isAdmin && (
          <div className="flex items-center justify-between">
            <div className="flex items-center gap-2">
              <Checkbox 
