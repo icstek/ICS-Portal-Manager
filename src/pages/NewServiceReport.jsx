@@ -18,7 +18,7 @@ import EquipmentSection from "@/components/service-report/EquipmentSection";
 
 const initialForm = {
   report_type: "repair",
-  date: new Date().toISOString().split("T")[0],
+  date: new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" }),
   report_number: "",
   customer_id: "",
   customer_name: "",
