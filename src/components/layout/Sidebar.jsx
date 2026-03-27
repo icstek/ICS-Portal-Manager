@@ -26,9 +26,11 @@ export default function Sidebar({ open, onClose }) {
   ].filter((item) => item.always || item.show);
 
   const quickActions = [
-    { label: "New Report", path: "/reports/new", icon: Plus },
-    { label: "Add Customer", path: "/customers?action=new", icon: UserPlus },
-  ];
+    { label: "New Report", path: "/reports/new", icon: Plus, always: true },
+    { label: "Add Customer", path: "/customers?action=new", icon: UserPlus, always: true },
+    { label: "Add Part", path: "/parts?action=new", icon: Package, show: isAdmin },
+    { label: "Add Service", path: "/services?action=new", icon: Tag, show: isAdmin },
+  ].filter((item) => item.always || item.show);
 
   return (
     <>

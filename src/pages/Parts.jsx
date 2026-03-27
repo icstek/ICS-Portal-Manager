@@ -19,7 +19,8 @@ const categories = ["hardware", "cable", "peripheral", "storage", "memory", "dis
 
 export default function Parts() {
   const [search, setSearch] = useState("");
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const urlParams = new URLSearchParams(window.location.search);
+  const [dialogOpen, setDialogOpen] = useState(urlParams.get("action") === "new");
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ name: "", sku: "", unit_cost: 0, stock_quantity: 0, category: "other" });
   const [selectedParts, setSelectedParts] = useState(new Set());

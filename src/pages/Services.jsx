@@ -17,7 +17,8 @@ export default function Services() {
   const { isAdmin, isGlobalAdmin, loading } = useRole();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const urlParams = new URLSearchParams(window.location.search);
+  const [dialogOpen, setDialogOpen] = useState(urlParams.get("action") === "new");
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ shortname: "", description: "" });
 
