@@ -159,7 +159,7 @@ export default function NewServiceReport() {
               </div>
               <div className="flex-[2]">
                 <Label className="text-xs text-muted-foreground">Memo</Label>
-                <Input value={form.memo || ""} onChange={(e) => setForm((f) => ({ ...f, memo: e.target.value }))} className="mt-1" placeholder="Short description (internal only)..." />
+                <Input value={form.memo || ""} onChange={(e) => setForm((f) => ({ ...f, memo: e.target.value }))} className="mt-1" placeholder="Short description (Internal only)..." />
               </div>
               <div>
                 <Label className="text-xs text-muted-foreground">Date</Label>
