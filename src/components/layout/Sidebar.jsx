@@ -16,7 +16,7 @@ export default function Sidebar({ open, onClose }) {
   { label: "Reports", path: "/reports", icon: FileText, always: true },
   { label: "Customers", path: "/customers", icon: Users, always: true },
   { label: "Technicians", path: "/technicians", icon: Wrench, adminOnly: !isGlobalAdmin },
-  { label: "Parts", path: "/parts", icon: Package, adminOnly: !isGlobalAdmin },
+  { label: "Parts", path: "/parts", icon: Package, adminOnly: true },
   { label: "User Management", path: "/users", icon: ShieldAlert, globalAdminOnly: true }].
   filter((item) => item.always || (item.adminOnly && isAdmin) || (item.globalAdminOnly && isGlobalAdmin));
 
