@@ -95,9 +95,6 @@ export default function Dashboard() {
                     <Badge variant={r.service_status === "complete" ? "default" : "secondary"} className="text-[10px] hidden sm:inline-flex">
                       {r.service_status || "pending"}
                     </Badge>
-                    {r.total_charges != null && (
-                      <span className="text-sm font-semibold">${r.total_charges.toFixed(2)}</span>
-                    )}
                   </div>
                 </Link>
               ))}
@@ -120,9 +117,6 @@ export default function Dashboard() {
                     <Badge variant={r.service_status === "complete" ? "default" : "secondary"} className="text-[10px]">
                       {r.service_status || "pending"}
                     </Badge>
-                    {r.total_charges != null && (
-                      <span className="text-xs font-semibold">${r.total_charges.toFixed(2)}</span>
-                    )}
                   </div>
                 </Link>
               ))}
