@@ -1,11 +1,20 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function TechnicianSection({ form, setForm }) {
+  const [travelEnabled, setTravelEnabled] = useState(() => (form.travel_charge || 0) > 0);
+
+  const handleTravelToggle = (checked) => {
+    setTravelEnabled(checked);
+    setForm((f) => ({ ...f, travel_charge: checked ? 85 : 0 }));
+  };
+
   const { data: technicians = [] } = useQuery({
     queryKey: ["technicians"],
     queryFn: () => base44.entities.Technician.list("name"),
@@ -55,8 +64,13 @@ export default function TechnicianSection({ form, setForm }) {
           <Input type="number" step="0.01" value={form.hourly_rate || ""} onChange={(e) => handleChange("hourly_rate", parseFloat(e.target.value) || 0)} className="mt-1" />
         </div>
         <div>
-          <Label className="text-xs text-muted-foreground">Travel Charge ($)</Label>
-          <Input type="number" step="0.01" value={form.misc_charge || ""} onChange={(e) => handleChange("misc_charge", parseFloat(e.target.value) || 0)} className="mt-1" />
+          <div className="flex items-center gap-2 mb-1">
+            <Checkbox id="travel-check" checked={travelEnabled} onCheckedChange={handleTravelToggle} />
+            <Label htmlFor="travel-check" className="text-xs text-muted-foreground cursor-pointer">Travel Charge ($)</Label>
+          </div>
+          {travelEnabled && (
+            <Input type="number" step="0.01" value={form.travel_charge ?? 85} onChange={(e) => handleChange("travel_charge", parseFloat(e.target.value) || 0)} className="mt-1" />
+          )}
         </div>
         <div>
           <Label className="text-xs text-muted-foreground">Total Labor</Label>
@@ -67,7 +81,7 @@ export default function TechnicianSection({ form, setForm }) {
         <div>
           <Label className="text-xs text-muted-foreground">Service & Travel Charge</Label>
           <div className="mt-1 h-9 flex items-center px-3 rounded-md bg-primary/10 text-sm font-semibold text-primary">
-            ${((form.total_time_hours || 0) * (form.hourly_rate || 0) + (form.misc_charge || 0)).toFixed(2)}
+            ${((form.total_time_hours || 0) * (form.hourly_rate || 0) + (form.travel_charge || 0)).toFixed(2)}
           </div>
         </div>
       </div>
