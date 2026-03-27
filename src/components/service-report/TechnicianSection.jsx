@@ -5,25 +5,45 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useAuth } from "@/lib/AuthContext";
 
 export default function TechnicianSection({ form, setForm }) {
   const [travelChecked, setTravelChecked] = useState(false);
   const { user } = useAuth();
   const autoSelected = useRef(false);
+  const isGlobalAdmin = user?.role === "global_admin";
+
   const { data: technicians = [] } = useQuery({
     queryKey: ["technicians"],
     queryFn: () => base44.entities.Technician.list("name"),
   });
 
+  const { data: allUsers = [] } = useQuery({
+    queryKey: ["allUsers"],
+    queryFn: () => base44.entities.User.list("full_name"),
+    enabled: isGlobalAdmin,
+  });
+
+  // For global admins, merge technicians + users (deduplicate by name)
+  const techOptions = useMemo(() => {
+    if (!isGlobalAdmin) return technicians.map((t) => ({ id: t.id, name: t.name, hourly_rate: t.hourly_rate, source: "tech" }));
+    const options = technicians.map((t) => ({ id: t.id, name: t.name, hourly_rate: t.hourly_rate, source: "tech" }));
+    const techNames = new Set(options.map((o) => o.name?.trim().toLowerCase()));
+    allUsers.forEach((u) => {
+      if (!techNames.has(u.full_name?.trim().toLowerCase())) {
+        options.push({ id: `user_${u.id}`, name: u.full_name, hourly_rate: null, source: "user" });
+      }
+    });
+    return options;
+  }, [technicians, allUsers, isGlobalAdmin]);
+
   useEffect(() => {
-    if (autoSelected.current || !user || !technicians.length) return;
+    if (autoSelected.current || !user || !techOptions.length) return;
     if (form.technician_id && form.technician_id !== "") return;
     const userName = (user.full_name || "").trim().toLowerCase();
     const userEmail = (user.email || "").trim().toLowerCase();
-    // Match by name first, then by email (created_by on technician record)
-    const match = technicians.find(
+    const match = techOptions.find(
       (t) => t.name?.trim().toLowerCase() === userName
     ) || technicians.find(
       (t) => t.created_by?.trim().toLowerCase() === userEmail
@@ -37,16 +57,16 @@ export default function TechnicianSection({ form, setForm }) {
         hourly_rate: match.hourly_rate || f.hourly_rate || 145,
       }));
     }
-  }, [technicians, user]);
+  }, [techOptions, user]);
 
-  const handleTechSelect = (techId) => {
-    const t = technicians.find((t) => t.id === techId);
-    if (t) {
+  const handleTechSelect = (optionId) => {
+    const opt = techOptions.find((o) => o.id === optionId);
+    if (opt) {
       setForm((f) => ({
         ...f,
-        technician_id: t.id,
-        technician_name: t.name || "",
-        hourly_rate: t.hourly_rate || f.hourly_rate || 145,
+        technician_id: opt.id,
+        technician_name: opt.name || "",
+        hourly_rate: opt.hourly_rate || f.hourly_rate || 145,
       }));
     }
   };
@@ -63,8 +83,8 @@ export default function TechnicianSection({ form, setForm }) {
             <SelectValue placeholder="Select technician..." />
           </SelectTrigger>
           <SelectContent>
-            {technicians.map((t) => (
-              <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+            {techOptions.map((o) => (
+              <SelectItem key={o.id} value={o.id}>{o.name}</SelectItem>
             ))}
           </SelectContent>
         </Select>
