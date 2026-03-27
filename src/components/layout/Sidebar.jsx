@@ -3,13 +3,17 @@ import { LayoutDashboard, FileText, Users, Wrench, Package, Plus, Settings, LogO
 import { cn } from "@/lib/utils";
 import { useRole } from "@/hooks/useRole";
 import { useAuth } from "@/lib/AuthContext";
+import { useBranding } from "@/lib/BrandingContext";
 import { base44 } from "@/api/base44Client";
-import { Navigate } from "react-router-dom";
 
 export default function Sidebar({ open, onClose }) {
   const location = useLocation();
   const { isAdmin, isGlobalAdmin, isTechnician } = useRole();
   const { user } = useAuth();
+  const { companyName, companyLogoUrl } = useBranding();
+
+  const displayName = companyName || "ICS Service Report System";
+  const displayLogo = companyLogoUrl || "https://media.base44.com/images/public/69c3f70dbcee7c1afb484046/41d498c1a_ICS-Color-Logo.png";
 
   const navItems = [
   { label: "Dashboard", path: "/", icon: LayoutDashboard, always: true },
@@ -32,16 +36,10 @@ export default function Sidebar({ open, onClose }) {
       )}>
         <div className="p-4 border-b border-border flex items-center gap-3">
           <img
-            src="https://media.base44.com/images/public/69c3f70dbcee7c1afb484046/41d498c1a_ICS-Color-Logo.png"
-            alt="ICS Inc."
-            className="w-16 h-16 rounded-lg object-contain bg-white" />
-          
-          <div>
-            
-
-            
-            <p className="text-muted-foreground text-base font-bold">ICS Service Report System</p>
-          </div>
+            src={displayLogo}
+            alt={displayName}
+            className="w-14 h-14 rounded-lg object-contain bg-white p-1" />
+          <p className="text-foreground text-sm font-bold leading-tight">{displayName}</p>
         </div>
 
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto">

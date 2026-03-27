@@ -4,10 +4,14 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Sidebar from "./Sidebar";
 import { useUserSettings } from "@/hooks/useUserSettings";
+import { useBranding } from "@/lib/BrandingContext";
 
 export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   useUserSettings(); // Initialize dark mode on mount
+  const { companyName, companyLogoUrl } = useBranding();
+  const displayName = companyName || "ICS";
+  const displayLogo = companyLogoUrl || "https://media.base44.com/images/public/69c3f70dbcee7c1afb484046/41d498c1a_ICS-Color-Logo.png";
 
   return (
     <div className="min-h-screen bg-background font-inter flex">
@@ -18,11 +22,11 @@ export default function AppLayout() {
             <Menu className="w-5 h-5" />
           </Button>
           <img
-            src="https://media.base44.com/images/public/69c3f70dbcee7c1afb484046/41d498c1a_ICS-Color-Logo.png"
-            alt="ICS Inc."
+            src={displayLogo}
+            alt={displayName}
             className="w-8 h-8 rounded-md object-contain bg-white"
           />
-          <h1 className="text-lg font-bold font-inter">ICS<span className="text-primary">,</span> Inc.</h1>
+          <h1 className="text-lg font-bold font-inter">{displayName}</h1>
         </header>
         <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto">
           <Outlet />

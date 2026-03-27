@@ -7,10 +7,12 @@ import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import { Loader2, Save, Globe } from "lucide-react";
 import CompanyBrandingSettings from "@/components/settings/CompanyBrandingSettings";
+import { useBranding } from "@/lib/BrandingContext";
 
 export default function GlobalSettingsPanel() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const { refresh: refreshBranding } = useBranding();
   const [settingsId, setSettingsId] = useState(null);
   const [form, setForm] = useState({
     default_hourly_rate: 145,
@@ -59,6 +61,7 @@ export default function GlobalSettingsPanel() {
         setSettingsId(created.id);
       }
       toast.success("Global settings saved");
+      refreshBranding();
     } catch (e) {
       toast.error("Failed to save settings");
     } finally {
