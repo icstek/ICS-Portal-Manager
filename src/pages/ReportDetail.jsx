@@ -176,6 +176,20 @@ export default function ReportDetail() {
     },
   });
 
+  const statusMutation = useMutation({
+    mutationFn: (newStatus) => base44.entities.ServiceReport.update(id, { service_status: newStatus }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["report", id] });
+      queryClient.invalidateQueries({ queryKey: ["reports"] });
+      toast.success("Status updated");
+    },
+  });
+
+  const toggleStatus = () => {
+    const newStatus = r?.service_status === "complete" ? "incomplete" : "complete";
+    statusMutation.mutate(newStatus);
+  };
+
   const { data: report, isLoading } = useQuery({
     queryKey: ["report", id],
     queryFn: async () => {
@@ -250,7 +264,19 @@ export default function ReportDetail() {
             </div>
             <div className="flex gap-2 print:hidden">
               <Badge variant="outline" className="capitalize">{r.report_type}</Badge>
-              <Badge variant={r.service_status === "complete" ? "default" : "secondary"} className="capitalize">{r.service_status}</Badge>
+              <button
+                onClick={toggleStatus}
+                disabled={statusMutation.isPending}
+                title="Click to toggle status"
+                className="cursor-pointer"
+              >
+                <Badge
+                  variant={r.service_status === "complete" ? "default" : "secondary"}
+                  className="capitalize hover:opacity-75 transition-opacity"
+                >
+                  {statusMutation.isPending ? "Updating..." : r.service_status}
+                </Badge>
+              </button>
             </div>
           </div>
         </CardHeader>
