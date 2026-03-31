@@ -106,7 +106,7 @@ export default function GlobalSettingsPanel() {
               <Label className="text-sm">API Key</Label>
               <Input
                 type="password"
-                placeholder="re_xxxxxxxxxxxx"
+                placeholder="xxxxxxxxxxxx"
                 value={form.resend_api_key}
                 onChange={(e) => setForm({ ...form, resend_api_key: e.target.value })}
                 className="mt-1"
