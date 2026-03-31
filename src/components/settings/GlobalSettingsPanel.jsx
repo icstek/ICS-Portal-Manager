@@ -100,10 +100,10 @@ export default function GlobalSettingsPanel() {
         </div>
 
         <div className="pt-2 border-t">
-          <p className="text-sm font-medium mb-3">Email Configuration (Resend)</p>
+          <p className="text-sm font-medium mb-3">Email Configuration</p>
           <div className="space-y-3">
             <div>
-              <Label className="text-sm">Resend API Key</Label>
+              <Label className="text-sm">API Key</Label>
               <Input
                 type="password"
                 placeholder="re_xxxxxxxxxxxx"
