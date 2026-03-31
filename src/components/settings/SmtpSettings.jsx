@@ -106,21 +106,21 @@ export default function SmtpSettings() {
       <CardHeader>
         <div className="flex items-center gap-2">
           <Mail className="w-5 h-5" />
-          <CardTitle>Email Configuration (Resend)</CardTitle>
+          <CardTitle>Email Configuration</CardTitle>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-3">
           <div>
-            <label className="text-sm font-medium">Resend API Key</label>
+            <label className="text-sm font-medium">API Key</label>
             <input
               type="password"
-              placeholder="re_xxxxxxxxxxxx"
+              placeholder="xxxxxxxxxxxx"
               value={smtpConfig.apiKey}
               onChange={(e) => handleInputChange('apiKey', e.target.value)}
               className="w-full mt-1 px-3 py-2 border rounded-md text-sm"
             />
-            <p className="text-xs text-muted-foreground mt-1">Get your API key from <a href="https://resend.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">resend.com</a></p>
+            
           </div>
 
           <div>
