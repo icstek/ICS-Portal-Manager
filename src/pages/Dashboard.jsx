@@ -54,7 +54,7 @@ export default function Dashboard() {
   const stats = [
     { label: "Service Reports", value: allReports.length, icon: FileText, color: "text-primary", href: "/reports" },
     { label: "Customers", value: customers.length, icon: Users, color: "text-emerald-500", href: "/customers" },
-    { label: "Technicians", value: technicians.length, icon: Wrench, color: "text-amber-500", href: "/technicians" },
+    { label: "Technicians", value: technicians.length, icon: Wrench, color: "text-amber-500", href: "/team" },
     { label: "Parts in Catalog", value: parts.length, icon: Package, color: "text-violet-500", href: "/parts" },
   ];
 
