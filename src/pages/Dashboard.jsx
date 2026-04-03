@@ -44,7 +44,10 @@ export default function Dashboard() {
   });
   const { data: technicians = [] } = useQuery({
     queryKey: ["technicians"],
-    queryFn: () => base44.entities.Technician.list("name", 999999),
+    queryFn: async () => {
+      const res = await base44.functions.invoke("getTeamMembers", {});
+      return res.data.team;
+    },
   });
   const { data: parts = [] } = useQuery({
     queryKey: ["parts"],
