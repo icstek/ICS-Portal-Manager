@@ -118,6 +118,9 @@
           "part_name": {
             "type": "string"
           },
+          "part_description": {
+            "type": "string"
+          },
           "part_id": {
             "type": "string"
           },

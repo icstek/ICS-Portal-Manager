@@ -14,7 +14,7 @@ export default function PartsSection({ items, setItems }) {
   });
 
   const addItem = () => {
-    setItems([...items, { part_name: "", part_id: "", qty: 1, unit_cost: 0, total: 0 }]);
+    setItems([...items, { part_name: "", part_description: "", part_id: "", qty: 1, unit_cost: 0, total: 0 }]);
   };
 
   const removeItem = (idx) => {
@@ -38,6 +38,7 @@ export default function PartsSection({ items, setItems }) {
         ...updated[idx],
         part_id: p.id,
         part_name: p.name,
+        part_description: p.sku || "",
         unit_cost: p.unit_cost || 0,
         total: (updated[idx].qty || 1) * (p.unit_cost || 0),
       };
@@ -69,7 +70,8 @@ export default function PartsSection({ items, setItems }) {
       )}
       {items.length > 0 && (
         <div className="grid grid-cols-12 gap-2 px-1">
-          <div className="col-span-12 md:col-span-4"><Label className="text-xs text-muted-foreground">Part</Label></div>
+          <div className="col-span-12 md:col-span-2"><Label className="text-xs text-muted-foreground">Part Name</Label></div>
+          <div className="col-span-12 md:col-span-2"><Label className="text-xs text-muted-foreground">Description</Label></div>
           <div className="col-span-4 md:col-span-2"><Label className="text-xs text-muted-foreground">Qty</Label></div>
           <div className="col-span-4 md:col-span-2"><Label className="text-xs text-muted-foreground">Unit Cost</Label></div>
           <div className="col-span-3 md:col-span-3"><Label className="text-xs text-muted-foreground">Total</Label></div>
@@ -78,13 +80,13 @@ export default function PartsSection({ items, setItems }) {
       )}
       {items.map((item, idx) => (
         <div key={idx} className="grid grid-cols-12 gap-2 items-center">
-          <div className="col-span-12 md:col-span-4">
+          <div className="col-span-12 md:col-span-2">
             <div className="relative">
                 {!item.part_name ? (
                   <>
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
-                      placeholder="Search part by name or SKU..."
+                      placeholder="Search part..."
                       value={searches[idx] || ""}
                       onChange={(e) => setSearches({ ...searches, [idx]: e.target.value })}
                       className="pl-9"
@@ -116,6 +118,14 @@ export default function PartsSection({ items, setItems }) {
                   />
                 )}
               </div>
+          </div>
+          <div className="col-span-12 md:col-span-2">
+            <Input
+              placeholder="Description..."
+              value={item.part_description || ""}
+              onChange={(e) => updateItem(idx, "part_description", e.target.value)}
+              className="text-sm"
+            />
           </div>
           <div className="col-span-4 md:col-span-2">
             <Input type="number" min="1" value={item.qty || ""} onChange={(e) => updateItem(idx, "qty", parseInt(e.target.value) || 0)} />
