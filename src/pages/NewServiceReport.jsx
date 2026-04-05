@@ -17,6 +17,7 @@ import ChargesSection from "@/components/service-report/ChargesSection";
 import EquipmentSection from "@/components/service-report/EquipmentSection";
 import SignatureCanvas from "@/components/service-report/SignatureCanvas";
 import WorkPerformedSection from "@/components/service-report/WorkPerformedSection";
+import { downloadIncompleteReportICS } from "@/lib/generateICS";
 
 const initialForm = {
   report_type: "repair",
@@ -132,6 +133,20 @@ export default function NewServiceReport() {
       queryClient.invalidateQueries({ queryKey: ["reports"] });
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       toast.success("Service report saved successfully!");
+
+      if (form.service_status === "incomplete") {
+        downloadIncompleteReportICS({
+          reportNumber: form.report_number,
+          customerName: form.customer_name,
+          customerAddress: form.customer_address,
+          customerCity: form.customer_city,
+          date: form.date,
+          problemDescription: form.problem_description,
+          technicianName: form.technician_name,
+        });
+        toast.info("Calendar follow-up file downloaded for incomplete report.");
+      }
+
       navigate("/reports");
     },
   });
