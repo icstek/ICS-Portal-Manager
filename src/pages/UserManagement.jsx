@@ -25,9 +25,6 @@ const ROLES = [
 export default function UserManagement() {
   const { isGlobalAdmin, loading: roleLoading } = useRole();
   const { user: currentUser } = useAuth();
-
-  if (!roleLoading && !isGlobalAdmin) return <Navigate to="/" replace />;
-
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ full_name: "", role: "technician", disabled: false });
@@ -47,6 +44,8 @@ export default function UserManagement() {
     },
     onError: () => toast.error("Failed to update user"),
   });
+
+  if (!roleLoading && !isGlobalAdmin) return <Navigate to="/" replace />;
 
   const openEdit = (u) => {
     setEditing(u);

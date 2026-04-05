@@ -18,6 +18,7 @@ import Parts from '@/pages/Parts';
 import Settings from '@/pages/Settings';
 import UserManagement from '@/pages/UserManagement';
 import Services from '@/pages/Services';
+import EditServiceReport from '@/pages/EditServiceReport';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -53,6 +54,7 @@ const AuthenticatedApp = () => {
         <Route path="/reports/new" element={<NewServiceReport />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/reports/:id" element={<ReportDetail />} />
+        <Route path="/reports/:id/edit" element={<EditServiceReport />} />
         <Route path="/customers" element={<Customers />} />
         <Route path="/team" element={<Team />} />
         <Route path="/parts" element={<Parts />} />

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Printer, Trash2, Download, Mail, AlertCircle, CheckCircle2, ChevronDown, Paperclip } from "lucide-react";
+import { ArrowLeft, Printer, Trash2, Download, Mail, AlertCircle, CheckCircle2, ChevronDown, Paperclip, Pencil } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useState } from "react";
@@ -18,7 +18,7 @@ export default function ReportDetail() {
   const params = new URLSearchParams(window.location.search);
   const id = window.location.pathname.split("/").pop();
   const navigate = useNavigate();
-  const { isAdmin } = useRole();
+  const { isAdmin, isGlobalAdmin } = useRole();
   const queryClient = useQueryClient();
   const [showEmailDialog, setShowEmailDialog] = useState(false);
   const [emailData, setEmailData] = useState({ to: '', cc: '', subject: '', body: '' });
@@ -235,6 +235,11 @@ export default function ReportDetail() {
           <Button variant="outline" onClick={openEmailDialog} className="gap-2">
             <Mail className="w-4 h-4" /> Email
           </Button>
+          {isGlobalAdmin && (
+            <Button variant="outline" onClick={() => navigate(`/reports/${id}/edit`)} className="gap-2">
+              <Pencil className="w-4 h-4" /> Edit
+            </Button>
+          )}
           <Button variant="outline" onClick={handleExportPDF} className="gap-2">
             <Download className="w-4 h-4" /> Export to PDF
           </Button>

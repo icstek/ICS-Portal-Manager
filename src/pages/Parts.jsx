@@ -27,10 +27,6 @@ export default function Parts() {
   const queryClient = useQueryClient();
   const { isAdmin, isTechnician } = useRole();
 
-  if (isTechnician) {
-    return <Navigate to="/" replace />;
-  }
-
   const { data: parts = [], isLoading } = useQuery({
     queryKey: ["parts"],
     queryFn: () => base44.entities.Part.list("name"),
@@ -67,6 +63,10 @@ export default function Parts() {
       toast.success(`${selectedParts.size} part(s) deleted`);
     },
   });
+
+  if (isTechnician) {
+    return <Navigate to="/" replace />;
+  }
 
   const openNew = () => { setEditing(null); setForm({ name: "", sku: "", unit_cost: 0, stock_quantity: 0, category: "other" }); setDialogOpen(true); };
   const openEdit = (p) => { setEditing(p); setForm({ name: p.name || "", sku: p.sku || "", unit_cost: p.unit_cost || 0, stock_quantity: p.stock_quantity || 0, category: p.category || "other" }); setDialogOpen(true); };
