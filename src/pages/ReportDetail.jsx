@@ -18,7 +18,7 @@ export default function ReportDetail() {
   const params = new URLSearchParams(window.location.search);
   const id = window.location.pathname.split("/").pop();
   const navigate = useNavigate();
-  const { isAdmin, isGlobalAdmin } = useRole();
+  const { isAdmin, isGlobalAdmin, isTechnician } = useRole();
   const queryClient = useQueryClient();
   const [showEmailDialog, setShowEmailDialog] = useState(false);
   const [emailData, setEmailData] = useState({ to: '', cc: '', subject: '', body: '' });
@@ -235,7 +235,7 @@ export default function ReportDetail() {
           <Button variant="outline" onClick={openEmailDialog} className="gap-2">
             <Mail className="w-4 h-4" /> Email
           </Button>
-          {isGlobalAdmin && (
+          {(isGlobalAdmin || (isTechnician && r.service_status === "incomplete")) && (
             <Button variant="outline" onClick={() => navigate(`/reports/${id}/edit`)} className="gap-2">
               <Pencil className="w-4 h-4" /> Edit
             </Button>

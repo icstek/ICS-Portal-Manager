@@ -22,7 +22,7 @@ import WorkPerformedSection from "@/components/service-report/WorkPerformedSecti
 export default function EditServiceReport() {
   const id = window.location.pathname.split("/").filter(Boolean).find((_, i, arr) => arr[i - 1] === "edit" || arr[i - 1] === "reports") || window.location.pathname.split("/")[2];
   const navigate = useNavigate();
-  const { isGlobalAdmin, loading: roleLoading } = useRole();
+  const { isGlobalAdmin, isTechnician, loading: roleLoading } = useRole();
   const queryClient = useQueryClient();
 
   const [form, setForm] = useState(null);
@@ -119,20 +119,13 @@ export default function EditServiceReport() {
     },
   });
 
-  // Guard: only global admins
+  const canEdit = isGlobalAdmin || (isTechnician && report?.service_status === "incomplete");
+
+  // Guard: check permissions
   if (roleLoading || isLoading) {
     return (
       <div className="flex justify-center py-12">
         <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (!isGlobalAdmin) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">You don't have permission to edit reports.</p>
-        <Button variant="outline" onClick={() => navigate(-1)} className="mt-4">Go Back</Button>
       </div>
     );
   }
@@ -142,6 +135,17 @@ export default function EditServiceReport() {
       <div className="text-center py-12">
         <p className="text-muted-foreground">Report not found</p>
         <Button variant="outline" onClick={() => navigate("/reports")} className="mt-4">Back to Reports</Button>
+      </div>
+    );
+  }
+
+  if (!canEdit) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-muted-foreground">
+          {isTechnician ? "You can only edit reports with Incomplete status." : "You don't have permission to edit reports."}
+        </p>
+        <Button variant="outline" onClick={() => navigate(-1)} className="mt-4">Go Back</Button>
       </div>
     );
   }
@@ -171,7 +175,9 @@ export default function EditServiceReport() {
           <h1 className="text-2xl md:text-3xl font-bold font-inter tracking-tight">
             Edit Report #{form.report_number}
           </h1>
-          <p className="text-muted-foreground text-sm mt-1">Editing as Global Admin</p>
+          <p className="text-muted-foreground text-sm mt-1">
+            {isGlobalAdmin ? "Editing as Global Admin" : "Editing Incomplete Report"}
+          </p>
         </div>
       </div>
 
