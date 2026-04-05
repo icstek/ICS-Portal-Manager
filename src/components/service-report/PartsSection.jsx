@@ -109,7 +109,11 @@ export default function PartsSection({ items, setItems }) {
                     )}
                   </>
                 ) : (
-                  <div className="text-sm font-medium">{item.part_name}</div>
+                  <Input
+                    value={item.part_name}
+                    onChange={(e) => updateItem(idx, "part_name", e.target.value)}
+                    className="text-sm font-medium"
+                  />
                 )}
               </div>
           </div>
