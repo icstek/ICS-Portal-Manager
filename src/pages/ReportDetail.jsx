@@ -18,8 +18,7 @@ export default function ReportDetail() {
   const params = new URLSearchParams(window.location.search);
   const id = window.location.pathname.split("/").pop();
   const navigate = useNavigate();
-  const { isAdmin, isGlobalAdmin, user: roleUser } = useRole();
-  console.log("ROLE DEBUG:", { role: roleUser?.role, isGlobalAdmin, isAdmin, email: roleUser?.email });
+  const { isAdmin, isGlobalAdmin } = useRole();
   const queryClient = useQueryClient();
   const [showEmailDialog, setShowEmailDialog] = useState(false);
   const [emailData, setEmailData] = useState({ to: '', cc: '', subject: '', body: '' });
