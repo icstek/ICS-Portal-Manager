@@ -11,7 +11,7 @@ import { toast } from "sonner";
 export default function CustomerSection({ form, setForm }) {
   const [search, setSearch] = useState("");
   const [showQuickAdd, setShowQuickAdd] = useState(false);
-  const [quickAddForm, setQuickAddForm] = useState({ name: "", address: "", city: "", zip: "", tel: "", cell: "", email: "" });
+  const [quickAddForm, setQuickAddForm] = useState({ name: "", address: "", address2: "", city: "", zip: "", tel: "", cell: "", email: "" });
   const queryClient = useQueryClient();
 
   const { data: customers = [] } = useQuery({
@@ -25,7 +25,7 @@ export default function CustomerSection({ form, setForm }) {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       handleCustomerSelect(newCustomer.id);
       setShowQuickAdd(false);
-      setQuickAddForm({ name: "", address: "", city: "", zip: "", tel: "", cell: "", email: "" });
+      setQuickAddForm({ name: "", address: "", address2: "", city: "", zip: "", tel: "", cell: "", email: "" });
       toast.success("Customer added");
     },
   });
@@ -38,6 +38,7 @@ export default function CustomerSection({ form, setForm }) {
         customer_id: c.id,
         customer_name: c.name || "",
         customer_address: c.address || "",
+        customer_address2: c.address2 || "",
         customer_city: c.city || "",
         customer_zip: c.zip || "",
         customer_tel: c.tel || "",
@@ -108,6 +109,10 @@ export default function CustomerSection({ form, setForm }) {
             <Input value={form.customer_address || ""} disabled className="mt-1" />
           </div>
           <div>
+            <Label className="text-xs text-muted-foreground">Address Line 2</Label>
+            <Input value={form.customer_address2 || ""} disabled className="mt-1" />
+          </div>
+          <div>
             <Label className="text-xs text-muted-foreground">City</Label>
             <Input value={form.customer_city || ""} disabled className="mt-1" />
           </div>
@@ -145,15 +150,24 @@ export default function CustomerSection({ form, setForm }) {
                />
              </div>
              <div>
-               <Label className="text-xs">Address</Label>
-               <Input
-                 value={quickAddForm.address}
-                 onChange={(e) => setQuickAddForm({ ...quickAddForm, address: e.target.value })}
-                 className="mt-1"
-               />
-             </div>
-             <div>
-               <Label className="text-xs">City</Label>
+                <Label className="text-xs">Address</Label>
+                <Input
+                  value={quickAddForm.address}
+                  onChange={(e) => setQuickAddForm({ ...quickAddForm, address: e.target.value })}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Address Line 2</Label>
+                <Input
+                  value={quickAddForm.address2}
+                  onChange={(e) => setQuickAddForm({ ...quickAddForm, address2: e.target.value })}
+                  className="mt-1"
+                  placeholder="Suite, unit, floor, etc."
+                />
+              </div>
+              <div>
+                <Label className="text-xs">City</Label>
                <Input
                  value={quickAddForm.city}
                  onChange={(e) => setQuickAddForm({ ...quickAddForm, city: e.target.value })}
