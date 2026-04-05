@@ -321,8 +321,12 @@ export default function ReportDetail() {
               {r.time_arrive && <div><span className="text-muted-foreground">Arrive:</span> {r.time_arrive}</div>}
               {r.time_left && <div><span className="text-muted-foreground">Left:</span> {r.time_left}</div>}
               <div><span className="text-muted-foreground">Hours:</span> {r.total_time_hours || 0}</div>
-              <div><span className="text-muted-foreground">Rate:</span> ${r.hourly_rate || 0}/hr</div>
-              <div><span className="text-muted-foreground">Labor:</span> <span className="font-medium">${(r.labor_charge || 0).toFixed(2)}</span></div>
+              {(isGlobalAdmin || r.service_status !== "complete") && (
+                <div><span className="text-muted-foreground">Rate:</span> ${r.hourly_rate || 0}/hr</div>
+              )}
+              {(isGlobalAdmin || r.service_status !== "complete") && (
+                <div><span className="text-muted-foreground">Labor:</span> <span className="font-medium">${(r.labor_charge || 0).toFixed(2)}</span></div>
+              )}
             </div>
           </div>
 
@@ -344,8 +348,8 @@ export default function ReportDetail() {
                     <tr>
                       <th className="text-left p-2 font-medium">Part</th>
                       <th className="text-right p-2 font-medium">Qty</th>
-                      <th className="text-right p-2 font-medium">Unit Cost</th>
-                      <th className="text-right p-2 font-medium">Total</th>
+                      {(isGlobalAdmin || r.service_status !== "complete") && <th className="text-right p-2 font-medium">Unit Cost</th>}
+                      {(isGlobalAdmin || r.service_status !== "complete") && <th className="text-right p-2 font-medium">Total</th>}
                     </tr>
                   </thead>
                   <tbody>
@@ -353,8 +357,8 @@ export default function ReportDetail() {
                       <tr key={i} className="border-t">
                         <td className="p-2">{item.part_name}</td>
                         <td className="p-2 text-right">{item.qty}</td>
-                        <td className="p-2 text-right">${(item.unit_cost || 0).toFixed(2)}</td>
-                        <td className="p-2 text-right font-medium">${(item.total || 0).toFixed(2)}</td>
+                        {(isGlobalAdmin || r.service_status !== "complete") && <td className="p-2 text-right">${(item.unit_cost || 0).toFixed(2)}</td>}
+                        {(isGlobalAdmin || r.service_status !== "complete") && <td className="p-2 text-right font-medium">${(item.total || 0).toFixed(2)}</td>}
                       </tr>
                     ))}
                   </tbody>
@@ -363,17 +367,19 @@ export default function ReportDetail() {
             </div>
           )}
 
-          {/* Charges Summary */}
-          <div className="bg-muted/50 rounded-lg p-4 space-y-2">
-            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Labor</span><span>${((r.labor_charge || 0) - (r.travel_charge ? 0 : (r.misc_charge || 0))).toFixed(2)}</span></div>
-            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Parts</span><span>${(r.parts_charge || 0).toFixed(2)}</span></div>
-            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Travel</span><span>${(r.travel_charge || r.misc_charge || 0).toFixed(2)}</span></div>
-            <hr className="border-border" />
-            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Sub Total</span><span>${(r.sub_total || 0).toFixed(2)}</span></div>
-            <div className="flex justify-between text-sm"><span className="text-muted-foreground">Tax ({r.tax_rate || 9.5}%)</span><span>${(r.tax_amount || 0).toFixed(2)}</span></div>
-            <hr className="border-border" />
-            <div className="flex justify-between font-bold text-base"><span>Total</span><span>${(r.total_charges || 0).toFixed(2)}</span></div>
-          </div>
+          {/* Charges Summary - hidden for non-global-admins on complete reports */}
+          {(isGlobalAdmin || r.service_status !== "complete") && (
+            <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+              <div className="flex justify-between text-sm"><span className="text-muted-foreground">Labor</span><span>${((r.labor_charge || 0) - (r.travel_charge ? 0 : (r.misc_charge || 0))).toFixed(2)}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-muted-foreground">Parts</span><span>${(r.parts_charge || 0).toFixed(2)}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-muted-foreground">Travel</span><span>${(r.travel_charge || r.misc_charge || 0).toFixed(2)}</span></div>
+              <hr className="border-border" />
+              <div className="flex justify-between text-sm"><span className="text-muted-foreground">Sub Total</span><span>${(r.sub_total || 0).toFixed(2)}</span></div>
+              <div className="flex justify-between text-sm"><span className="text-muted-foreground">Tax ({r.tax_rate || 9.5}%)</span><span>${(r.tax_amount || 0).toFixed(2)}</span></div>
+              <hr className="border-border" />
+              <div className="flex justify-between font-bold text-base"><span>Total</span><span>${(r.total_charges || 0).toFixed(2)}</span></div>
+            </div>
+          )}
 
           {/* Customer Signature (screen view) */}
           {r.customer_signature_url && (
