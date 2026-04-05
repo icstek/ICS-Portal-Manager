@@ -2,8 +2,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 export default function ChargesSection({ form, setForm, partsTotal }) {
-  const laborCharge = (form.total_time_hours || 0) * (form.hourly_rate || 0) + (form.misc_charge || 0);
-  const subTotal = laborCharge + partsTotal;
+  const laborOnly = (form.total_time_hours || 0) * (form.hourly_rate || 0);
+  const travelCharge = form.misc_charge || 0;
+  const subTotal = laborOnly + travelCharge + partsTotal;
   const taxRate = form.tax_rate ?? 9.75;
   const taxAmount = partsTotal * (taxRate / 100);
   const totalCharges = subTotal + taxAmount;
@@ -16,11 +17,15 @@ export default function ChargesSection({ form, setForm, partsTotal }) {
           <div className="bg-muted/50 rounded-lg p-4 space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Labor</span>
-              <span className="font-medium">${laborCharge.toFixed(2)}</span>
+              <span className="font-medium">${laborOnly.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Parts</span>
               <span className="font-medium">${partsTotal.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Travel</span>
+              <span className="font-medium">${travelCharge.toFixed(2)}</span>
             </div>
             <hr className="border-border" />
             <div className="flex justify-between text-sm">
