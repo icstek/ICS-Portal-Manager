@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Save, Loader2, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { useRole } from "@/hooks/useRole";
@@ -18,6 +19,7 @@ import ChargesSection from "@/components/service-report/ChargesSection";
 import EquipmentSection from "@/components/service-report/EquipmentSection";
 import SignatureCanvas from "@/components/service-report/SignatureCanvas";
 import WorkPerformedSection from "@/components/service-report/WorkPerformedSection";
+import { downloadIncompleteReportICS } from "@/lib/generateICS";
 
 export default function EditServiceReport() {
   const id = window.location.pathname.split("/").filter(Boolean).find((_, i, arr) => arr[i - 1] === "edit" || arr[i - 1] === "reports") || window.location.pathname.split("/")[2];
@@ -29,6 +31,7 @@ export default function EditServiceReport() {
   const [items, setItems] = useState([]);
   const [servicesPerformed, setServicesPerformed] = useState([]);
   const [signatureDataUrl, setSignatureDataUrl] = useState(null);
+  const [addToCalendar, setAddToCalendar] = useState(false);
 
   const { data: report, isLoading } = useQuery({
     queryKey: ["report", id],
@@ -115,6 +118,20 @@ export default function EditServiceReport() {
       queryClient.invalidateQueries({ queryKey: ["reports"] });
       queryClient.invalidateQueries({ queryKey: ["report", id] });
       toast.success("Report updated successfully!");
+
+      if (addToCalendar) {
+        downloadIncompleteReportICS({
+          reportNumber: form.report_number,
+          customerName: form.customer_name,
+          customerAddress: form.customer_address,
+          customerCity: form.customer_city,
+          date: form.date,
+          problemDescription: form.problem_description,
+          technicianName: form.technician_name,
+        });
+        toast.info("Calendar event file downloaded.");
+      }
+
       navigate(`/reports/${id}`);
     },
   });
@@ -196,6 +213,10 @@ export default function EditServiceReport() {
                     <RadioGroupItem value="estimate" /> Estimate
                   </label>
                 </RadioGroup>
+                <label className="flex items-center gap-2 text-sm cursor-pointer mt-2">
+                  <Checkbox checked={addToCalendar} onCheckedChange={setAddToCalendar} />
+                  Add to Calendar
+                </label>
               </div>
               <div className="flex-1">
                 <Label className="text-xs text-muted-foreground">Report #</Label>
