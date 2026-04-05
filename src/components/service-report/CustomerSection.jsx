@@ -118,7 +118,7 @@ export default function CustomerSection({ form, setForm }) {
           </div>
           <div>
             <Label className="text-xs text-muted-foreground">Zip</Label>
-            <Input value={form.customer_zip || ""} disabled className="mt-1" />
+            <Input value={(form.customer_zip || "").match(/\d{5}/)?.[0] || form.customer_zip || ""} disabled className="mt-1" />
           </div>
           <div>
             <Label className="text-xs text-muted-foreground">Phone</Label>
