@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Save, Loader2, Printer } from "lucide-react";
 import { toast } from "sonner";
 import CustomerSection from "@/components/service-report/CustomerSection";
@@ -64,6 +65,7 @@ export default function NewServiceReport() {
   const [items, setItems] = useState([]);
   const [servicesPerformed, setServicesPerformed] = useState([]);
   const [signatureDataUrl, setSignatureDataUrl] = useState(null);
+  const [addToCalendar, setAddToCalendar] = useState(false);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -134,7 +136,7 @@ export default function NewServiceReport() {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       toast.success("Service report saved successfully!");
 
-      if (form.service_status === "incomplete") {
+      if (addToCalendar) {
         downloadIncompleteReportICS({
           reportNumber: form.report_number,
           customerName: form.customer_name,
@@ -144,7 +146,7 @@ export default function NewServiceReport() {
           problemDescription: form.problem_description,
           technicianName: form.technician_name,
         });
-        toast.info("Calendar follow-up file downloaded for incomplete report.");
+        toast.info("Calendar event file downloaded.");
       }
 
       navigate("/reports");
@@ -182,6 +184,10 @@ export default function NewServiceReport() {
                     <RadioGroupItem value="estimate" /> Estimate
                   </label>
                 </RadioGroup>
+                <label className="flex items-center gap-2 text-sm cursor-pointer mt-2">
+                  <Checkbox checked={addToCalendar} onCheckedChange={setAddToCalendar} />
+                  Add to Calendar
+                </label>
               </div>
               <div className="flex-1">
                 <Label className="text-xs text-muted-foreground">Report #</Label>
