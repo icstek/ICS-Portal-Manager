@@ -347,6 +347,7 @@ export default function ReportDetail() {
                   <thead className="bg-muted">
                     <tr>
                       <th className="text-left p-2 font-medium">Part</th>
+                      <th className="text-left p-2 font-medium">Description</th>
                       <th className="text-right p-2 font-medium">Qty</th>
                       {isGlobalAdmin && <th className="text-right p-2 font-medium">Unit Cost</th>}
                       {isGlobalAdmin && <th className="text-right p-2 font-medium">Total</th>}
@@ -356,6 +357,7 @@ export default function ReportDetail() {
                     {r.items_replaced.map((item, i) => (
                       <tr key={i} className="border-t">
                         <td className="p-2">{item.part_name}</td>
+                        <td className="p-2">{item.part_description || "—"}</td>
                         <td className="p-2 text-right">{item.qty}</td>
                         {isGlobalAdmin && <td className="p-2 text-right">${(item.unit_cost || 0).toFixed(2)}</td>}
                         {isGlobalAdmin && <td className="p-2 text-right font-medium">${(item.total || 0).toFixed(2)}</td>}
