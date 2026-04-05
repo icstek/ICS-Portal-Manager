@@ -269,7 +269,7 @@ export default function ReportDetail() {
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <CardTitle className="text-xl print:text-lg">Service Report {r.report_number ? `#${r.report_number}` : ""}</CardTitle>
+              <CardTitle className="text-xl print:text-lg">Service Report {r.report_number ? `# ${r.report_number}` : ""}</CardTitle>
               <p className="text-sm text-muted-foreground mt-1 print:mt-0 print:text-xs">
                 {r.date ? format(new Date(r.date), "MMMM d, yyyy") : ""}
               </p>
