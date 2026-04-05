@@ -78,8 +78,10 @@ export default function NewServiceReport() {
   }, []);
 
   const partsTotal = items.reduce((sum, it) => sum + (it.total || 0), 0);
-  const laborCharge = (form.total_time_hours || 0) * (form.hourly_rate || 0) + (form.misc_charge || 0);
-  const subTotal = laborCharge + partsTotal + (form.travel_charge || 0);
+  const laborOnly = (form.total_time_hours || 0) * (form.hourly_rate || 0);
+  const travelCharge = form.misc_charge || 0;
+  const laborCharge = laborOnly + travelCharge;
+  const subTotal = laborOnly + travelCharge + partsTotal;
   const taxAmount = partsTotal * ((form.tax_rate ?? 9.75) / 100);
   const totalCharges = subTotal + taxAmount;
 
