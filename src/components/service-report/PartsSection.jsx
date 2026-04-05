@@ -37,8 +37,8 @@ export default function PartsSection({ items, setItems }) {
       updated[idx] = {
         ...updated[idx],
         part_id: p.id,
-        part_name: p.name,
-        part_description: p.sku || "",
+        part_name: searches[idx] || p.name,
+        part_description: p.name,
         unit_cost: p.unit_cost || 0,
         total: (updated[idx].qty || 1) * (p.unit_cost || 0),
       };
