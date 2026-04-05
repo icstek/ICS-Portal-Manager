@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
-const emptyForm = { name: "", address: "", city: "", zip: "", tel: "", cell: "", email: "" };
+const emptyForm = { name: "", address: "", address2: "", city: "", zip: "", tel: "", cell: "", email: "" };
 
 export default function NewCustomerDialog({ open, onOpenChange }) {
   const [form, setForm] = useState(emptyForm);
@@ -50,6 +50,7 @@ export default function NewCustomerDialog({ open, onOpenChange }) {
         <form onSubmit={handleSubmit} className="space-y-3">
           {field("Name *", "name")}
           {field("Address", "address")}
+          {field("Address Line 2", "address2")}
           <div className="grid grid-cols-2 gap-3">
             {field("City", "city")}
             {field("Zip", "zip")}

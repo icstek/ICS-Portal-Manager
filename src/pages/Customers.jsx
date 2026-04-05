@@ -17,7 +17,7 @@ export default function Customers() {
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({ name: "", address: "", city: "", zip: "", tel: "", cell: "", email: "" });
+  const [form, setForm] = useState({ name: "", address: "", address2: "", city: "", zip: "", tel: "", cell: "", email: "" });
   const [selectedCustomers, setSelectedCustomers] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [reportsModalOpen, setReportsModalOpen] = useState(false);
@@ -76,8 +76,8 @@ export default function Customers() {
     },
   });
 
-  const openNew = () => { setEditing(null); setForm({ name: "", address: "", city: "", zip: "", tel: "", cell: "", email: "" }); setDialogOpen(true); };
-  const openEdit = (c) => { setEditing(c); setForm({ name: c.name || "", address: c.address || "", city: c.city || "", zip: c.zip || "", tel: c.tel || "", cell: c.cell || "", email: c.email || "" }); setDialogOpen(true); };
+  const openNew = () => { setEditing(null); setForm({ name: "", address: "", address2: "", city: "", zip: "", tel: "", cell: "", email: "" }); setDialogOpen(true); };
+  const openEdit = (c) => { setEditing(c); setForm({ name: c.name || "", address: c.address || "", address2: c.address2 || "", city: c.city || "", zip: c.zip || "", tel: c.tel || "", cell: c.cell || "", email: c.email || "" }); setDialogOpen(true); };
 
   const filtered = customers.filter((c) => (c.name || "").toLowerCase().includes(search.toLowerCase()));
   const totalPages = Math.ceil(filtered.length / pageSize);
@@ -225,6 +225,7 @@ export default function Customers() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="sm:col-span-2"><Label className="text-xs">Name *</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="mt-1" /></div>
             <div><Label className="text-xs">Address</Label><Input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="mt-1" /></div>
+            <div><Label className="text-xs">Address Line 2</Label><Input value={form.address2} onChange={(e) => setForm({ ...form, address2: e.target.value })} className="mt-1" placeholder="Suite, unit, floor, etc." /></div>
             <div><Label className="text-xs">City</Label><Input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="mt-1" /></div>
             <div><Label className="text-xs">Zip</Label><Input value={form.zip} onChange={(e) => setForm({ ...form, zip: e.target.value })} className="mt-1" /></div>
             <div><Label className="text-xs">Telephone</Label><Input value={form.tel} onChange={(e) => setForm({ ...form, tel: e.target.value })} className="mt-1" /></div>
