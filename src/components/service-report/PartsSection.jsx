@@ -38,6 +38,7 @@ export default function PartsSection({ items, setItems }) {
         ...updated[idx],
         part_id: p.id,
         part_name: searches[idx] || p.name,
+        part_number: p.sku || "",
         part_description: p.name,
         unit_cost: p.unit_cost || 0,
         total: (updated[idx].qty || 1) * (p.unit_cost || 0),
@@ -71,10 +72,11 @@ export default function PartsSection({ items, setItems }) {
       {items.length > 0 && (
         <div className="grid grid-cols-12 gap-2 px-1">
           <div className="col-span-12 md:col-span-2"><Label className="text-xs text-muted-foreground">Part Name</Label></div>
+          <div className="col-span-12 md:col-span-2"><Label className="text-xs text-muted-foreground">Part #</Label></div>
           <div className="col-span-12 md:col-span-2"><Label className="text-xs text-muted-foreground">Description</Label></div>
-          <div className="col-span-4 md:col-span-2"><Label className="text-xs text-muted-foreground">Qty</Label></div>
+          <div className="col-span-4 md:col-span-1"><Label className="text-xs text-muted-foreground">Qty</Label></div>
           <div className="col-span-4 md:col-span-2"><Label className="text-xs text-muted-foreground">Unit Cost</Label></div>
-          <div className="col-span-3 md:col-span-3"><Label className="text-xs text-muted-foreground">Total</Label></div>
+          <div className="col-span-3 md:col-span-2"><Label className="text-xs text-muted-foreground">Total</Label></div>
           <div className="col-span-1" />
         </div>
       )}
@@ -121,19 +123,27 @@ export default function PartsSection({ items, setItems }) {
           </div>
           <div className="col-span-12 md:col-span-2">
             <Input
+              placeholder="Part #..."
+              value={item.part_number || ""}
+              onChange={(e) => updateItem(idx, "part_number", e.target.value)}
+              className="text-sm"
+            />
+          </div>
+          <div className="col-span-12 md:col-span-2">
+            <Input
               placeholder="Description..."
               value={item.part_description || ""}
               onChange={(e) => updateItem(idx, "part_description", e.target.value)}
               className="text-sm"
             />
           </div>
-          <div className="col-span-4 md:col-span-2">
+          <div className="col-span-4 md:col-span-1">
             <Input type="number" min="1" value={item.qty || ""} onChange={(e) => updateItem(idx, "qty", parseInt(e.target.value) || 0)} />
           </div>
           <div className="col-span-4 md:col-span-2">
             <Input type="number" step="0.01" value={item.unit_cost || ""} onChange={(e) => updateItem(idx, "unit_cost", parseFloat(e.target.value) || 0)} />
           </div>
-          <div className="col-span-3 md:col-span-3">
+          <div className="col-span-3 md:col-span-2">
             <div className="h-9 flex items-center px-3 rounded-md bg-muted text-sm font-semibold">
               ${(item.total || 0).toFixed(2)}
             </div>
