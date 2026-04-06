@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { format } from "date-fns";
 import { useRole } from "@/hooks/useRole";
 import { toast } from "sonner";
+import { useBranding } from "@/lib/BrandingContext";
 import { Edit2, Check } from "lucide-react";
 
 export default function ReportDetail() {
@@ -19,6 +20,7 @@ export default function ReportDetail() {
   const id = window.location.pathname.split("/").pop();
   const navigate = useNavigate();
   const { isAdmin, isGlobalAdmin, isTechnician } = useRole();
+  const { companyLogoUrl } = useBranding();
   const queryClient = useQueryClient();
   const [showEmailDialog, setShowEmailDialog] = useState(false);
   const [emailData, setEmailData] = useState({ to: '', cc: '', subject: '', body: '' });
@@ -269,6 +271,9 @@ export default function ReportDetail() {
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
+              {companyLogoUrl && (
+                <img src={companyLogoUrl} alt="Company Logo" className="h-12 mb-2 object-contain" crossOrigin="anonymous" />
+              )}
               <CardTitle className="text-xl print:text-lg">Service Report {r.report_number ? `# ${r.report_number}` : ""}</CardTitle>
               <p className="text-sm text-muted-foreground mt-1 print:mt-0 print:text-xs">
                 {r.date ? format(new Date(r.date), "MMMM d, yyyy") : ""}
