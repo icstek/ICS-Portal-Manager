@@ -348,10 +348,10 @@ export default function ReportDetail() {
               {r.time_arrive && <div><span className="text-muted-foreground">Arrive:</span> {r.time_arrive}</div>}
               {r.time_left && <div><span className="text-muted-foreground">Left:</span> {r.time_left}</div>}
               <div><span className="text-muted-foreground">Hours:</span> {r.total_time_hours || 0}</div>
-              {isGlobalAdmin && (
+              {(isGlobalAdmin || (isTechnician && r.service_status !== "complete")) && (
                 <div><span className="text-muted-foreground">Rate:</span> ${r.hourly_rate || 0}/hr</div>
               )}
-              {isGlobalAdmin && (
+              {(isGlobalAdmin || (isTechnician && r.service_status !== "complete")) && (
                 <div><span className="text-muted-foreground">Labor:</span> <span className="font-medium">${(r.labor_charge || 0).toFixed(2)}</span></div>
               )}
             </div>
@@ -376,8 +376,8 @@ export default function ReportDetail() {
                       <th className="text-left p-2 font-medium">Part</th>
                       <th className="text-left p-2 font-medium">Description</th>
                       <th className="text-right p-2 font-medium">Qty</th>
-                      {isGlobalAdmin && <th className="text-right p-2 font-medium">Unit Cost</th>}
-                      {isGlobalAdmin && <th className="text-right p-2 font-medium">Total</th>}
+                      {(isGlobalAdmin || (isTechnician && r.service_status !== "complete")) && <th className="text-right p-2 font-medium">Unit Cost</th>}
+                      {(isGlobalAdmin || (isTechnician && r.service_status !== "complete")) && <th className="text-right p-2 font-medium">Total</th>}
                     </tr>
                   </thead>
                   <tbody>
@@ -386,8 +386,8 @@ export default function ReportDetail() {
                         <td className="p-2">{item.part_name}</td>
                         <td className="p-2">{item.part_description || "—"}</td>
                         <td className="p-2 text-right">{item.qty}</td>
-                        {isGlobalAdmin && <td className="p-2 text-right">${(item.unit_cost || 0).toFixed(2)}</td>}
-                        {isGlobalAdmin && <td className="p-2 text-right font-medium">${(item.total || 0).toFixed(2)}</td>}
+                        {(isGlobalAdmin || (isTechnician && r.service_status !== "complete")) && <td className="p-2 text-right">${(item.unit_cost || 0).toFixed(2)}</td>}
+                        {(isGlobalAdmin || (isTechnician && r.service_status !== "complete")) && <td className="p-2 text-right font-medium">${(item.total || 0).toFixed(2)}</td>}
                       </tr>
                     ))}
                   </tbody>
@@ -397,7 +397,7 @@ export default function ReportDetail() {
           )}
 
           {/* Charges Summary - only visible to Global Admins */}
-          {isGlobalAdmin && (
+          {(isGlobalAdmin || (isTechnician && r.service_status !== "complete")) && (
             <div className="bg-muted/50 rounded-lg p-4 space-y-2">
               <div className="flex justify-between text-sm"><span className="text-muted-foreground">Labor</span><span>${((r.labor_charge || 0) - (r.travel_charge ? 0 : (r.misc_charge || 0))).toFixed(2)}</span></div>
               <div className="flex justify-between text-sm"><span className="text-muted-foreground">Parts</span><span>${(r.parts_charge || 0).toFixed(2)}</span></div>
