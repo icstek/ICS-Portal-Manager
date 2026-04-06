@@ -6,8 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Plus, Trash2, Search } from "lucide-react";
 import { useState } from "react";
 
+const formatCurrency = (num) =>
+  (num || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
 export default function PartsSection({ items, setItems }) {
   const [searches, setSearches] = useState({});
+  const [editingCost, setEditingCost] = useState(null); // idx of item being edited
   const { data: parts = [] } = useQuery({
     queryKey: ["parts"],
     queryFn: () => base44.entities.Part.list("name", 999999),
@@ -136,19 +140,13 @@ export default function PartsSection({ items, setItems }) {
               <Input
                 type="text"
                 inputMode="decimal"
-                value={item.unit_cost || ""}
+                value={editingCost === idx ? (item.unit_cost || "") : formatCurrency(item.unit_cost)}
                 onChange={(e) => {
                   const val = e.target.value.replace(/[^0-9.]/g, "");
                   updateItem(idx, "unit_cost", parseFloat(val) || 0);
                 }}
-                onBlur={(e) => {
-                  const num = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
-                  updateItem(idx, "unit_cost", num);
-                  e.target.value = num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                }}
-                onFocus={(e) => {
-                  e.target.value = item.unit_cost || "";
-                }}
+                onBlur={() => setEditingCost(null)}
+                onFocus={() => setEditingCost(idx)}
                 className="pl-7"
               />
             </div>
