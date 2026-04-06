@@ -17,20 +17,20 @@ export default function ChargesSection({ form, setForm, partsTotal }) {
           <div className="bg-muted/50 rounded-lg p-4 space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Labor</span>
-              <span className="font-medium">${laborOnly.toFixed(2)}</span>
+              <span className="font-medium">${laborOnly.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Parts</span>
-              <span className="font-medium">${partsTotal.toFixed(2)}</span>
+              <span className="font-medium">${partsTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Travel</span>
-              <span className="font-medium">${travelCharge.toFixed(2)}</span>
+              <span className="font-medium">${travelCharge.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
             <hr className="border-border" />
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Sub Total</span>
-              <span className="font-medium">${subTotal.toFixed(2)}</span>
+              <span className="font-medium">${subTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
             <div className="flex justify-between text-sm items-center">
               <span className="text-muted-foreground flex items-center gap-1">
@@ -45,13 +45,13 @@ export default function ChargesSection({ form, setForm, partsTotal }) {
               
                 %)
                 </span>
-              <span className="font-medium">${taxAmount.toFixed(2)}</span>
+              <span className="font-medium">${taxAmount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
             <hr className="border-border" />
             <div className="flex justify-between text-base font-bold">
               <span>Total
 </span>
-              <span>${totalCharges.toFixed(2)}</span>
+              <span>${totalCharges.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
           </div>
       </div>
