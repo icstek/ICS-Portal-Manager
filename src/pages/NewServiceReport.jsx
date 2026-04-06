@@ -9,8 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Save, Loader2, Printer } from "lucide-react";
+import { Save, Loader2, Printer, CheckCircle2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import CustomerSection from "@/components/service-report/CustomerSection";
 import TechnicianSection from "@/components/service-report/TechnicianSection";
 import PartsSection from "@/components/service-report/PartsSection";
@@ -66,6 +67,7 @@ export default function NewServiceReport() {
   const [servicesPerformed, setServicesPerformed] = useState([]);
   const [signatureDataUrl, setSignatureDataUrl] = useState(null);
   const [addToCalendar, setAddToCalendar] = useState(false);
+  const [emailConfirm, setEmailConfirm] = useState({ open: false, success: false, message: '' });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -129,9 +131,10 @@ export default function NewServiceReport() {
         customer_signature_url,
       };
 
-      await base44.entities.ServiceReport.create(reportData);
+      const created = await base44.entities.ServiceReport.create(reportData);
+      return created;
     },
-    onSuccess: () => {
+    onSuccess: async (created) => {
       queryClient.invalidateQueries({ queryKey: ["reports"] });
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       toast.success("Service report saved successfully!");
@@ -149,7 +152,17 @@ export default function NewServiceReport() {
         toast.info("Calendar event file downloaded.");
       }
 
-      navigate("/reports");
+      // Auto-send email
+      try {
+        const emailResp = await base44.functions.invoke('autoEmailReport', { reportId: created.id });
+        if (emailResp.data?.success) {
+          setEmailConfirm({ open: true, success: true, message: 'Report emailed to udi@icstek.com (CC: mariangel@icstek.com)' });
+        } else {
+          setEmailConfirm({ open: true, success: false, message: emailResp.data?.error || 'Failed to send email' });
+        }
+      } catch (err) {
+        setEmailConfirm({ open: true, success: false, message: err.message || 'Failed to send email' });
+      }
     },
   });
 
@@ -302,6 +315,35 @@ export default function NewServiceReport() {
           </Button>
         </div>
       </form>
+
+      <Dialog open={emailConfirm.open} onOpenChange={(open) => {
+        if (!open) {
+          setEmailConfirm({ open: false, success: false, message: '' });
+          navigate("/reports");
+        }
+      }}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {emailConfirm.success ? (
+                <CheckCircle2 className="w-5 h-5 text-green-600" />
+              ) : (
+                <AlertCircle className="w-5 h-5 text-red-600" />
+              )}
+              {emailConfirm.success ? 'Email Sent' : 'Email Failed'}
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">{emailConfirm.message}</p>
+          <DialogFooter>
+            <Button onClick={() => {
+              setEmailConfirm({ open: false, success: false, message: '' });
+              navigate("/reports");
+            }}>
+              OK
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

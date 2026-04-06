@@ -4,73 +4,118 @@ import { Resend } from 'npm:resend';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const { event, data } = await req.json();
+    const user = await base44.auth.me();
 
-    if (!data) {
-      return Response.json({ error: 'No report data' }, { status: 400 });
+    if (!user) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const report = data;
-    const reportId = event?.entity_id;
+    const { reportId } = await req.json();
 
-    // Get global Resend settings
-    const settings = await base44.asServiceRole.entities.GlobalSettings.filter({ key: 'global' });
-    const config = settings[0];
-
-    if (!config?.resend_api_key || !config?.resend_from_email) {
-      console.error('Resend not configured in global settings');
-      return Response.json({ error: 'Email not configured' }, { status: 500 });
+    if (!reportId) {
+      return Response.json({ success: false, error: 'Missing reportId' }, { status: 400 });
     }
 
-    const resend = new Resend(config.resend_api_key);
+    // Get the report
+    const reports = await base44.entities.ServiceReport.filter({ id: reportId });
+    const report = reports[0];
 
-    const reportNum = report.report_number || 'N/A';
-    const customerName = report.customer_name || 'Unknown';
-    const date = report.date || '';
-    const techName = report.technician_name || '';
-    const reportType = (report.report_type || 'repair').toUpperCase();
-    const memo = report.memo || '';
-    const status = (report.service_status || 'incomplete').toUpperCase();
+    if (!report) {
+      return Response.json({ success: false, error: 'Report not found' }, { status: 404 });
+    }
 
-    const subject = `New Service Report #${reportNum} - ${customerName}`;
-    const body = `
-      <h2>Service Report #${reportNum}</h2>
-      <p><strong>Type:</strong> ${reportType}</p>
-      <p><strong>Date:</strong> ${date}</p>
-      <p><strong>Customer:</strong> ${customerName}</p>
-      ${report.customer_address ? `<p><strong>Address:</strong> ${report.customer_address}${report.customer_city ? ', ' + report.customer_city : ''}${report.customer_zip ? ' ' + report.customer_zip : ''}</p>` : ''}
-      ${report.customer_tel ? `<p><strong>Tel:</strong> ${report.customer_tel}</p>` : ''}
-      ${techName ? `<p><strong>Technician:</strong> ${techName}</p>` : ''}
-      ${memo ? `<p><strong>Memo:</strong> ${memo}</p>` : ''}
-      <p><strong>Status:</strong> ${status}</p>
-      ${report.problem_description ? `<p><strong>Problem:</strong> ${report.problem_description}</p>` : ''}
-      ${report.service_description ? `<p><strong>Service Description:</strong> ${report.service_description}</p>` : ''}
-      <hr/>
-      <p><strong>Labor:</strong> $${(report.labor_charge || 0).toFixed(2)}</p>
-      <p><strong>Parts:</strong> $${(report.parts_charge || 0).toFixed(2)}</p>
-      <p><strong>Travel:</strong> $${(report.travel_charge || 0).toFixed(2)}</p>
-      <p><strong>Sub Total:</strong> $${(report.sub_total || 0).toFixed(2)}</p>
-      <p><strong>Tax:</strong> $${(report.tax_amount || 0).toFixed(2)}</p>
-      <p><strong>Total Charges:</strong> $${(report.total_charges || 0).toFixed(2)}</p>
+    // Get Resend configuration from user settings
+    const me = await base44.auth.me();
+    const apiKey = me?.resend_api_key;
+    const fromEmail = me?.resend_from_email;
+
+    if (!apiKey || !fromEmail) {
+      return Response.json({ 
+        success: false, 
+        error: 'Resend configuration missing' 
+      }, { status: 500 });
+    }
+
+    const resend = new Resend(apiKey);
+
+    const r = report;
+    const subject = `Service Report #${r.report_number} - ${r.customer_name}`;
+    
+    // Build HTML email body
+    const partsRows = (r.items_replaced || []).map(item => 
+      `<tr>
+        <td style="padding:4px 8px;border-bottom:1px solid #eee;">${item.part_name || ''}</td>
+        <td style="padding:4px 8px;border-bottom:1px solid #eee;">${item.qty || 0}</td>
+        <td style="padding:4px 8px;border-bottom:1px solid #eee;text-align:right;">$${(item.total || 0).toFixed(2)}</td>
+      </tr>`
+    ).join('');
+
+    const htmlBody = `
+      <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+        <h2 style="color:#1a1a1a;">Service Report #${r.report_number}</h2>
+        <p style="color:#666;">Date: ${r.date || 'N/A'}</p>
+        <hr style="border:none;border-top:1px solid #ddd;margin:16px 0;">
+        
+        <h3 style="color:#333;font-size:14px;">Customer</h3>
+        <p style="margin:4px 0;">${r.customer_name}</p>
+        ${r.customer_address ? `<p style="margin:4px 0;color:#666;">${r.customer_address}${r.customer_city ? ', ' + r.customer_city : ''} ${r.customer_zip || ''}</p>` : ''}
+        ${r.customer_tel ? `<p style="margin:4px 0;color:#666;">Tel: ${r.customer_tel}</p>` : ''}
+        ${r.customer_cell ? `<p style="margin:4px 0;color:#666;">Cell: ${r.customer_cell}</p>` : ''}
+        
+        ${r.problem_description ? `<h3 style="color:#333;font-size:14px;">Problem Description</h3><p style="color:#666;">${r.problem_description}</p>` : ''}
+        
+        <h3 style="color:#333;font-size:14px;">Technician & Labor</h3>
+        <p style="margin:4px 0;">Technician: ${r.technician_name || 'N/A'}</p>
+        <p style="margin:4px 0;">Hours: ${r.total_time_hours || 0} | Rate: $${r.hourly_rate || 0}/hr</p>
+        
+        ${r.service_description ? `<h3 style="color:#333;font-size:14px;">Service Description</h3><p style="color:#666;">${r.service_description}</p>` : ''}
+        
+        ${(r.items_replaced || []).length > 0 ? `
+          <h3 style="color:#333;font-size:14px;">Parts Replaced</h3>
+          <table style="width:100%;border-collapse:collapse;font-size:13px;">
+            <thead><tr style="background:#f5f5f5;">
+              <th style="padding:4px 8px;text-align:left;">Part</th>
+              <th style="padding:4px 8px;text-align:left;">Qty</th>
+              <th style="padding:4px 8px;text-align:right;">Total</th>
+            </tr></thead>
+            <tbody>${partsRows}</tbody>
+          </table>
+        ` : ''}
+        
+        <hr style="border:none;border-top:1px solid #ddd;margin:16px 0;">
+        <table style="width:100%;font-size:13px;">
+          <tr><td style="color:#666;">Labor</td><td style="text-align:right;">$${(r.labor_charge || 0).toFixed(2)}</td></tr>
+          <tr><td style="color:#666;">Parts</td><td style="text-align:right;">$${(r.parts_charge || 0).toFixed(2)}</td></tr>
+          <tr><td style="color:#666;">Travel</td><td style="text-align:right;">$${(r.travel_charge || r.misc_charge || 0).toFixed(2)}</td></tr>
+          <tr><td style="color:#666;">Tax (${r.tax_rate || 9.5}%)</td><td style="text-align:right;">$${(r.tax_amount || 0).toFixed(2)}</td></tr>
+          <tr style="font-weight:bold;font-size:15px;"><td>Total</td><td style="text-align:right;">$${(r.total_charges || 0).toFixed(2)}</td></tr>
+        </table>
+        
+        <p style="color:#999;font-size:11px;margin-top:24px;">This is an automated notification from ICS Service Management.</p>
+      </div>
     `;
 
-    const { data: emailResult, error } = await resend.emails.send({
-      from: config.resend_from_email,
+    const { data, error } = await resend.emails.send({
+      from: fromEmail,
       to: 'udi@icstek.com',
       cc: 'mariangel@icstek.com',
       subject,
-      html: body,
+      html: htmlBody,
     });
 
     if (error) {
-      console.error('Resend error:', error);
+      console.error('Resend API Error:', error);
       return Response.json({ success: false, error: error.message }, { status: 400 });
     }
 
-    console.log('Auto-email sent for report', reportNum, emailResult);
-    return Response.json({ success: true, messageId: emailResult?.id });
+    return Response.json({ 
+      success: true, 
+      message: `Email sent to udi@icstek.com (CC: mariangel@icstek.com)`,
+      data 
+    });
+
   } catch (error) {
-    console.error('Auto-email error:', error);
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('Auto email error:', error);
+    return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 });
