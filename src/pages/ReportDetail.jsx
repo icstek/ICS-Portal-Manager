@@ -33,27 +33,33 @@ export default function ReportDetail() {
       if (!cardElement) return null;
 
       // Fetch logo as base64 via backend to bypass CORS
-      let logoDataUrl = null;
-      if (companyLogoUrl) {
+      const logoImg = cardElement.querySelector('[data-logo-img]');
+      let originalSrc = null;
+      if (logoImg && companyLogoUrl) {
         try {
           const logoResp = await base44.functions.invoke('fetchImageBase64', { url: companyLogoUrl });
-          logoDataUrl = logoResp.data?.dataUrl || null;
+          const dataUrl = logoResp.data?.dataUrl;
+          if (dataUrl) {
+            originalSrc = logoImg.src;
+            logoImg.src = dataUrl;
+            // Wait for the new src to load
+            await new Promise(r => setTimeout(r, 100));
+          }
         } catch (e) {
-          // Continue without logo
+          // Continue with original logo
         }
       }
 
-      // Hide elements that shouldn't appear in PDF (logo will be drawn by jsPDF directly)
+      // Hide elements that shouldn't appear in PDF
       const noPrintEls = cardElement.querySelectorAll('.no-print');
       noPrintEls.forEach(el => el.style.visibility = 'hidden');
-      const logoImg = cardElement.querySelector('[data-logo-img]');
-      if (logoImg) logoImg.style.visibility = 'hidden';
 
       const canvas = await html2canvas(cardElement, { scale: 2, useCORS: true, logging: false });
 
-      // Restore visibility
+      // Restore visibility and original logo src
       noPrintEls.forEach(el => el.style.visibility = '');
-      if (logoImg) logoImg.style.visibility = '';
+      if (logoImg && originalSrc) logoImg.src = originalSrc;
+
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       const imgWidth = 210;
@@ -68,12 +74,6 @@ export default function ReportDetail() {
         pdf.addPage();
         pdf.addImage(imgData, 'PNG', 0, yPos, imgWidth, imgHeight);
         remainingHeight -= 297;
-      }
-
-      // Draw logo on first page via jsPDF (bypasses html2canvas CORS issues)
-      if (logoDataUrl) {
-        pdf.setPage(1);
-        pdf.addImage(logoDataUrl, 'PNG', 8, 6, 30, 15);
       }
 
       // Add terms and conditions on the last page below the content
