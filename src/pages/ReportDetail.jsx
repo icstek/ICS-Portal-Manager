@@ -32,6 +32,25 @@ export default function ReportDetail() {
       const cardElement = document.querySelector('[data-report-card]');
       if (!cardElement) return null;
 
+      // Pre-load logo as data URL so html2canvas can render it
+      const logoImg = cardElement.querySelector('[data-logo-img]');
+      let originalSrc = null;
+      if (logoImg && logoImg.src) {
+        originalSrc = logoImg.src;
+        try {
+          const resp = await fetch(logoImg.src);
+          const blob = await resp.blob();
+          const dataUrl = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(blob);
+          });
+          logoImg.src = dataUrl;
+        } catch (e) {
+          // If fetch fails, continue without data URL
+        }
+      }
+
       // Hide elements that shouldn't appear in PDF
       const noPrintEls = cardElement.querySelectorAll('.no-print');
       noPrintEls.forEach(el => el.style.visibility = 'hidden');
@@ -40,6 +59,8 @@ export default function ReportDetail() {
 
       // Restore visibility
       noPrintEls.forEach(el => el.style.visibility = '');
+      // Restore original logo src
+      if (logoImg && originalSrc) logoImg.src = originalSrc;
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       const imgWidth = 210;
@@ -272,7 +293,7 @@ export default function ReportDetail() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
               {companyLogoUrl && (
-                <img src={companyLogoUrl} alt="Company Logo" className="h-12 mb-2 object-contain" />
+                <img src={companyLogoUrl} alt="Company Logo" className="h-12 mb-2 object-contain" data-logo-img />
               )}
               <CardTitle className="text-xl print:text-lg">Service Report {r.report_number ? `# ${r.report_number}` : ""}</CardTitle>
               <p className="text-sm text-muted-foreground mt-1 print:mt-0 print:text-xs">
