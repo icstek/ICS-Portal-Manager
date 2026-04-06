@@ -70,8 +70,8 @@ export default function PartsSection({ items, setItems }) {
       )}
       {items.length > 0 && (
         <div className="grid grid-cols-12 gap-2 px-1">
-          <div className="col-span-12 md:col-span-1"><Label className="text-xs text-muted-foreground">Part Name</Label></div>
-          <div className="col-span-12 md:col-span-6"><Label className="text-xs text-muted-foreground">Description</Label></div>
+          <div className="col-span-12 md:col-span-2"><Label className="text-xs text-muted-foreground">Part Name</Label></div>
+          <div className="col-span-12 md:col-span-5"><Label className="text-xs text-muted-foreground">Description</Label></div>
           <div className="col-span-4 md:col-span-1"><Label className="text-xs text-muted-foreground">Qty</Label></div>
           <div className="col-span-4 md:col-span-1"><Label className="text-xs text-muted-foreground">Unit Cost</Label></div>
           <div className="col-span-3 md:col-span-2"><Label className="text-xs text-muted-foreground">Total</Label></div>
@@ -80,7 +80,7 @@ export default function PartsSection({ items, setItems }) {
       )}
       {items.map((item, idx) => (
         <div key={idx} className="grid grid-cols-12 gap-2 items-center">
-          <div className="col-span-12 md:col-span-1">
+          <div className="col-span-12 md:col-span-2">
             <div className="relative">
                 {!item.part_name ? (
                   <>
@@ -119,7 +119,7 @@ export default function PartsSection({ items, setItems }) {
                 )}
               </div>
           </div>
-          <div className="col-span-12 md:col-span-6">
+          <div className="col-span-12 md:col-span-5">
             <Input
               placeholder="Description..."
               value={item.part_description || ""}
