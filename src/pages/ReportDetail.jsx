@@ -295,7 +295,7 @@ export default function ReportDetail() {
                 <img src={companyLogoUrl} alt="Company Logo" className="h-12 mb-2 object-contain" data-logo-img />
               )}
               <div className="text-xs text-muted-foreground leading-snug mb-1">
-                <span className="font-bold text-2xl text-foreground">ICS, Inc.</span> &emsp; 6038 Tampa Ave, Tarzana, CA 91356 &nbsp;|&nbsp; 818-609-7648 &nbsp;|&nbsp; www.icstek.com &nbsp;|&nbsp; info@icstek.com
+                <span className="font-bold text-2xl text-foreground">ICS, Inc.</span> &emsp;&emsp;&emsp; 6038 Tampa Ave, Tarzana, CA 91356 &nbsp;|&nbsp; 818-609-7648 &nbsp;|&nbsp; www.icstek.com &nbsp;|&nbsp; info@icstek.com
               </div>
               <CardTitle className="text-xl print:text-lg">Service Report {r.report_number ? `# ${r.report_number}` : ""}</CardTitle>
               <p className="text-sm text-muted-foreground mt-1 print:mt-0 print:text-xs">
