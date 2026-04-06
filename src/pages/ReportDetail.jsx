@@ -284,7 +284,6 @@ export default function ReportDetail() {
       <Card className="print:shadow-none print:border" data-report-card>
         <CardHeader className="border-b print:py-2 print:px-4">
           <div className="hidden print:flex print:items-center print:justify-between print:gap-4 print:mb-2">
-            <div className="text-xs font-bold">ICS, INC</div>
             <div className="text-xs text-muted-foreground leading-tight">
               6038 Tampa Ave., Tarzana, CA 91356 | (818) 609-7648 | service@icstek.com | www.icstek.com
             </div>
