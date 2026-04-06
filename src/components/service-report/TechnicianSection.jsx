@@ -5,11 +5,15 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+
+const formatCurrency = (num) =>
+  (num || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 import { useAuth } from "@/lib/AuthContext";
 
 export default function TechnicianSection({ form, setForm }) {
   const [travelChecked, setTravelChecked] = useState(false);
+  const [editingField, setEditingField] = useState(null);
   const { user } = useAuth();
   const autoSelected = useRef(false);
   const isGlobalAdmin = user?.role === "global_admin";
@@ -100,7 +104,18 @@ export default function TechnicianSection({ form, setForm }) {
         </div>
         <div>
           <Label className="text-xs text-muted-foreground block mb-1">Hr. Rate ($)</Label>
-          <Input type="number" step="1" value={form.hourly_rate || ""} onChange={(e) => handleChange("hourly_rate", parseFloat(e.target.value) || 0)} />
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">$</span>
+            <Input
+              type="text"
+              inputMode="decimal"
+              value={editingField === "hourly_rate" ? (form.hourly_rate || "") : formatCurrency(form.hourly_rate)}
+              onChange={(e) => { const val = e.target.value.replace(/[^0-9.]/g, ""); handleChange("hourly_rate", parseFloat(val) || 0); }}
+              onFocus={() => setEditingField("hourly_rate")}
+              onBlur={() => setEditingField(null)}
+              className="pl-7"
+            />
+          </div>
         </div>
         <div>
           <div className="flex items-center gap-1.5 mb-1">
@@ -114,18 +129,29 @@ export default function TechnicianSection({ form, setForm }) {
             />
             <Label htmlFor="travel-check" className="text-xs text-muted-foreground cursor-pointer leading-none">Travel Charge ($)</Label>
           </div>
-          <Input type="number" step="1" value={form.misc_charge || ""} onChange={(e) => handleChange("misc_charge", parseFloat(e.target.value) || 0)} />
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">$</span>
+            <Input
+              type="text"
+              inputMode="decimal"
+              value={editingField === "misc_charge" ? (form.misc_charge || "") : formatCurrency(form.misc_charge)}
+              onChange={(e) => { const val = e.target.value.replace(/[^0-9.]/g, ""); handleChange("misc_charge", parseFloat(val) || 0); }}
+              onFocus={() => setEditingField("misc_charge")}
+              onBlur={() => setEditingField(null)}
+              className="pl-7"
+            />
+          </div>
         </div>
         <div>
           <Label className="text-xs text-muted-foreground block mb-1">Total Labor</Label>
           <div className="h-9 flex items-center px-3 rounded-md bg-muted text-sm font-semibold">
-            ${((form.total_time_hours || 0) * (form.hourly_rate || 0)).toFixed(2)}
+            ${formatCurrency((form.total_time_hours || 0) * (form.hourly_rate || 0))}
           </div>
         </div>
         <div>
           <Label className="text-xs text-muted-foreground block mb-1">Service & Travel Charge</Label>
           <div className="h-9 flex items-center px-3 rounded-md bg-primary/10 text-sm font-semibold text-primary">
-            ${((form.total_time_hours || 0) * (form.hourly_rate || 0) + (form.misc_charge || 0)).toFixed(2)}
+            ${formatCurrency((form.total_time_hours || 0) * (form.hourly_rate || 0) + (form.misc_charge || 0))}
           </div>
         </div>
       </div>
