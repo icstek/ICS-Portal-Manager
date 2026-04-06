@@ -71,9 +71,9 @@ export default function PartsSection({ items, setItems }) {
       {items.length > 0 && (
         <div className="grid grid-cols-12 gap-2 px-1">
           <div className="col-span-12 md:col-span-2"><Label className="text-xs text-muted-foreground">Part Name</Label></div>
-          <div className="col-span-12 md:col-span-5"><Label className="text-xs text-muted-foreground">Description</Label></div>
+          <div className="col-span-12 md:col-span-4"><Label className="text-xs text-muted-foreground">Description</Label></div>
           <div className="col-span-4 md:col-span-1"><Label className="text-xs text-muted-foreground">Qty</Label></div>
-          <div className="col-span-4 md:col-span-1"><Label className="text-xs text-muted-foreground">Unit Cost</Label></div>
+          <div className="col-span-4 md:col-span-2"><Label className="text-xs text-muted-foreground">Unit Cost</Label></div>
           <div className="col-span-3 md:col-span-2"><Label className="text-xs text-muted-foreground">Total</Label></div>
           <div className="col-span-1" />
         </div>
@@ -119,7 +119,7 @@ export default function PartsSection({ items, setItems }) {
                 )}
               </div>
           </div>
-          <div className="col-span-12 md:col-span-5">
+          <div className="col-span-12 md:col-span-4">
             <Input
               placeholder="Description..."
               value={item.part_description || ""}
@@ -130,7 +130,7 @@ export default function PartsSection({ items, setItems }) {
           <div className="col-span-4 md:col-span-1">
             <Input type="number" min="1" value={item.qty || ""} onChange={(e) => updateItem(idx, "qty", parseInt(e.target.value) || 0)} />
           </div>
-          <div className="col-span-4 md:col-span-1">
+          <div className="col-span-4 md:col-span-2">
             <Input type="number" step="0.01" value={item.unit_cost || ""} onChange={(e) => updateItem(idx, "unit_cost", parseFloat(e.target.value) || 0)} />
           </div>
           <div className="col-span-3 md:col-span-2">
