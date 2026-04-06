@@ -27,40 +27,45 @@ export default function ReportDetail() {
   const [editMode, setEditMode] = useState(false);
   const [sendingEmail, setSendingEmail] = useState(false);
 
+  // Helper: load an image URL as a data URL via an Image element + canvas
+  const loadImageAsDataUrl = (url) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        const c = document.createElement("canvas");
+        c.width = img.naturalWidth;
+        c.height = img.naturalHeight;
+        c.getContext("2d").drawImage(img, 0, 0);
+        resolve(c.toDataURL("image/png"));
+      };
+      img.onerror = () => resolve(null);
+      img.src = url;
+    });
+  };
+
   const generatePDFWithTerms = async () => {
     try {
       const cardElement = document.querySelector('[data-report-card]');
       if (!cardElement) return null;
 
-      // Pre-load logo as data URL so html2canvas can render it
-      const logoImg = cardElement.querySelector('[data-logo-img]');
-      let originalSrc = null;
-      if (logoImg && logoImg.src) {
-        originalSrc = logoImg.src;
-        try {
-          const resp = await fetch(logoImg.src);
-          const blob = await resp.blob();
-          const dataUrl = await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.readAsDataURL(blob);
-          });
-          logoImg.src = dataUrl;
-        } catch (e) {
-          // If fetch fails, continue without data URL
-        }
+      // Pre-load logo as data URL
+      let logoDataUrl = null;
+      if (companyLogoUrl) {
+        logoDataUrl = await loadImageAsDataUrl(companyLogoUrl);
       }
 
-      // Hide elements that shouldn't appear in PDF
+      // Hide elements that shouldn't appear in PDF (including logo - we'll draw it manually)
       const noPrintEls = cardElement.querySelectorAll('.no-print');
       noPrintEls.forEach(el => el.style.visibility = 'hidden');
+      const logoImg = cardElement.querySelector('[data-logo-img]');
+      if (logoImg) logoImg.style.visibility = 'hidden';
 
       const canvas = await html2canvas(cardElement, { scale: 2, useCORS: true });
 
       // Restore visibility
       noPrintEls.forEach(el => el.style.visibility = '');
-      // Restore original logo src
-      if (logoImg && originalSrc) logoImg.src = originalSrc;
+      if (logoImg) logoImg.style.visibility = '';
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       const imgWidth = 210;
@@ -75,6 +80,12 @@ export default function ReportDetail() {
         pdf.addPage();
         pdf.addImage(imgData, 'PNG', 0, yPos, imgWidth, imgHeight);
         remainingHeight -= 297;
+      }
+
+      // Draw logo on first page
+      if (logoDataUrl) {
+        pdf.setPage(1);
+        pdf.addImage(logoDataUrl, 'PNG', 10, 5, 25, 12);
       }
 
       // Add terms and conditions on the last page below the content
