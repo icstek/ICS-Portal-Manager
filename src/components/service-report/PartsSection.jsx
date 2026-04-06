@@ -122,12 +122,6 @@ export default function PartsSection({ items, setItems }) {
                   />
                 )}
               </div>
-              <Input
-                placeholder="Description..."
-                value={item.part_description || ""}
-                onChange={(e) => updateItem(idx, "part_description", e.target.value)}
-                className="text-sm mt-1"
-              />
           </div>
           <div className="col-span-12 md:col-span-4">
             <Input
