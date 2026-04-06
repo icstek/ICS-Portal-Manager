@@ -133,12 +133,29 @@ export default function PartsSection({ items, setItems }) {
           <div className="col-span-4 md:col-span-2">
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">$</span>
-              <Input type="number" step="0.01" value={item.unit_cost || ""} onChange={(e) => updateItem(idx, "unit_cost", parseFloat(e.target.value) || 0)} className="pl-7" />
+              <Input
+                type="text"
+                inputMode="decimal"
+                value={item.unit_cost || ""}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/[^0-9.]/g, "");
+                  updateItem(idx, "unit_cost", parseFloat(val) || 0);
+                }}
+                onBlur={(e) => {
+                  const num = parseFloat(e.target.value.replace(/[^0-9.]/g, "")) || 0;
+                  updateItem(idx, "unit_cost", num);
+                  e.target.value = num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }}
+                onFocus={(e) => {
+                  e.target.value = item.unit_cost || "";
+                }}
+                className="pl-7"
+              />
             </div>
           </div>
           <div className="col-span-3 md:col-span-2">
             <div className="h-9 flex items-center px-3 rounded-md bg-muted text-sm font-semibold">
-              ${(item.total || 0).toFixed(2)}
+              ${(item.total || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
           </div>
           <div className="col-span-1 flex justify-end">
@@ -153,7 +170,7 @@ export default function PartsSection({ items, setItems }) {
       <div className="border-t pt-4 mt-2 flex flex-col items-end gap-1.5 text-sm">
         <div className="flex gap-8">
           <span className="text-muted-foreground">Items Sub Total:</span>
-          <span className="font-semibold w-24 text-right">${itemsSubTotal.toFixed(2)}</span>
+          <span className="font-semibold w-24 text-right">${itemsSubTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
         </div>
       </div>
     </div>
