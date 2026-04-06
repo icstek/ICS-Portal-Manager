@@ -27,45 +27,45 @@ export default function ReportDetail() {
   const [editMode, setEditMode] = useState(false);
   const [sendingEmail, setSendingEmail] = useState(false);
 
-  // Helper: load an image URL as a data URL via an Image element + canvas
-  const loadImageAsDataUrl = (url) => {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => {
-        const c = document.createElement("canvas");
-        c.width = img.naturalWidth;
-        c.height = img.naturalHeight;
-        c.getContext("2d").drawImage(img, 0, 0);
-        resolve(c.toDataURL("image/png"));
-      };
-      img.onerror = () => resolve(null);
-      img.src = url;
-    });
-  };
-
   const generatePDFWithTerms = async () => {
     try {
       const cardElement = document.querySelector('[data-report-card]');
       if (!cardElement) return null;
 
-      // Pre-load logo as data URL
-      let logoDataUrl = null;
-      if (companyLogoUrl) {
-        logoDataUrl = await loadImageAsDataUrl(companyLogoUrl);
+      // Convert logo to data URL to avoid CORS issues with html2canvas
+      const logoImg = cardElement.querySelector('[data-logo-img]');
+      let originalLogoSrc = null;
+      if (logoImg && logoImg.src) {
+        originalLogoSrc = logoImg.src;
+        try {
+          // Use no-cors proxy approach: create a canvas from the already-loaded img element
+          const c = document.createElement('canvas');
+          // Wait for the image to be fully loaded
+          if (!logoImg.complete) {
+            await new Promise(r => { logoImg.onload = r; logoImg.onerror = r; });
+          }
+          c.width = logoImg.naturalWidth;
+          c.height = logoImg.naturalHeight;
+          const ctx = c.getContext('2d');
+          ctx.drawImage(logoImg, 0, 0);
+          const dataUrl = c.toDataURL('image/png');
+          logoImg.src = dataUrl;
+          // Wait a tick for the src change to apply
+          await new Promise(r => setTimeout(r, 50));
+        } catch (e) {
+          console.warn('Logo conversion failed:', e);
+        }
       }
 
-      // Hide elements that shouldn't appear in PDF (including logo - we'll draw it manually)
+      // Hide elements that shouldn't appear in PDF
       const noPrintEls = cardElement.querySelectorAll('.no-print');
       noPrintEls.forEach(el => el.style.visibility = 'hidden');
-      const logoImg = cardElement.querySelector('[data-logo-img]');
-      if (logoImg) logoImg.style.visibility = 'hidden';
 
-      const canvas = await html2canvas(cardElement, { scale: 2, useCORS: true });
+      const canvas = await html2canvas(cardElement, { scale: 2, useCORS: true, allowTaint: false, logging: false });
 
-      // Restore visibility
+      // Restore visibility and original logo src
       noPrintEls.forEach(el => el.style.visibility = '');
-      if (logoImg) logoImg.style.visibility = '';
+      if (logoImg && originalLogoSrc) logoImg.src = originalLogoSrc;
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       const imgWidth = 210;
@@ -80,12 +80,6 @@ export default function ReportDetail() {
         pdf.addPage();
         pdf.addImage(imgData, 'PNG', 0, yPos, imgWidth, imgHeight);
         remainingHeight -= 297;
-      }
-
-      // Draw logo on first page
-      if (logoDataUrl) {
-        pdf.setPage(1);
-        pdf.addImage(logoDataUrl, 'PNG', 10, 5, 25, 12);
       }
 
       // Add terms and conditions on the last page below the content
@@ -304,7 +298,7 @@ export default function ReportDetail() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
               {companyLogoUrl && (
-                <img src={companyLogoUrl} alt="Company Logo" className="h-12 mb-2 object-contain" data-logo-img />
+                <img src={companyLogoUrl} alt="Company Logo" className="h-12 mb-2 object-contain" crossOrigin="anonymous" data-logo-img />
               )}
               <CardTitle className="text-xl print:text-lg">Service Report {r.report_number ? `# ${r.report_number}` : ""}</CardTitle>
               <p className="text-sm text-muted-foreground mt-1 print:mt-0 print:text-xs">
