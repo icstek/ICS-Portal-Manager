@@ -131,7 +131,10 @@ export default function PartsSection({ items, setItems }) {
             <Input type="number" min="1" value={item.qty || ""} onChange={(e) => updateItem(idx, "qty", parseInt(e.target.value) || 0)} />
           </div>
           <div className="col-span-4 md:col-span-2">
-            <Input type="number" step="0.01" value={item.unit_cost || ""} onChange={(e) => updateItem(idx, "unit_cost", parseFloat(e.target.value) || 0)} />
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">$</span>
+              <Input type="number" step="0.01" value={item.unit_cost || ""} onChange={(e) => updateItem(idx, "unit_cost", parseFloat(e.target.value) || 0)} className="pl-7" />
+            </div>
           </div>
           <div className="col-span-3 md:col-span-2">
             <div className="h-9 flex items-center px-3 rounded-md bg-muted text-sm font-semibold">
