@@ -323,7 +323,7 @@ export default function ReportDetail() {
           <Button onClick={handleExportPDF} className="gap-2 bg-[#CC0000] hover:bg-[#B30000] text-white border-none">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Adobe_Acrobat_DC_logo_2020.svg/180px-Adobe_Acrobat_DC_logo_2020.svg.png" alt="PDF" className="w-4 h-4 object-contain" /> Export to PDF
           </Button>
-          <Button variant="outline" onClick={openEmailDialog} className="gap-2">
+          <Button onClick={openEmailDialog} className="gap-2 bg-[#0078D4] hover:bg-[#006CBE] text-white border-none">
             <Mail className="w-4 h-4" /> Email
           </Button>
           {(isGlobalAdmin || (isTechnician && r.service_status === "incomplete")) && (
