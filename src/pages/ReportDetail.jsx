@@ -330,7 +330,7 @@ export default function ReportDetail() {
             <Printer className="w-4 h-4" /> Print
           </Button>
           {(isGlobalAdmin || (isTechnician && r.service_status === "incomplete")) && (
-            <Button variant="outline" onClick={() => navigate(`/reports/${id}/edit`)} className="gap-2">
+            <Button onClick={() => navigate(`/reports/${id}/edit`)} className="gap-2 bg-[#F5A623] hover:bg-[#E0951E] text-white border-none">
               <Pencil className="w-4 h-4" /> Edit
             </Button>
           )}
