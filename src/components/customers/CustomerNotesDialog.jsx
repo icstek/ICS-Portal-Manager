@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 
-export default function CustomerNotesDialog({ open, onOpenChange, form, setForm }) {
+export default function CustomerNotesDialog({ open, onOpenChange, form, setForm, onSave }) {
   const [local, setLocal] = useState({ notes: "", cc_information: "", passwords: "" });
 
   useEffect(() => {
@@ -20,6 +20,7 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm 
 
   const handleSave = () => {
     setForm({ ...form, ...local });
+    if (onSave) onSave(local);
     onOpenChange(false);
   };
 

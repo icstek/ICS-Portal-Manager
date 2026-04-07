@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Plus, Search, Users, Pencil, Trash2, Check, FileText } from "lucide-react";
+import { Plus, Search, Users, Pencil, Trash2, Check, FileText, StickyNote } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import QuickBooksImport from "@/components/customers/QuickBooksImport";
@@ -23,6 +23,7 @@ export default function Customers() {
   const [currentPage, setCurrentPage] = useState(1);
   const [reportsModalOpen, setReportsModalOpen] = useState(false);
   const [notesOpen, setNotesOpen] = useState(false);
+  const [notesCustomer, setNotesCustomer] = useState(null);
   const [selectedCustomerForReports, setSelectedCustomerForReports] = useState(null);
   const pageSize = 50;
   const queryClient = useQueryClient();
@@ -186,6 +187,7 @@ export default function Customers() {
                    <Button variant="ghost" size="icon" onClick={() => { setSelectedCustomerForReports(c); setReportsModalOpen(true); }}><FileText className="w-4 h-4" /></Button>
                    {isAdmin && (
                      <>
+                       <Button variant="ghost" size="icon" onClick={() => { setNotesCustomer(c); setForm({ ...form, notes: c.notes || "", cc_information: c.cc_information || "", passwords: c.passwords || "" }); setNotesOpen(true); }}><StickyNote className="w-4 h-4" /></Button>
                        <Button variant="ghost" size="icon" onClick={() => openEdit(c)}><Pencil className="w-4 h-4" /></Button>
                        <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(c.id)} className="text-destructive hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
                      </>
@@ -247,7 +249,17 @@ export default function Customers() {
         </DialogContent>
       </Dialog>
 
-      <CustomerNotesDialog open={notesOpen} onOpenChange={setNotesOpen} form={form} setForm={setForm} />
+      <CustomerNotesDialog
+        open={notesOpen}
+        onOpenChange={(v) => { setNotesOpen(v); if (!v) setNotesCustomer(null); }}
+        form={form}
+        setForm={setForm}
+        onSave={notesCustomer ? async (data) => {
+          await base44.entities.Customer.update(notesCustomer.id, data);
+          queryClient.invalidateQueries({ queryKey: ["customers"] });
+          toast.success("Notes saved");
+        } : undefined}
+      />
 
       <CustomerReports 
         customer={selectedCustomerForReports}
