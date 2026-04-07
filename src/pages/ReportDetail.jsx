@@ -359,7 +359,7 @@ export default function ReportDetail() {
               {companyLogoUrl && (
                 <img src={companyLogoUrl} alt="Company Logo" className="h-12 mb-2 object-contain" data-logo-img />
               )}
-              <div className="mb-1">
+              <div className="mb-3">
                 <div className="text-xs text-muted-foreground">6038 Tampa Ave, Tarzana, CA 91356 &nbsp;|&nbsp; 818-609-7648 &nbsp;|&nbsp; www.icstek.com &nbsp;|&nbsp; info@icstek.com</div>
               </div>
               <CardTitle className="text-xl print:text-lg">Service Report {r.report_number ? `# ${r.report_number}` : ""}</CardTitle>
