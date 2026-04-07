@@ -6,6 +6,10 @@
       "type": "string",
       "description": "Customer full name"
     },
+    "customer_name": {
+      "type": "string",
+      "description": "Customer contact name"
+    },
     "address": {
       "type": "string",
       "description": "Street address"

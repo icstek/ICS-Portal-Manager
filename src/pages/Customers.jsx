@@ -17,7 +17,7 @@ export default function Customers() {
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({ name: "", address: "", address2: "", city: "", zip: "", tel: "", cell: "", email: "" });
+  const [form, setForm] = useState({ name: "", address: "", address2: "", city: "", zip: "", tel: "", cell: "", email: "", customer_name: "" });
   const [selectedCustomers, setSelectedCustomers] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [reportsModalOpen, setReportsModalOpen] = useState(false);
@@ -76,8 +76,8 @@ export default function Customers() {
     },
   });
 
-  const openNew = () => { setEditing(null); setForm({ name: "", address: "", address2: "", city: "", zip: "", tel: "", cell: "", email: "" }); setDialogOpen(true); };
-  const openEdit = (c) => { setEditing(c); setForm({ name: c.name || "", address: c.address || "", address2: c.address2 || "", city: c.city || "", zip: c.zip || "", tel: c.tel || "", cell: c.cell || "", email: c.email || "" }); setDialogOpen(true); };
+  const openNew = () => { setEditing(null); setForm({ name: "", address: "", address2: "", city: "", zip: "", tel: "", cell: "", email: "", customer_name: "" }); setDialogOpen(true); };
+  const openEdit = (c) => { setEditing(c); setForm({ name: c.name || "", address: c.address || "", address2: c.address2 || "", city: c.city || "", zip: c.zip || "", tel: c.tel || "", cell: c.cell || "", email: c.email || "", customer_name: c.customer_name || "" }); setDialogOpen(true); };
 
   const filtered = customers.filter((c) => (c.name || "").toLowerCase().includes(search.toLowerCase()));
   const totalPages = Math.ceil(filtered.length / pageSize);
@@ -230,7 +230,7 @@ export default function Customers() {
              <div><Label className="text-xs">Zip</Label><Input value={form.zip} onChange={(e) => setForm({ ...form, zip: e.target.value })} className="mt-1" /></div>
              <div><Label className="text-xs">Telephone</Label><Input value={form.tel} onChange={(e) => setForm({ ...form, tel: e.target.value })} className="mt-1" /></div>
              <div><Label className="text-xs">Cell</Label><Input value={form.cell} onChange={(e) => setForm({ ...form, cell: e.target.value })} className="mt-1" /></div>
-             <div></div>
+             <div><Label className="text-xs">Customer Name</Label><Input value={form.customer_name} onChange={(e) => setForm({ ...form, customer_name: e.target.value })} className="mt-1" /></div>
              <div><Label className="text-xs">Email</Label><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="mt-1" /></div>
           </div>
           <DialogFooter>
