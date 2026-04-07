@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { X } from "lucide-react";
 
 export default function CustomerNotesDialog({ open, onOpenChange, form, setForm }) {
   const [local, setLocal] = useState({ notes: "", cc_information: "", passwords: "" });
@@ -22,12 +22,18 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm 
     onOpenChange(false);
   };
 
+  if (!open) return null;
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>Customer Notes</DialogTitle>
-        </DialogHeader>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+      <div className="fixed inset-0 bg-black/80" onClick={() => onOpenChange(false)} />
+      <div className="relative z-[101] bg-background border rounded-lg shadow-lg w-full max-w-2xl mx-4 p-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Customer Notes</h2>
+          <button onClick={() => onOpenChange(false)} className="rounded-sm opacity-70 hover:opacity-100">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
         <div className="space-y-4">
           <div>
             <Label className="text-xs">Customer Notes:</Label>
@@ -56,11 +62,11 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm 
             </div>
           </div>
         </div>
-        <DialogFooter>
+        <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button onClick={handleSave}>Save</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </div>
+      </div>
+    </div>
   );
 }
