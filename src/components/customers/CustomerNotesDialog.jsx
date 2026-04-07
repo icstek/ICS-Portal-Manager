@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
+import CreditCardInput from "./CreditCardInput";
 
 export default function CustomerNotesDialog({ open, onOpenChange, form, setForm, onSave }) {
   const [local, setLocal] = useState({ notes: "", cc_information: "", passwords: "" });
@@ -47,11 +48,10 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm,
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label className="text-xs">CC Information:</Label>
-              <Textarea
+              <Label className="text-xs font-semibold mb-1 block">CC Information:</Label>
+              <CreditCardInput
                 value={local.cc_information}
-                onChange={(e) => setLocal({ ...local, cc_information: e.target.value })}
-                className="mt-1 min-h-[120px]"
+                onChange={(val) => setLocal({ ...local, cc_information: val })}
               />
             </div>
             <div>
