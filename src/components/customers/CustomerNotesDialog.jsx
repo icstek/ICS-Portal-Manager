@@ -46,7 +46,7 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm,
               className="mt-1 min-h-[200px]"
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 items-stretch">
             <div>
               <Label className="text-xs font-semibold mb-1 block">CC Information:</Label>
               <CreditCardInput
@@ -54,12 +54,12 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm,
                 onChange={(val) => setLocal({ ...local, cc_information: val })}
               />
             </div>
-            <div>
+            <div className="flex flex-col">
               <Label className="text-xs">Passwords:</Label>
               <Textarea
                 value={local.passwords}
                 onChange={(e) => setLocal({ ...local, passwords: e.target.value })}
-                className="mt-1 min-h-[120px]"
+                className="mt-1 flex-1"
               />
             </div>
           </div>
