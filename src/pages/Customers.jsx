@@ -232,14 +232,16 @@ export default function Customers() {
              <div><Label className="text-xs">Cell</Label><Input value={form.cell} onChange={(e) => setForm({ ...form, cell: e.target.value })} className="mt-1" /></div>
              <div>
                <Label className="text-xs">Customer Name</Label><Input value={form.customer_name} onChange={(e) => setForm({ ...form, customer_name: e.target.value })} className="mt-1" />
-               <Button type="button" className="mt-2 bg-orange-500 hover:bg-orange-600 text-white" size="sm">Notes</Button>
              </div>
              <div><Label className="text-xs">Email</Label><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="mt-1" /></div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-            <Button onClick={() => saveMutation.mutate(form)} disabled={!form.name || saveMutation.isPending}>Save</Button>
-          </DialogFooter>
+          <DialogFooter className="flex sm:justify-between">
+             <Button type="button" className="bg-orange-500 hover:bg-orange-600 text-white" size="sm">Notes</Button>
+             <div className="flex gap-2">
+               <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
+               <Button onClick={() => saveMutation.mutate(form)} disabled={!form.name || saveMutation.isPending}>Save</Button>
+             </div>
+           </DialogFooter>
         </DialogContent>
       </Dialog>
 
