@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -24,10 +25,10 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm 
 
   if (!open) return null;
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+  return createPortal(
+    <div className="fixed inset-0 flex items-center justify-center" style={{ zIndex: 9999 }}>
       <div className="fixed inset-0 bg-black/80" onClick={() => onOpenChange(false)} />
-      <div className="relative z-[101] bg-background border rounded-lg shadow-lg w-full max-w-2xl mx-4 p-6 space-y-4">
+      <div className="relative bg-background border rounded-lg shadow-lg w-full max-w-2xl mx-4 p-6 space-y-4" style={{ zIndex: 10000 }}>
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Customer Notes</h2>
           <button onClick={() => onOpenChange(false)} className="rounded-sm opacity-70 hover:opacity-100">
@@ -67,6 +68,7 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm 
           <Button onClick={handleSave}>Save</Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
