@@ -326,15 +326,14 @@ export default function ReportDetail() {
           <Button onClick={openEmailDialog} className="gap-2 bg-[#0078D4] hover:bg-[#006CBE] text-white border-none">
             <Mail className="w-4 h-4" /> Email
           </Button>
+          <Button variant="outline" onClick={handlePrint} className="gap-2">
+            <Printer className="w-4 h-4" /> Print
+          </Button>
           {(isGlobalAdmin || (isTechnician && r.service_status === "incomplete")) && (
             <Button variant="outline" onClick={() => navigate(`/reports/${id}/edit`)} className="gap-2">
               <Pencil className="w-4 h-4" /> Edit
             </Button>
           )}
-
-          <Button variant="outline" onClick={handlePrint} className="gap-2">
-            <Printer className="w-4 h-4" /> Print
-          </Button>
           {isAdmin && (
             <Button
               variant="destructive"
