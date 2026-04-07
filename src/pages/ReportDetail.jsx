@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Printer, Trash2, Download, Mail, AlertCircle, CheckCircle2, ChevronDown, Paperclip, Pencil } from "lucide-react";
+import { ArrowLeft, Printer, Trash2, Download, Mail, AlertCircle, CheckCircle2, ChevronDown, Paperclip, Pencil, FileText } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useState } from "react";
@@ -26,6 +26,69 @@ export default function ReportDetail() {
   const [emailData, setEmailData] = useState({ to: '', cc: '', subject: '', body: '' });
   const [editMode, setEditMode] = useState(false);
   const [sendingEmail, setSendingEmail] = useState(false);
+
+  const handleExportIIF = () => {
+    const dateStr = r.date ? format(new Date(r.date), "MM/dd/yyyy") : "";
+    const totalAmount = (r.total_charges || 0).toFixed(2);
+    const laborAmount = (r.labor_charge || 0).toFixed(2);
+    const travelAmount = (r.travel_charge || r.misc_charge || 0).toFixed(2);
+    const taxAmount = (r.tax_amount || 0).toFixed(2);
+    const partsTotal = (r.parts_charge || 0).toFixed(2);
+    const hourlyRate = r.hourly_rate || 145;
+    const custName = r.customer_name || "";
+    const docNum = r.report_number || "";
+    const memo = r.service_description || r.memo || "";
+    const addr1 = custName;
+    const addr2 = r.customer_address || "";
+    const addr3 = r.customer_address2 || "";
+    const addr4 = [r.customer_city, r.customer_zip].filter(Boolean).join(" ");
+    const addr5 = "";
+
+    const lines = [];
+    // Header rows
+    lines.push("!TRNS\tTRNSID\tTRNSTYPE\tDATE\tACCNT\tNAME\tCLASS\tAMOUNT\tDOCNUM\tMEMO\tADDR1\tADDR2\tADDR3\tADDR4\tADDR5\tTOPRINT\tNAMEISTAXABLE");
+    lines.push("!SPL\tSPLID\tTRNSTYPE\tDATE\tACCNT\tNAME\tCLASS\tAMOUNT\tDOCNUM\tMEMO\tINVITEM\tQNTY\tPRICE\tEXTRA");
+    lines.push("!ENDTRNS");
+
+    // TRNS line - main invoice
+    lines.push(`TRNS\t\tINVOICE\t${dateStr}\tAccounts Receivable\t${custName}\t\t${totalAmount}\t${docNum}\t${memo}\t${addr1}\t${addr2}\t${addr3}\t${addr4}\t${addr5}\tN\tN`);
+
+    // SPL - Service/Labor
+    if (parseFloat(laborAmount) > 0) {
+      const laborHours = r.total_time_hours || 0;
+      lines.push(`SPL\t\tINVOICE\t${dateStr}\tSales\t${custName}\t\t-${laborAmount}\t${docNum}\tFOR SERVICE RENDERED\tSER\t${laborHours}\t${hourlyRate}\t`);
+    }
+
+    // SPL - Travel
+    if (parseFloat(travelAmount) > 0) {
+      lines.push(`SPL\t\tINVOICE\t${dateStr}\tSales\t${custName}\t\t-${travelAmount}\t${docNum}\tTRAVEL TIME TO CUSTOMER LOCATION\tTRAVEL\t\t${travelAmount}\t`);
+    }
+
+    // SPL - Parts (each part as a separate line)
+    if (r.items_replaced?.length > 0) {
+      r.items_replaced.forEach((item) => {
+        const itemTotal = (item.total || 0).toFixed(2);
+        lines.push(`SPL\t\tINVOICE\t${dateStr}\tSales\t${custName}\t\t-${itemTotal}\t${docNum}\t${item.part_name || ""}\tPARTS\t${item.qty || 1}\t${(item.unit_cost || 0).toFixed(2)}\t`);
+      });
+    }
+
+    // SPL - Tax
+    if (parseFloat(taxAmount) > 0) {
+      lines.push(`SPL\t\tINVOICE\t${dateStr}\tSales Tax Payable\t\t\t-${taxAmount}\t${docNum}\t\tSALESTAX\t\t\tAUTOSTAX`);
+    }
+
+    lines.push("ENDTRNS");
+
+    const iifContent = lines.join("\r\n");
+    const blob = new Blob([iifContent], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `invoice-${docNum || id}.iif`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("IIF file exported");
+  };
 
   const generatePDFWithTerms = async () => {
     try {
@@ -254,6 +317,9 @@ export default function ReportDetail() {
           <ArrowLeft className="w-4 h-4" /> Back
         </Button>
         <div className="flex gap-2">
+          <Button variant="outline" onClick={handleExportIIF} className="gap-2">
+            <FileText className="w-4 h-4" /> Export to IIF
+          </Button>
           <Button variant="outline" onClick={openEmailDialog} className="gap-2">
             <Mail className="w-4 h-4" /> Email
           </Button>
