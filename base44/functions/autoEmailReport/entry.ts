@@ -16,23 +16,24 @@ Deno.serve(async (req) => {
       return Response.json({ success: false, error: 'Missing reportId' }, { status: 400 });
     }
 
-    // Get the report
-    const reports = await base44.entities.ServiceReport.filter({ id: reportId });
+    // Get the report using service role so all users can access it
+    const reports = await base44.asServiceRole.entities.ServiceReport.filter({ id: reportId });
     const report = reports[0];
 
     if (!report) {
       return Response.json({ success: false, error: 'Report not found' }, { status: 404 });
     }
 
-    // Get Resend configuration from user settings
-    const me = await base44.auth.me();
-    const apiKey = me?.resend_api_key;
-    const fromEmail = me?.resend_from_email;
+    // Get Resend configuration from GlobalSettings (accessible to all roles)
+    const settings = await base44.asServiceRole.entities.GlobalSettings.filter({ key: 'global' });
+    const globalSettings = settings[0];
+    const apiKey = globalSettings?.resend_api_key;
+    const fromEmail = globalSettings?.resend_from_email;
 
     if (!apiKey || !fromEmail) {
       return Response.json({ 
         success: false, 
-        error: 'Resend configuration missing' 
+        error: 'Resend configuration missing. An admin needs to configure email settings first.' 
       }, { status: 500 });
     }
 

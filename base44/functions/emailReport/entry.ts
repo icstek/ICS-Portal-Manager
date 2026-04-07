@@ -23,8 +23,8 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
 
-    // Get the report
-    const reports = await base44.entities.ServiceReport.filter({ id: reportId });
+    // Get the report using service role so all users can access it
+    const reports = await base44.asServiceRole.entities.ServiceReport.filter({ id: reportId });
     const report = reports[0];
 
     if (!report) {
@@ -38,15 +38,16 @@ Deno.serve(async (req) => {
       }, { status: 404 });
     }
 
-    // Get Resend configuration from user settings
-    const me = await base44.auth.me();
-    const apiKey = me?.resend_api_key;
-    const fromEmail = me?.resend_from_email;
+    // Get Resend configuration from GlobalSettings (accessible to all roles)
+    const settings = await base44.asServiceRole.entities.GlobalSettings.filter({ key: 'global' });
+    const globalSettings = settings[0];
+    const apiKey = globalSettings?.resend_api_key;
+    const fromEmail = globalSettings?.resend_from_email;
 
     if (!apiKey || !fromEmail) {
       return Response.json({ 
         success: false,
-        error: 'Resend configuration missing. Please configure settings first.',
+        error: 'Resend configuration missing. An admin needs to configure email settings first.',
         details: {
           timestamp: new Date().toISOString(),
           code: 'MISSING_CONFIG',
@@ -65,9 +66,9 @@ Deno.serve(async (req) => {
         const pdfBuffer = await pdfResponse.arrayBuffer();
         const uint8Array = new Uint8Array(pdfBuffer);
         
-        // FIX: Process the array in chunks to avoid call stack limits
+        // Process the array in chunks to avoid call stack limits
         let binaryString = '';
-        const chunkSize = 8192; // Safe chunk size
+        const chunkSize = 8192;
         for (let i = 0; i < uint8Array.length; i += chunkSize) {
           const chunk = uint8Array.subarray(i, i + chunkSize);
           binaryString += String.fromCharCode.apply(null, chunk);
@@ -82,11 +83,6 @@ Deno.serve(async (req) => {
         console.log('PDF attachment prepared successfully:', { filename: `report-${report.report_number}.pdf`, size: pdfBuffer.byteLength });
       } catch (attachError) {
         console.error('PDF attachment error:', attachError);
-        console.error('Attachment error details:', { 
-          message: attachError.message, 
-          stack: attachError.stack,
-          pdfUrl: pdfUrl 
-        });
       }
     }
 
