@@ -423,6 +423,21 @@ export default function ReportDetail() {
             </div>
           </div>
 
+          {/* Work Performed */}
+          {r.services_performed?.length > 0 && (
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 print:mb-1 print:text-[10px]">Work Performed</h3>
+              <div className="flex flex-wrap gap-2">
+                {r.services_performed.map((svc, i) => (
+                  <Badge key={i} variant="outline" className="text-xs">
+                    <span className="font-semibold">{svc.shortname}</span>
+                    {svc.description && <span className="ml-1 text-muted-foreground">– {svc.description}</span>}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Service Description */}
           {r.service_description && (
             <div>
