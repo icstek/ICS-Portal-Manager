@@ -125,7 +125,7 @@ export default function Dashboard() {
                         <div className="min-w-0">
                           <p className="font-medium truncate">{r.customer_name || "Unknown Customer"}</p>
                           <p className="text-xs text-muted-foreground">
-                            {r.report_number ? `#${r.report_number} · ` : ""}{r.date ? format(new Date(r.date), "MMM d, yyyy") : "No date"}
+                            {r.report_number ? `#${r.report_number} · ` : ""}{r.date ? format(new Date(r.date + "T00:00:00"), "MMM d, yyyy") : "No date"}
                             {r.technician_name ? ` · ${r.technician_name}` : ""}
                           </p>
                           {r.memo && <p className="text-xs text-muted-foreground italic truncate">{r.memo}</p>}
@@ -170,7 +170,7 @@ export default function Dashboard() {
                           {r.report_number ? `#${r.report_number}` : "No #"}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {r.date ? format(new Date(r.date), "MMM d, yyyy") : "No date"}
+                          {r.date ? format(new Date(r.date + "T00:00:00"), "MMM d, yyyy") : "No date"}
                         </p>
                         {r.memo && <p className="text-xs text-muted-foreground italic truncate mt-1">{r.memo}</p>}
                       </div>

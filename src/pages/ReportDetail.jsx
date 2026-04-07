@@ -28,7 +28,7 @@ export default function ReportDetail() {
   const [sendingEmail, setSendingEmail] = useState(false);
 
   const handleExportIIF = () => {
-    const dateStr = r.date ? format(new Date(r.date), "MM/dd/yyyy") : "";
+    const dateStr = r.date ? format(new Date(r.date + "T00:00:00"), "MM/dd/yyyy") : "";
     const totalAmount = (r.total_charges || 0).toFixed(2);
     const laborAmount = (r.labor_charge || 0).toFixed(2);
     const travelAmount = (r.travel_charge || r.misc_charge || 0).toFixed(2);
@@ -182,7 +182,7 @@ export default function ReportDetail() {
       to: report?.customer_email || '',
       cc: '',
       subject: `Service Report #${r.report_number}`,
-      body: `Service Report for ${r.customer_name}\n\nDate: ${r.date ? format(new Date(r.date), "MMMM d, yyyy") : ""}\nTotal: $${(r.total_charges || 0).toFixed(2)}\n\nReport Number: ${r.report_number}`
+      body: `Service Report for ${r.customer_name}\n\nDate: ${r.date ? format(new Date(r.date + "T00:00:00"), "MMMM d, yyyy") : ""}\nTotal: $${(r.total_charges || 0).toFixed(2)}\n\nReport Number: ${r.report_number}`
     });
     setEditMode(false);
     setEmailResult(null);
@@ -364,7 +364,7 @@ export default function ReportDetail() {
               </div>
               <CardTitle className="text-xl print:text-lg">Service Report {r.report_number ? `# ${r.report_number}` : ""}</CardTitle>
               <p className="text-sm text-muted-foreground mt-1 print:mt-0 print:text-xs">
-                {r.date ? format(new Date(r.date), "MMMM d, yyyy") : ""}
+                {r.date ? format(new Date(r.date + "T00:00:00"), "MMMM d, yyyy") : ""}
               </p>
             </div>
             <div className="flex gap-2 print:hidden no-print">
@@ -505,7 +505,7 @@ export default function ReportDetail() {
               </div>
               <div className="space-y-4">
                 <p className="text-xs text-muted-foreground">Date:</p>
-                <p className="text-xs text-muted-foreground">{r.date ? format(new Date(r.date), "MMMM d, yyyy") : ""}</p>
+                <p className="text-xs text-muted-foreground">{r.date ? format(new Date(r.date + "T00:00:00"), "MMMM d, yyyy") : ""}</p>
               </div>
             </div>
           </div>
