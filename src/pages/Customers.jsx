@@ -227,7 +227,7 @@ export default function Customers() {
              <div><Label className="text-xs">Address</Label><Input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="mt-1" /></div>
              <div><Label className="text-xs">Address Line 2</Label><Input value={form.address2} onChange={(e) => setForm({ ...form, address2: e.target.value })} className="mt-1" placeholder="Suite, unit, floor, etc." /></div>
              <div><Label className="text-xs">City</Label><Input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="mt-1" /></div>
-             <div><Label className="text-xs">Zip</Label><Input value={form.zip} onChange={(e) => setForm({ ...form, zip: e.target.value })} className="mt-1" /></div>
+             <div><Label className="text-xs">Zip</Label><Input value={form.zip} onChange={(e) => setForm({ ...form, zip: e.target.value.replace(/\D/g, '').slice(0, 5) })} className="mt-1" maxLength={5} placeholder="00000" /></div>
              <div><Label className="text-xs">Telephone</Label><Input value={form.tel} onChange={(e) => setForm({ ...form, tel: e.target.value })} className="mt-1" /></div>
              <div><Label className="text-xs">Cell</Label><Input value={form.cell} onChange={(e) => setForm({ ...form, cell: e.target.value })} className="mt-1" /></div>
              <div>
