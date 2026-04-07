@@ -317,8 +317,8 @@ export default function ReportDetail() {
           <ArrowLeft className="w-4 h-4" /> Back
         </Button>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={handleExportIIF} className="gap-2">
-            <FileText className="w-4 h-4" /> Export to IIF
+          <Button onClick={handleExportIIF} className="gap-2 bg-[#2CA01C] hover:bg-[#249016] text-white border-none">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/QuickBooks_logo.png/220px-QuickBooks_logo.png" alt="QB" className="w-4 h-4 object-contain" /> Export to IIF
           </Button>
           <Button variant="outline" onClick={openEmailDialog} className="gap-2">
             <Mail className="w-4 h-4" /> Email
