@@ -11,16 +11,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import QuickBooksImport from "@/components/customers/QuickBooksImport";
 import CustomerReports from "@/components/customers/CustomerReports";
+import CustomerNotesDialog from "@/components/customers/CustomerNotesDialog";
 import { useRole } from "@/hooks/useRole";
 
 export default function Customers() {
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({ name: "", address: "", address2: "", city: "", zip: "", tel: "", cell: "", email: "", customer_name: "" });
+  const [form, setForm] = useState({ name: "", address: "", address2: "", city: "", zip: "", tel: "", cell: "", email: "", customer_name: "", notes: "", cc_information: "", passwords: "" });
   const [selectedCustomers, setSelectedCustomers] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [reportsModalOpen, setReportsModalOpen] = useState(false);
+  const [notesOpen, setNotesOpen] = useState(false);
   const [selectedCustomerForReports, setSelectedCustomerForReports] = useState(null);
   const pageSize = 50;
   const queryClient = useQueryClient();
@@ -76,8 +78,8 @@ export default function Customers() {
     },
   });
 
-  const openNew = () => { setEditing(null); setForm({ name: "", address: "", address2: "", city: "", zip: "", tel: "", cell: "", email: "", customer_name: "" }); setDialogOpen(true); };
-  const openEdit = (c) => { setEditing(c); setForm({ name: c.name || "", address: c.address || "", address2: c.address2 || "", city: c.city || "", zip: (c.zip || "").replace(/\D/g, '').slice(0, 5), tel: c.tel || "", cell: c.cell || "", email: c.email || "", customer_name: c.customer_name || "" }); setDialogOpen(true); };
+  const openNew = () => { setEditing(null); setForm({ name: "", address: "", address2: "", city: "", zip: "", tel: "", cell: "", email: "", customer_name: "", notes: "", cc_information: "", passwords: "" }); setDialogOpen(true); };
+  const openEdit = (c) => { setEditing(c); setForm({ name: c.name || "", address: c.address || "", address2: c.address2 || "", city: c.city || "", zip: (c.zip || "").replace(/\D/g, '').slice(0, 5), tel: c.tel || "", cell: c.cell || "", email: c.email || "", customer_name: c.customer_name || "", notes: c.notes || "", cc_information: c.cc_information || "", passwords: c.passwords || "" }); setDialogOpen(true); };
 
   const filtered = customers.filter((c) => (c.name || "").toLowerCase().includes(search.toLowerCase()));
   const totalPages = Math.ceil(filtered.length / pageSize);
@@ -236,7 +238,7 @@ export default function Customers() {
              <div><Label className="text-xs">Email</Label><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="mt-1" /></div>
           </div>
           <DialogFooter className="flex sm:justify-between">
-             <Button type="button" className="bg-orange-500 hover:bg-orange-600 text-white" size="sm">Notes</Button>
+             <Button type="button" className="bg-orange-500 hover:bg-orange-600 text-white" size="sm" onClick={() => setNotesOpen(true)}>Notes</Button>
              <div className="flex gap-2">
                <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
                <Button onClick={() => saveMutation.mutate(form)} disabled={!form.name || saveMutation.isPending}>Save</Button>
@@ -244,6 +246,8 @@ export default function Customers() {
            </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <CustomerNotesDialog open={notesOpen} onOpenChange={setNotesOpen} form={form} setForm={setForm} />
 
       <CustomerReports 
         customer={selectedCustomerForReports}

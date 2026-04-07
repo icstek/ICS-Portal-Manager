@@ -37,6 +37,18 @@
     "email": {
       "type": "string",
       "description": "Email address"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Customer notes"
+    },
+    "cc_information": {
+      "type": "string",
+      "description": "Credit card information"
+    },
+    "passwords": {
+      "type": "string",
+      "description": "Customer passwords"
     }
   },
   "required": [
