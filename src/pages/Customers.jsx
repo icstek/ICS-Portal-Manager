@@ -238,7 +238,7 @@ export default function Customers() {
              <div><Label className="text-xs">Email</Label><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="mt-1" /></div>
           </div>
           <DialogFooter className="flex sm:justify-between">
-             <Button type="button" className="bg-orange-500 hover:bg-orange-600 text-white" size="sm" onClick={() => setNotesOpen(true)}>Notes</Button>
+             <Button type="button" className="bg-orange-500 hover:bg-orange-600 text-white" size="sm" onPointerDown={(e) => { e.stopPropagation(); e.preventDefault(); setNotesOpen(true); }}>Notes</Button>
              <div className="flex gap-2">
                <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
                <Button onClick={() => saveMutation.mutate(form)} disabled={!form.name || saveMutation.isPending}>Save</Button>
