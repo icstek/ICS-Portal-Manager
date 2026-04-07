@@ -77,7 +77,7 @@ export default function Customers() {
   });
 
   const openNew = () => { setEditing(null); setForm({ name: "", address: "", address2: "", city: "", zip: "", tel: "", cell: "", email: "", customer_name: "" }); setDialogOpen(true); };
-  const openEdit = (c) => { setEditing(c); setForm({ name: c.name || "", address: c.address || "", address2: c.address2 || "", city: c.city || "", zip: c.zip || "", tel: c.tel || "", cell: c.cell || "", email: c.email || "", customer_name: c.customer_name || "" }); setDialogOpen(true); };
+  const openEdit = (c) => { setEditing(c); setForm({ name: c.name || "", address: c.address || "", address2: c.address2 || "", city: c.city || "", zip: (c.zip || "").replace(/\D/g, '').slice(0, 5), tel: c.tel || "", cell: c.cell || "", email: c.email || "", customer_name: c.customer_name || "" }); setDialogOpen(true); };
 
   const filtered = customers.filter((c) => (c.name || "").toLowerCase().includes(search.toLowerCase()));
   const totalPages = Math.ceil(filtered.length / pageSize);
