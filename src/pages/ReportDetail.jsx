@@ -26,6 +26,7 @@ export default function ReportDetail() {
   const [emailData, setEmailData] = useState({ to: '', cc: '', subject: '', body: '' });
   const [editMode, setEditMode] = useState(false);
   const [sendingEmail, setSendingEmail] = useState(false);
+  const [statusWarning, setStatusWarning] = useState(false);
 
   const { data: report, isLoading } = useQuery({
     queryKey: ["report", id],
@@ -290,7 +291,8 @@ export default function ReportDetail() {
 
   const toggleStatus = () => {
     if (!isAdmin && report?.service_status === "complete") {
-      toast({ title: "To change service report status, contact the System admin.", variant: "destructive", duration: 4000 });
+      setStatusWarning(true);
+      setTimeout(() => setStatusWarning(false), 4000);
       return;
     }
     const newStatus = report?.service_status === "complete" ? "incomplete" : "complete";
@@ -350,6 +352,12 @@ export default function ReportDetail() {
           )}
         </div>
       </div>
+
+      {statusWarning && (
+        <div className="bg-destructive text-destructive-foreground px-4 py-3 rounded-lg text-sm font-medium animate-in fade-in">
+          To change service report status, contact the System admin.
+        </div>
+      )}
 
       <Card className="print:shadow-none print:border" data-report-card>
         <CardHeader className="border-b print:py-2 print:px-4">
