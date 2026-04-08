@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 import CreditCardInput from "./CreditCardInput";
 
-export default function CustomerNotesDialog({ open, onOpenChange, form, setForm, onSave }) {
+export default function CustomerNotesDialog({ open, onOpenChange, form, setForm, onSave, readOnly = false }) {
   const [local, setLocal] = useState({ notes: "", cc_information: "", passwords: "" });
 
   useEffect(() => {
@@ -44,6 +44,7 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm,
               value={local.notes}
               onChange={(e) => setLocal({ ...local, notes: e.target.value })}
               className="mt-1 min-h-[200px]"
+              readOnly={readOnly}
             />
           </div>
           <div className="grid grid-cols-2 gap-4 items-stretch">
@@ -52,6 +53,7 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm,
               <CreditCardInput
                 value={local.cc_information}
                 onChange={(val) => setLocal({ ...local, cc_information: val })}
+                readOnly={readOnly}
               />
             </div>
             <div className="flex flex-col">
@@ -60,13 +62,14 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm,
                 value={local.passwords}
                 onChange={(e) => setLocal({ ...local, passwords: e.target.value })}
                 className="mt-1 flex-1"
+                readOnly={readOnly}
               />
             </div>
           </div>
         </div>
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button onClick={handleSave}>Save</Button>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>{readOnly ? "Close" : "Cancel"}</Button>
+          {!readOnly && <Button onClick={handleSave}>Save</Button>}
         </div>
       </div>
     </div>,

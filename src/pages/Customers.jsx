@@ -184,10 +184,12 @@ export default function Customers() {
                    </div>
                  </div>
                  <div className="flex gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
+                   {(isAdmin || isTechnician) && (
+                     <Button variant="ghost" size="icon" onClick={() => { setNotesCustomer(c); setForm({ ...form, notes: c.notes || "", cc_information: c.cc_information || "", passwords: c.passwords || "" }); setNotesOpen(true); }}><StickyNote className="w-4 h-4 text-orange-500" /></Button>
+                   )}
                    <Button variant="ghost" size="icon" onClick={() => { setSelectedCustomerForReports(c); setReportsModalOpen(true); }}><FileText className="w-4 h-4" /></Button>
                    {isAdmin && (
                      <>
-                       <Button variant="ghost" size="icon" onClick={() => { setNotesCustomer(c); setForm({ ...form, notes: c.notes || "", cc_information: c.cc_information || "", passwords: c.passwords || "" }); setNotesOpen(true); }}><StickyNote className="w-4 h-4 text-orange-500" /></Button>
                        <Button variant="ghost" size="icon" onClick={() => openEdit(c)}><Pencil className="w-4 h-4" /></Button>
                        <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(c.id)} className="text-destructive hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
                      </>
@@ -254,7 +256,8 @@ export default function Customers() {
         onOpenChange={(v) => { setNotesOpen(v); if (!v) setNotesCustomer(null); }}
         form={form}
         setForm={setForm}
-        onSave={notesCustomer ? async (data) => {
+        readOnly={isTechnician}
+        onSave={notesCustomer && !isTechnician ? async (data) => {
           await base44.entities.Customer.update(notesCustomer.id, data);
           queryClient.invalidateQueries({ queryKey: ["customers"] });
           toast.success("Notes saved");

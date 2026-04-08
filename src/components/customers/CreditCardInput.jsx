@@ -66,7 +66,7 @@ function serializeCC(obj) {
   return parts.join("\n");
 }
 
-export default function CreditCardInput({ value, onChange }) {
+export default function CreditCardInput({ value, onChange, readOnly = false }) {
   const [cc, setCc] = useState({ number: "", expiry: "", cvv: "", name: "" });
 
   useEffect(() => {
@@ -112,6 +112,7 @@ export default function CreditCardInput({ value, onChange }) {
             onChange={(e) => update("number", e.target.value.replace(/\D/g, "").slice(0, 19))}
             placeholder="0000 0000 0000 0000"
             className="pl-9 pr-20"
+            readOnly={readOnly}
           />
           <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
             {cardType && <span className="text-xs font-medium text-muted-foreground">{cardType}</span>}
@@ -134,6 +135,7 @@ export default function CreditCardInput({ value, onChange }) {
               value={formatExpiry(cc.expiry)}
               onChange={(e) => update("expiry", e.target.value.replace(/\D/g, "").slice(0, 4))}
               placeholder="MM/YY"
+              readOnly={readOnly}
             />
             {showExpiryStatus && (
               <div className="absolute right-2.5 top-1/2 -translate-y-1/2">
@@ -155,6 +157,7 @@ export default function CreditCardInput({ value, onChange }) {
               onChange={(e) => update("cvv", e.target.value.replace(/\D/g, "").slice(0, 4))}
               placeholder={cardType === "Amex" ? "0000" : "000"}
               type="password"
+              readOnly={readOnly}
             />
             {showCvvStatus && (
               <div className="absolute right-2.5 top-1/2 -translate-y-1/2">
@@ -173,6 +176,7 @@ export default function CreditCardInput({ value, onChange }) {
           onChange={(e) => update("name", e.target.value)}
           placeholder="Name on card"
           className="mt-1"
+          readOnly={readOnly}
         />
       </div>
     </div>
