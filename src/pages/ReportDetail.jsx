@@ -290,7 +290,7 @@ export default function ReportDetail() {
 
   const toggleStatus = () => {
     if (!isAdmin && report?.service_status === "complete") {
-      window.alert("To change service report status, contact the System admin.");
+      toast({ title: "To change service report status, contact the System admin.", variant: "destructive", duration: 4000 });
       return;
     }
     const newStatus = report?.service_status === "complete" ? "incomplete" : "complete";
