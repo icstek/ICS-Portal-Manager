@@ -16,9 +16,12 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm,
 
   useEffect(() => {
     if (open) {
+      // Immediately populate from form props so fields are usable right away
+      setLocal({ notes: form.notes || "", cc_information: form.cc_information || "", passwords: form.passwords || "" });
+      setLoading(false);
+
       if (customerId) {
-        // Always fetch fresh data from the database
-        setLoading(true);
+        // Fetch fresh data in background and update when ready
         base44.entities.Customer.filter({ id: customerId }).then((results) => {
           const fresh = results[0];
           if (fresh) {
@@ -27,12 +30,8 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm,
               cc_information: fresh.cc_information || "",
               passwords: fresh.passwords || "",
             });
-          } else {
-            setLocal({ notes: form.notes || "", cc_information: form.cc_information || "", passwords: form.passwords || "" });
           }
-        }).finally(() => setLoading(false));
-      } else {
-        setLocal({ notes: form.notes || "", cc_information: form.cc_information || "", passwords: form.passwords || "" });
+        });
       }
     }
   }, [open, customerId]);
