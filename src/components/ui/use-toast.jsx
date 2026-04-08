@@ -134,6 +134,10 @@ function toast({ ...props }) {
     },
   });
 
+  if (props.duration) {
+    setTimeout(dismiss, props.duration);
+  }
+
   return {
     id,
     dismiss,
@@ -161,4 +165,4 @@ function useToast() {
   };
 }
 
-export { useToast, toast }; 
+export { useToast, toast };
