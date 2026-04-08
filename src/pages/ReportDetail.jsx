@@ -303,7 +303,7 @@ export default function ReportDetail() {
       warningTimerRef.current = setTimeout(() => {
         setStatusWarning(false);
         warningTimerRef.current = null;
-      }, 4000);
+      }, 3000);
       return;
     }
     const newStatus = report?.service_status === "complete" ? "incomplete" : "complete";
