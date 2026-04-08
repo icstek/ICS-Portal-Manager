@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Printer, Trash2, Download, Mail, AlertCircle, CheckCircle2, ChevronDown, Paperclip, Pencil, FileText } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import { useRole } from "@/hooks/useRole";
@@ -27,6 +27,13 @@ export default function ReportDetail() {
   const [editMode, setEditMode] = useState(false);
   const [sendingEmail, setSendingEmail] = useState(false);
   const [statusWarning, setStatusWarning] = useState(false);
+  const warningTimerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (warningTimerRef.current) clearTimeout(warningTimerRef.current);
+    };
+  }, []);
 
   const { data: report, isLoading } = useQuery({
     queryKey: ["report", id],
@@ -292,7 +299,11 @@ export default function ReportDetail() {
   const toggleStatus = () => {
     if (!isAdmin && report?.service_status === "complete") {
       setStatusWarning(true);
-      setTimeout(() => setStatusWarning(false), 4000);
+      if (warningTimerRef.current) clearTimeout(warningTimerRef.current);
+      warningTimerRef.current = setTimeout(() => {
+        setStatusWarning(false);
+        warningTimerRef.current = null;
+      }, 4000);
       return;
     }
     const newStatus = report?.service_status === "complete" ? "incomplete" : "complete";
