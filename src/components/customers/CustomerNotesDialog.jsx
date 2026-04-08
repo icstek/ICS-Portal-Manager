@@ -7,8 +7,10 @@ import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 import { toast } from "sonner";
 import CreditCardInput from "./CreditCardInput";
+import { useRole } from "@/hooks/useRole";
 
 export default function CustomerNotesDialog({ open, onOpenChange, form, setForm, onSave, readOnly = false, customerId, onCCSubmit }) {
+  const { isGlobalAdmin } = useRole();
   const [local, setLocal] = useState({ notes: "", cc_information: "", passwords: "" });
 
   useEffect(() => {
@@ -69,6 +71,22 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm,
                   }}
                 >
                   Submit CC Info
+                </Button>
+              )}
+              {customerId && isGlobalAdmin && local.cc_information && (
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  className="mt-2 ml-2"
+                  onClick={async () => {
+                    await base44.entities.Customer.update(customerId, { cc_information: "" });
+                    setLocal((l) => ({ ...l, cc_information: "" }));
+                    setForm((f) => ({ ...f, cc_information: "" }));
+                    if (onCCSubmit) onCCSubmit();
+                    toast.success("CC information cleared");
+                  }}
+                >
+                  Clear CC Info
                 </Button>
               )}
             </div>
