@@ -55,9 +55,9 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm,
               <CreditCardInput
                 value={local.cc_information}
                 onChange={(val) => setLocal({ ...local, cc_information: val })}
-                readOnly={readOnly}
+                readOnly={false}
               />
-              {!readOnly && customerId && (
+              {customerId && (
                 <Button
                   size="sm"
                   className="mt-2"
