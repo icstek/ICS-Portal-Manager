@@ -257,7 +257,7 @@ export default function Customers() {
         form={form}
         setForm={setForm}
         readOnly={isTechnician}
-        customerId={notesCustomer?.id}
+        customerId={notesCustomer?.id || editing?.id}
         onCCSubmit={() => queryClient.invalidateQueries({ queryKey: ["customers"] })}
         onSave={notesCustomer && !isTechnician ? async (data) => {
           await base44.entities.Customer.update(notesCustomer.id, data);

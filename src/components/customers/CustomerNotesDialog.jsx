@@ -12,16 +12,30 @@ import { useRole } from "@/hooks/useRole";
 export default function CustomerNotesDialog({ open, onOpenChange, form, setForm, onSave, readOnly = false, customerId, onCCSubmit }) {
   const { isGlobalAdmin } = useRole();
   const [local, setLocal] = useState({ notes: "", cc_information: "", passwords: "" });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (open) {
-      setLocal({
-        notes: form.notes || "",
-        cc_information: form.cc_information || "",
-        passwords: form.passwords || "",
-      });
+      if (customerId) {
+        // Always fetch fresh data from the database
+        setLoading(true);
+        base44.entities.Customer.filter({ id: customerId }).then((results) => {
+          const fresh = results[0];
+          if (fresh) {
+            setLocal({
+              notes: fresh.notes || "",
+              cc_information: fresh.cc_information || "",
+              passwords: fresh.passwords || "",
+            });
+          } else {
+            setLocal({ notes: form.notes || "", cc_information: form.cc_information || "", passwords: form.passwords || "" });
+          }
+        }).finally(() => setLoading(false));
+      } else {
+        setLocal({ notes: form.notes || "", cc_information: form.cc_information || "", passwords: form.passwords || "" });
+      }
     }
-  }, [open]);
+  }, [open, customerId]);
 
   const handleSave = () => {
     setForm({ ...form, ...local });
