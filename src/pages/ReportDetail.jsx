@@ -27,6 +27,17 @@ export default function ReportDetail() {
   const [editMode, setEditMode] = useState(false);
   const [sendingEmail, setSendingEmail] = useState(false);
 
+  const { data: report, isLoading } = useQuery({
+    queryKey: ["report", id],
+    queryFn: async () => {
+      const reports = await base44.entities.ServiceReport.filter({ id });
+      return reports[0];
+    },
+    enabled: !!id,
+  });
+
+  const r = report;
+
   const handleExportIIF = () => {
     const dateStr = r.date ? format(new Date(r.date.includes("T") ? r.date : r.date + "T00:00:00"), "MM/dd/yyyy") : "";
     const totalAmount = (r.total_charges || 0).toFixed(2);
@@ -278,7 +289,6 @@ export default function ReportDetail() {
   });
 
   const toggleStatus = () => {
-    console.log("toggleStatus called", { isAdmin, isTechnician, status: report?.service_status, role: user?.role });
     if (!isAdmin && report?.service_status === "complete") {
       toast({ title: "To change service report status, contact the System admin.", variant: "destructive" });
       return;
@@ -286,15 +296,6 @@ export default function ReportDetail() {
     const newStatus = report?.service_status === "complete" ? "incomplete" : "complete";
     statusMutation.mutate(newStatus);
   };
-
-  const { data: report, isLoading } = useQuery({
-    queryKey: ["report", id],
-    queryFn: async () => {
-      const reports = await base44.entities.ServiceReport.filter({ id });
-      return reports[0];
-    },
-    enabled: !!id,
-  });
 
   if (isLoading) {
     return (
@@ -312,8 +313,6 @@ export default function ReportDetail() {
       </div>
     );
   }
-
-  const r = report;
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 print:space-y-2">
