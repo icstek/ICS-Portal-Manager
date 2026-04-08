@@ -51,6 +51,10 @@ export default function CustomerSection({ form, setForm }) {
 
   const handleChange = (field, value) => setForm((f) => ({ ...f, [field]: value }));
 
+  const handleCustomerFieldChange = (formField, value) => {
+    setForm((f) => ({ ...f, [formField]: value }));
+  };
+
   const filteredCustomers = customers.filter((c) =>
     (c.name || "").toLowerCase().includes(search.toLowerCase()) ||
     (c.tel || "").includes(search) ||
@@ -102,35 +106,35 @@ export default function CustomerSection({ form, setForm }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
             <Label className="text-xs text-muted-foreground">Name</Label>
-            <Input value={form.customer_name || ""} disabled className="mt-1" />
+            <Input value={form.customer_name || ""} onChange={(e) => handleCustomerFieldChange("customer_name", e.target.value)} className="mt-1" />
           </div>
           <div>
             <Label className="text-xs text-muted-foreground">Address</Label>
-            <Input value={form.customer_address || ""} disabled className="mt-1" />
+            <Input value={form.customer_address || ""} onChange={(e) => handleCustomerFieldChange("customer_address", e.target.value)} className="mt-1" />
           </div>
           <div>
             <Label className="text-xs text-muted-foreground">Address Line 2</Label>
-            <Input value={form.customer_address2 || ""} disabled className="mt-1" />
+            <Input value={form.customer_address2 || ""} onChange={(e) => handleCustomerFieldChange("customer_address2", e.target.value)} className="mt-1" />
           </div>
           <div>
             <Label className="text-xs text-muted-foreground">City</Label>
-            <Input value={form.customer_city || ""} disabled className="mt-1" />
+            <Input value={form.customer_city || ""} onChange={(e) => handleCustomerFieldChange("customer_city", e.target.value)} className="mt-1" />
           </div>
           <div>
             <Label className="text-xs text-muted-foreground">Zip</Label>
-            <Input value={(form.customer_zip || "").match(/\d{5}/)?.[0] || form.customer_zip || ""} disabled className="mt-1" />
+            <Input value={form.customer_zip || ""} onChange={(e) => handleCustomerFieldChange("customer_zip", e.target.value)} className="mt-1" />
           </div>
           <div>
             <Label className="text-xs text-muted-foreground">Phone</Label>
-            <Input value={form.customer_tel || ""} disabled className="mt-1" />
+            <Input value={form.customer_tel || ""} onChange={(e) => handleCustomerFieldChange("customer_tel", e.target.value)} className="mt-1" />
           </div>
           <div>
             <Label className="text-xs text-muted-foreground">Cell</Label>
-            <Input value={form.customer_cell || ""} disabled className="mt-1" />
+            <Input value={form.customer_cell || ""} onChange={(e) => handleCustomerFieldChange("customer_cell", e.target.value)} className="mt-1" />
           </div>
           <div className="md:col-span-2">
             <Label className="text-xs text-muted-foreground">Email</Label>
-            <Input type="email" value={form.customer_email || ""} disabled className="mt-1" />
+            <Input type="email" value={form.customer_email || ""} onChange={(e) => handleCustomerFieldChange("customer_email", e.target.value)} className="mt-1" />
           </div>
         </div>
       )}

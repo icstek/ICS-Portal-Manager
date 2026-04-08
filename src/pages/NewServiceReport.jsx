@@ -92,17 +92,22 @@ export default function NewServiceReport() {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      // Save new customer if no existing one selected
+      // Save or update customer
       let customerId = form.customer_id;
-      if (!customerId && form.customer_name) {
-        const newCustomer = await base44.entities.Customer.create({
-          name: form.customer_name,
-          address: form.customer_address,
-          city: form.customer_city,
-          zip: form.customer_zip,
-          tel: form.customer_tel,
-          cell: form.customer_cell,
-        });
+      const customerData = {
+        name: form.customer_name,
+        address: form.customer_address,
+        address2: form.customer_address2,
+        city: form.customer_city,
+        zip: form.customer_zip,
+        tel: form.customer_tel,
+        cell: form.customer_cell,
+        email: form.customer_email,
+      };
+      if (customerId) {
+        await base44.entities.Customer.update(customerId, customerData);
+      } else if (form.customer_name) {
+        const newCustomer = await base44.entities.Customer.create(customerData);
         customerId = newCustomer.id;
       }
 
