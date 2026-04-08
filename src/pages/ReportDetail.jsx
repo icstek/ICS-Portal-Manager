@@ -334,9 +334,11 @@ export default function ReportDetail() {
           <ArrowLeft className="w-4 h-4" /> Back
         </Button>
         <div className="flex gap-2">
-          <Button onClick={handleExportIIF} className="gap-2 bg-[#2CA01C] hover:bg-[#249016] text-white border-none">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/QuickBooks_logo.png/220px-QuickBooks_logo.png" alt="QB" className="w-4 h-4 object-contain" /> Export to IIF
-          </Button>
+          {!isTechnician && (
+            <Button onClick={handleExportIIF} className="gap-2 bg-[#2CA01C] hover:bg-[#249016] text-white border-none">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/QuickBooks_logo.png/220px-QuickBooks_logo.png" alt="QB" className="w-4 h-4 object-contain" /> Export to IIF
+            </Button>
+          )}
           <Button onClick={handleExportPDF} className="gap-2 bg-[#CC0000] hover:bg-[#B30000] text-white border-none">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Adobe_Acrobat_DC_logo_2020.svg/180px-Adobe_Acrobat_DC_logo_2020.svg.png" alt="PDF" className="w-4 h-4 object-contain" /> Export to PDF
           </Button>
