@@ -11,7 +11,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import { useRole } from "@/hooks/useRole";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/use-toast";
 import { useBranding } from "@/lib/BrandingContext";
 import { Edit2, Check } from "lucide-react";
 
@@ -87,7 +87,7 @@ export default function ReportDetail() {
     a.download = `invoice-${docNum || id}.iif`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success("IIF file exported");
+    toast({ title: "IIF file exported" });
   };
 
   const generatePDFWithTerms = async () => {
@@ -154,7 +154,7 @@ export default function ReportDetail() {
 
       return pdf;
     } catch (error) {
-      toast.error('Failed to generate PDF');
+      toast({ title: "Failed to generate PDF", variant: "destructive" });
       return null;
     }
   };
@@ -163,7 +163,7 @@ export default function ReportDetail() {
     const pdf = await generatePDFWithTerms();
     if (pdf) {
       pdf.save(`report-${r.report_number || id}.pdf`);
-      toast.success('Report exported as PDF');
+      toast({ title: "Report exported as PDF" });
     }
   };
 
@@ -191,7 +191,7 @@ export default function ReportDetail() {
 
   const handleSendEmail = async () => {
     if (!emailData.to) {
-      toast.error('Please enter a recipient email');
+      toast({ title: "Please enter a recipient email", variant: "destructive" });
       return;
     }
 
@@ -236,14 +236,14 @@ export default function ReportDetail() {
           message: response.data.message,
           details: response.data.details
         });
-        toast.success('Email sent successfully');
+        toast({ title: "Email sent successfully" });
       } else {
         setEmailResult({
           success: false,
           message: response.data.error,
           details: response.data.details
         });
-        toast.error(response.data.error || 'Failed to send email');
+        toast({ title: response.data.error || "Failed to send email", variant: "destructive" });
       }
     } catch (error) {
       const errorData = error.response?.data || {};
@@ -252,7 +252,7 @@ export default function ReportDetail() {
         message: errorData.error || error.message || 'Failed to send email',
         details: errorData.details
       });
-      toast.error('Failed to send email');
+      toast({ title: "Failed to send email", variant: "destructive" });
     } finally {
       setSendingEmail(false);
       setShowEmailDetails(false);
@@ -263,7 +263,7 @@ export default function ReportDetail() {
     mutationFn: () => base44.entities.ServiceReport.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reports"] });
-      toast.success("Report deleted");
+      toast({ title: "Report deleted" });
       navigate("/reports");
     },
   });
@@ -273,14 +273,14 @@ export default function ReportDetail() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["report", id] });
       queryClient.invalidateQueries({ queryKey: ["reports"] });
-      toast.success("Status updated");
+      toast({ title: "Status updated" });
     },
   });
 
   const toggleStatus = () => {
     console.log("toggleStatus called", { isAdmin, isTechnician, status: report?.service_status, role: user?.role });
     if (!isAdmin && report?.service_status === "complete") {
-      toast.error("To change service report status, contact the System admin.");
+      toast({ title: "To change service report status, contact the System admin.", variant: "destructive" });
       return;
     }
     const newStatus = report?.service_status === "complete" ? "incomplete" : "complete";
