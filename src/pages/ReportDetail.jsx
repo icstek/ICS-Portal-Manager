@@ -19,7 +19,7 @@ export default function ReportDetail() {
   const params = new URLSearchParams(window.location.search);
   const id = window.location.pathname.split("/").pop();
   const navigate = useNavigate();
-  const { isAdmin, isGlobalAdmin, isTechnician } = useRole();
+  const { user, isAdmin, isGlobalAdmin, isTechnician } = useRole();
   const { companyLogoUrl } = useBranding();
   const queryClient = useQueryClient();
   const [showEmailDialog, setShowEmailDialog] = useState(false);
@@ -278,6 +278,7 @@ export default function ReportDetail() {
   });
 
   const toggleStatus = () => {
+    console.log("toggleStatus called", { isAdmin, isTechnician, status: report?.service_status, role: user?.role });
     if (!isAdmin && report?.service_status === "complete") {
       toast.error("To change service report status, contact the System admin.");
       return;
