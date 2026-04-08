@@ -278,11 +278,11 @@ export default function ReportDetail() {
   });
 
   const toggleStatus = () => {
-    if (isTechnician && r?.service_status === "complete") {
+    if (!isAdmin && report?.service_status === "complete") {
       toast.error("To change service report status, contact the System admin.");
       return;
     }
-    const newStatus = r?.service_status === "complete" ? "incomplete" : "complete";
+    const newStatus = report?.service_status === "complete" ? "incomplete" : "complete";
     statusMutation.mutate(newStatus);
   };
 
