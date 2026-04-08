@@ -42,6 +42,17 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm,
     onOpenChange(false);
   };
 
+  // Disable any Radix focus traps while this dialog is open
+  useEffect(() => {
+    if (!open) return;
+    // Find all Radix dialog content elements and temporarily disable their focus trap
+    const radixDialogs = document.querySelectorAll('[role="dialog"][data-state="open"]');
+    radixDialogs.forEach((el) => el.setAttribute('inert', ''));
+    return () => {
+      radixDialogs.forEach((el) => el.removeAttribute('inert'));
+    };
+  }, [open]);
+
   if (!open) return null;
 
   return createPortal(
