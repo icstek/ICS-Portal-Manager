@@ -188,11 +188,11 @@ export default function Customers() {
                      <Button variant="ghost" size="icon" onClick={() => { setNotesCustomer(c); setForm({ ...form, notes: c.notes || "", cc_information: c.cc_information || "", passwords: c.passwords || "" }); setNotesOpen(true); }}><StickyNote className="w-4 h-4 text-orange-500" /></Button>
                    )}
                    <Button variant="ghost" size="icon" onClick={() => { setSelectedCustomerForReports(c); setReportsModalOpen(true); }}><FileText className="w-4 h-4" /></Button>
+                   {(isAdmin || isTechnician) && (
+                     <Button variant="ghost" size="icon" onClick={() => openEdit(c)}><Pencil className="w-4 h-4" /></Button>
+                   )}
                    {isAdmin && (
-                     <>
-                       <Button variant="ghost" size="icon" onClick={() => openEdit(c)}><Pencil className="w-4 h-4" /></Button>
-                       <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(c.id)} className="text-destructive hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
-                     </>
+                     <Button variant="ghost" size="icon" onClick={() => deleteMutation.mutate(c.id)} className="text-destructive hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
                    )}
                  </div>
                </CardContent>
