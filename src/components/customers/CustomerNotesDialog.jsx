@@ -8,7 +8,7 @@ import { X } from "lucide-react";
 import { toast } from "sonner";
 import CreditCardInput from "./CreditCardInput";
 
-export default function CustomerNotesDialog({ open, onOpenChange, form, setForm, onSave, readOnly = false, customerId }) {
+export default function CustomerNotesDialog({ open, onOpenChange, form, setForm, onSave, readOnly = false, customerId, onCCSubmit }) {
   const [local, setLocal] = useState({ notes: "", cc_information: "", passwords: "" });
 
   useEffect(() => {
@@ -64,6 +64,7 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm,
                   onClick={async () => {
                     await base44.entities.Customer.update(customerId, { cc_information: local.cc_information });
                     setForm((f) => ({ ...f, cc_information: local.cc_information }));
+                    if (onCCSubmit) onCCSubmit();
                     toast.success("CC information saved");
                   }}
                 >
