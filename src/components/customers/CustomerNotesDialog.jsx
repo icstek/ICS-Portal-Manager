@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
+import { toast } from "sonner";
 import CreditCardInput from "./CreditCardInput";
 
-export default function CustomerNotesDialog({ open, onOpenChange, form, setForm, onSave, readOnly = false }) {
+export default function CustomerNotesDialog({ open, onOpenChange, form, setForm, onSave, readOnly = false, customerId }) {
   const [local, setLocal] = useState({ notes: "", cc_information: "", passwords: "" });
 
   useEffect(() => {
@@ -55,6 +57,19 @@ export default function CustomerNotesDialog({ open, onOpenChange, form, setForm,
                 onChange={(val) => setLocal({ ...local, cc_information: val })}
                 readOnly={readOnly}
               />
+              {!readOnly && customerId && (
+                <Button
+                  size="sm"
+                  className="mt-2"
+                  onClick={async () => {
+                    await base44.entities.Customer.update(customerId, { cc_information: local.cc_information });
+                    setForm((f) => ({ ...f, cc_information: local.cc_information }));
+                    toast.success("CC information saved");
+                  }}
+                >
+                  Submit CC Info
+                </Button>
+              )}
             </div>
             <div className="flex flex-col">
               <Label className="text-xs">Passwords:</Label>

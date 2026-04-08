@@ -257,6 +257,7 @@ export default function Customers() {
         form={form}
         setForm={setForm}
         readOnly={isTechnician}
+        customerId={notesCustomer?.id}
         onSave={notesCustomer && !isTechnician ? async (data) => {
           await base44.entities.Customer.update(notesCustomer.id, data);
           queryClient.invalidateQueries({ queryKey: ["customers"] });
