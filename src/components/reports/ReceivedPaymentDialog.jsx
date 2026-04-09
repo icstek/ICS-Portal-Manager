@@ -24,7 +24,7 @@ export default function ReceivedPaymentDialog({ open, onOpenChange, onSubmit, re
       setForm({
         date: new Date().toISOString().split("T")[0],
         payment_type: "",
-        amount: balance > 0 ? balance.toFixed(2) : "",
+        amount: "",
         reference: "",
       });
     }
@@ -32,12 +32,20 @@ export default function ReceivedPaymentDialog({ open, onOpenChange, onSubmit, re
   };
 
   const handleSubmit = async () => {
+    if (!form.date) {
+      toast({ title: "Please enter a date", variant: "destructive" });
+      return;
+    }
     if (!form.payment_type) {
       toast({ title: "Please select a payment type", variant: "destructive" });
       return;
     }
     if (!form.amount || parseFloat(form.amount) <= 0) {
       toast({ title: "Please enter a valid amount", variant: "destructive" });
+      return;
+    }
+    if (!form.reference.trim()) {
+      toast({ title: "Please enter a reference", variant: "destructive" });
       return;
     }
     setSaving(true);
