@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Printer, Trash2, Download, Mail, AlertCircle, CheckCircle2, ChevronDown, Paperclip, Pencil, FileText } from "lucide-react";
+import { ArrowLeft, Printer, Trash2, Download, Mail, AlertCircle, CheckCircle2, ChevronDown, Paperclip, Pencil, FileText, DollarSign } from "lucide-react";
+import ReceivedPaymentDialog from "@/components/reports/ReceivedPaymentDialog";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useState, useEffect, useRef } from "react";
@@ -27,6 +28,7 @@ export default function ReportDetail() {
   const [editMode, setEditMode] = useState(false);
   const [sendingEmail, setSendingEmail] = useState(false);
   const [statusWarning, setStatusWarning] = useState(false);
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const warningTimerRef = useRef(null);
 
   useEffect(() => {
@@ -334,6 +336,11 @@ export default function ReportDetail() {
           <ArrowLeft className="w-4 h-4" /> Back
         </Button>
         <div className="flex gap-2">
+          {!isTechnician && r.service_status === "complete" && (
+            <Button onClick={() => setShowPaymentDialog(true)} className="gap-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white border-none">
+              <DollarSign className="w-4 h-4" /> Received Payment
+            </Button>
+          )}
           {!isTechnician && (
             <Button onClick={handleExportIIF} className="gap-2 bg-[#2CA01C] hover:bg-[#249016] text-white border-none">
               <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/QuickBooks_logo.png/220px-QuickBooks_logo.png" alt="QB" className="w-4 h-4 object-contain" /> Export to IIF
@@ -551,6 +558,15 @@ export default function ReportDetail() {
           </div>
         </CardContent>
       </Card>
+
+      <ReceivedPaymentDialog
+        open={showPaymentDialog}
+        onOpenChange={setShowPaymentDialog}
+        defaultAmount={r.total_charges || 0}
+        onSubmit={(data) => {
+          toast({ title: `Payment of $${data.amount} recorded` });
+        }}
+      />
 
       <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
         <DialogContent aria-describedby="email-dialog-description" className="max-w-lg">
