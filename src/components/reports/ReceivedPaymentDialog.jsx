@@ -35,6 +35,7 @@ export default function ReceivedPaymentDialog({ open, onOpenChange, onSubmit, re
 
   const handleSubmit = async () => {
     if (isFormEmpty) {
+      if (onSubmit) onSubmit();
       onOpenChange(false);
       return;
     }
