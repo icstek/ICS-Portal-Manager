@@ -50,9 +50,14 @@ export default function ReceivedPaymentDialog({ open, onOpenChange, onSubmit, de
               <SelectContent>
                 <SelectItem value="cash">Cash</SelectItem>
                 <SelectItem value="check">Check</SelectItem>
-                <SelectItem value="credit_card">Credit Card</SelectItem>
+                <SelectItem value="visa">Visa</SelectItem>
+                <SelectItem value="mastercard">Master Card</SelectItem>
+                <SelectItem value="discover">Discover</SelectItem>
+                <SelectItem value="amex">American Express</SelectItem>
                 <SelectItem value="ach">ACH / Bank Transfer</SelectItem>
                 <SelectItem value="zelle">Zelle</SelectItem>
+                <SelectItem value="venmo">Venmo</SelectItem>
+                <SelectItem value="paypal">PayPal</SelectItem>
                 <SelectItem value="other">Other</SelectItem>
               </SelectContent>
             </Select>
