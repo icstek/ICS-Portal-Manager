@@ -58,6 +58,7 @@ export default function ReceivedPaymentDialog({ open, onOpenChange, onSubmit, de
                 <SelectItem value="zelle">Zelle</SelectItem>
                 <SelectItem value="venmo">Venmo</SelectItem>
                 <SelectItem value="paypal">PayPal</SelectItem>
+                <SelectItem value="echeck">E-Check</SelectItem>
                 <SelectItem value="other">Other</SelectItem>
               </SelectContent>
             </Select>
