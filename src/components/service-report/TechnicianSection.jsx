@@ -12,7 +12,7 @@ const formatCurrency = (num) =>
 import { useAuth } from "@/lib/AuthContext";
 
 export default function TechnicianSection({ form, setForm }) {
-  const [rateChecked, setRateChecked] = useState(false);
+  const [rateChecked, setRateChecked] = useState(() => (form.hourly_rate ?? 0) > 0);
   const [travelChecked, setTravelChecked] = useState(false);
   const [editingField, setEditingField] = useState(null);
   const { user } = useAuth();
@@ -59,7 +59,7 @@ export default function TechnicianSection({ form, setForm }) {
         ...f,
         technician_id: match.id,
         technician_name: match.name || "",
-        hourly_rate: match.hourly_rate || f.hourly_rate || 145,
+        hourly_rate: f.hourly_rate ?? match.hourly_rate ?? 145,
       }));
     }
   }, [techOptions, user]);
@@ -71,7 +71,7 @@ export default function TechnicianSection({ form, setForm }) {
         ...f,
         technician_id: opt.id,
         technician_name: opt.name || "",
-        hourly_rate: opt.hourly_rate || f.hourly_rate || 145,
+        hourly_rate: f.hourly_rate ?? opt.hourly_rate ?? 145,
       }));
     }
   };

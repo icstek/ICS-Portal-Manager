@@ -64,7 +64,7 @@ export default function EditServiceReport() {
         time_left: report.time_left || "",
         wait_time: report.wait_time || 0,
         total_time_hours: report.total_time_hours || 0,
-        hourly_rate: report.hourly_rate || 145,
+        hourly_rate: report.hourly_rate ?? 0,
         misc_charge: report.misc_charge || 0,
         service_description: report.service_description || "",
         system_password: report.system_password || "",
