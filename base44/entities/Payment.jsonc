@@ -1,0 +1,46 @@
+{
+  "name": "Payment",
+  "type": "object",
+  "properties": {
+    "report_id": {
+      "type": "string",
+      "description": "Reference to the service report"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Payment date"
+    },
+    "payment_type": {
+      "type": "string",
+      "enum": [
+        "cash",
+        "check",
+        "visa",
+        "mastercard",
+        "discover",
+        "amex",
+        "ach",
+        "zelle",
+        "venmo",
+        "paypal",
+        "echeck",
+        "other"
+      ],
+      "description": "Payment method"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Payment amount"
+    },
+    "reference": {
+      "type": "string",
+      "description": "Check number, confirmation, etc."
+    }
+  },
+  "required": [
+    "report_id",
+    "amount",
+    "payment_type"
+  ]
+}

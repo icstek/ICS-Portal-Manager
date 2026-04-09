@@ -46,6 +46,17 @@ export default function ReportDetail() {
     enabled: !!id,
   });
 
+  const { data: payments = [] } = useQuery({
+    queryKey: ["payments", id],
+    queryFn: () => base44.entities.Payment.filter({ report_id: id }),
+    enabled: !!id,
+  });
+
+  const totalPaid = payments.reduce((sum, p) => sum + (p.amount || 0), 0);
+  const totalCharges = report?.total_charges || 0;
+  const openBalance = totalCharges - totalPaid;
+  const isPaidInFull = totalCharges > 0 && openBalance <= 0.005;
+
   const r = report;
 
   const handleExportIIF = () => {
@@ -394,7 +405,12 @@ export default function ReportDetail() {
               <div className="mb-3">
                 <div className="text-xs text-muted-foreground">6038 Tampa Ave, Tarzana, CA 91356 &nbsp;|&nbsp; 818-609-7648 &nbsp;|&nbsp; www.icstek.com &nbsp;|&nbsp; info@icstek.com</div>
               </div>
-              <CardTitle className="text-xl print:text-lg">Service Report {r.report_number ? `# ${r.report_number}` : ""}</CardTitle>
+              <div className="flex items-center gap-3">
+                <CardTitle className="text-xl print:text-lg">Service Report {r.report_number ? `# ${r.report_number}` : ""}</CardTitle>
+                {isPaidInFull && (
+                  <span className="inline-block bg-green-600 text-white text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-sm rotate-[-3deg] shadow-md border-2 border-green-700" style={{ letterSpacing: '0.15em' }}>PAID</span>
+                )}
+              </div>
               <p className="text-sm text-muted-foreground mt-1 print:mt-0 print:text-xs">
                 {r.date ? format(new Date(r.date.includes("T") ? r.date : r.date + "T00:00:00"), "MMMM d, yyyy") : ""}
               </p>
@@ -520,6 +536,15 @@ export default function ReportDetail() {
               <div className="flex justify-between text-sm"><span className="text-muted-foreground">Tax ({r.tax_rate || 9.5}%)</span><span>${(r.tax_amount || 0).toFixed(2)}</span></div>
               <hr className="border-border" />
               <div className="flex justify-between font-bold text-base"><span>Total</span><span>${(r.total_charges || 0).toFixed(2)}</span></div>
+              {totalPaid > 0 && (
+                <>
+                  <hr className="border-border" />
+                  <div className="flex justify-between text-sm text-green-700"><span>Paid</span><span>${totalPaid.toFixed(2)}</span></div>
+                  {!isPaidInFull && (
+                    <div className="flex justify-between font-bold text-base text-destructive"><span>Balance Due</span><span>${openBalance.toFixed(2)}</span></div>
+                  )}
+                </>
+              )}
             </div>
           )}
 
@@ -562,9 +587,11 @@ export default function ReportDetail() {
       <ReceivedPaymentDialog
         open={showPaymentDialog}
         onOpenChange={setShowPaymentDialog}
-        defaultAmount={r.total_charges || 0}
-        onSubmit={(data) => {
-          toast({ title: `Payment of $${data.amount} recorded` });
+        reportId={id}
+        defaultAmount={totalCharges}
+        totalPaid={totalPaid}
+        onSubmit={() => {
+          queryClient.invalidateQueries({ queryKey: ["payments", id] });
         }}
       />
 

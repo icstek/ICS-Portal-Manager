@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { base44 } from "@/api/base44Client";
+import { toast } from "@/components/ui/use-toast";
 
-export default function ReceivedPaymentDialog({ open, onOpenChange, onSubmit, defaultAmount }) {
+export default function ReceivedPaymentDialog({ open, onOpenChange, onSubmit, reportId, defaultAmount, totalPaid = 0 }) {
   const [form, setForm] = useState({
     date: new Date().toISOString().split("T")[0],
     payment_type: "",
@@ -13,16 +15,42 @@ export default function ReceivedPaymentDialog({ open, onOpenChange, onSubmit, de
     reference: "",
   });
 
+  const balance = defaultAmount - totalPaid;
+  const [saving, setSaving] = useState(false);
+
   const handleOpen = (isOpen) => {
     if (isOpen) {
       setForm({
         date: new Date().toISOString().split("T")[0],
         payment_type: "",
-        amount: defaultAmount ? defaultAmount.toFixed(2) : "",
+        amount: balance > 0 ? balance.toFixed(2) : "",
         reference: "",
       });
     }
     onOpenChange(isOpen);
+  };
+
+  const handleSubmit = async () => {
+    if (!form.payment_type) {
+      toast({ title: "Please select a payment type", variant: "destructive" });
+      return;
+    }
+    if (!form.amount || parseFloat(form.amount) <= 0) {
+      toast({ title: "Please enter a valid amount", variant: "destructive" });
+      return;
+    }
+    setSaving(true);
+    await base44.entities.Payment.create({
+      report_id: reportId,
+      date: form.date,
+      payment_type: form.payment_type,
+      amount: parseFloat(form.amount),
+      reference: form.reference,
+    });
+    setSaving(false);
+    toast({ title: `Payment of $${parseFloat(form.amount).toFixed(2)} recorded` });
+    if (onSubmit) onSubmit(form);
+    onOpenChange(false);
   };
 
   return (
@@ -84,9 +112,14 @@ export default function ReceivedPaymentDialog({ open, onOpenChange, onSubmit, de
             />
           </div>
         </div>
+        {balance !== undefined && balance > 0 && (
+          <div className="text-sm text-muted-foreground bg-muted/50 rounded px-3 py-2">
+            Open Balance: <span className="font-semibold text-foreground">${balance.toFixed(2)}</span>
+          </div>
+        )}
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button onClick={() => { if (onSubmit) onSubmit(form); onOpenChange(false); }}>OK</Button>
+          <Button onClick={handleSubmit} disabled={saving}>OK</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
