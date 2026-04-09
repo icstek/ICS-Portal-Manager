@@ -347,7 +347,7 @@ export default function ReportDetail() {
           <ArrowLeft className="w-4 h-4" /> Back
         </Button>
         <div className="flex gap-2">
-          {!isTechnician && r.service_status === "complete" && (
+          {r.service_status === "complete" && (
             <Button onClick={() => setShowPaymentDialog(true)} className="gap-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white border-none">
               <DollarSign className="w-4 h-4" /> Received Payment
             </Button>
