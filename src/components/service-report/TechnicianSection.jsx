@@ -12,6 +12,7 @@ const formatCurrency = (num) =>
 import { useAuth } from "@/lib/AuthContext";
 
 export default function TechnicianSection({ form, setForm }) {
+  const [rateChecked, setRateChecked] = useState(false);
   const [travelChecked, setTravelChecked] = useState(false);
   const [editingField, setEditingField] = useState(null);
   const { user } = useAuth();
@@ -103,12 +104,23 @@ export default function TechnicianSection({ form, setForm }) {
           <Input type="number" step="1" value={form.total_time_hours || ""} onChange={(e) => handleChange("total_time_hours", parseFloat(e.target.value) || 0)} />
         </div>
         <div>
-          <Label className="text-xs text-muted-foreground block mb-1">Hr. Rate ($)</Label>
+          <div className="flex items-center gap-1.5 mb-1">
+            <Checkbox
+              id="rate-check"
+              checked={rateChecked}
+              onCheckedChange={(checked) => {
+                setRateChecked(checked);
+                handleChange("hourly_rate", checked ? 145 : 0);
+              }}
+            />
+            <Label htmlFor="rate-check" className="text-xs text-muted-foreground cursor-pointer leading-none">Hr. Rate ($)</Label>
+          </div>
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">$</span>
             <Input
               type="text"
               inputMode="decimal"
+              disabled={rateChecked}
               value={editingField === "hourly_rate" ? (form.hourly_rate || "") : formatCurrency(form.hourly_rate)}
               onChange={(e) => { const val = e.target.value.replace(/[^0-9.]/g, ""); handleChange("hourly_rate", parseFloat(val) || 0); }}
               onFocus={() => setEditingField("hourly_rate")}
