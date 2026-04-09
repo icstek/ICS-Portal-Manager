@@ -31,7 +31,13 @@ export default function ReceivedPaymentDialog({ open, onOpenChange, onSubmit, re
     onOpenChange(isOpen);
   };
 
+  const isFormEmpty = !form.payment_type && !form.amount && !form.reference.trim();
+
   const handleSubmit = async () => {
+    if (isFormEmpty) {
+      onOpenChange(false);
+      return;
+    }
     if (!form.date) {
       toast({ title: "Please enter a date", variant: "destructive" });
       return;
