@@ -590,6 +590,7 @@ export default function ReportDetail() {
         reportId={id}
         defaultAmount={totalCharges}
         totalPaid={totalPaid}
+        payments={payments}
         onSubmit={() => {
           queryClient.invalidateQueries({ queryKey: ["payments", id] });
         }}

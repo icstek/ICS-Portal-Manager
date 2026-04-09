@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { base44 } from "@/api/base44Client";
 import { toast } from "@/components/ui/use-toast";
+import PaymentHistory from "./PaymentHistory";
 
-export default function ReceivedPaymentDialog({ open, onOpenChange, onSubmit, reportId, defaultAmount, totalPaid = 0 }) {
+export default function ReceivedPaymentDialog({ open, onOpenChange, onSubmit, reportId, defaultAmount, totalPaid = 0, payments = [] }) {
   const [form, setForm] = useState({
     date: new Date().toISOString().split("T")[0],
     payment_type: "",
@@ -55,7 +56,7 @@ export default function ReceivedPaymentDialog({ open, onOpenChange, onSubmit, re
 
   return (
     <Dialog open={open} onOpenChange={handleOpen}>
-      <DialogContent className="max-w-sm">
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Received Payment</DialogTitle>
         </DialogHeader>
@@ -117,6 +118,7 @@ export default function ReceivedPaymentDialog({ open, onOpenChange, onSubmit, re
             Open Balance: <span className="font-semibold text-foreground">${balance.toFixed(2)}</span>
           </div>
         )}
+        <PaymentHistory payments={payments} onRemove={onSubmit} />
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button onClick={handleSubmit} disabled={saving}>OK</Button>
