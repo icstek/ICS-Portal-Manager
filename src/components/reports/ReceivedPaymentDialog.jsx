@@ -44,7 +44,7 @@ export default function ReceivedPaymentDialog({ open, onOpenChange, onSubmit, re
       toast({ title: "Please enter a valid amount", variant: "destructive" });
       return;
     }
-    if (!form.reference.trim()) {
+    if (form.payment_type !== "cash" && !form.reference.trim()) {
       toast({ title: "Please enter a reference", variant: "destructive" });
       return;
     }
