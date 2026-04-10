@@ -32,7 +32,7 @@ export default function NotesSection({ user }) {
         ) : (
           <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
             {notes.map((note) => (
-              <NoteItem key={note.id} note={note} />
+              <NoteItem key={note.id} note={note} userRole={user?.role} onDelete={() => queryClient.invalidateQueries({ queryKey: ["techNotes"] })} />
             ))}
           </div>
         )}
