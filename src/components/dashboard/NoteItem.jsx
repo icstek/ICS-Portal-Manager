@@ -2,7 +2,7 @@ import { format } from "date-fns";
 
 export default function NoteItem({ note }) {
   const date = note.created_date
-    ? format(new Date(note.created_date), "MMM d, yyyy · h:mm a")
+    ? format(new Date(note.created_date), "MMM d, yyyy · h:mm:ss a")
     : "";
 
   return (
