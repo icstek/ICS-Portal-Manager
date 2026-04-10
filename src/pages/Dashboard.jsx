@@ -149,11 +149,11 @@ export default function Dashboard() {
         <NotesSection user={user} />
       </div>
 
-      {/* Recent Technician Reports */}
-      {user?.email && myReports.length > 0 && (
+      {/* Recent Reports */}
+      {myReports.length > 0 && (
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-4">
-            <CardTitle className="text-lg">My Recent Reports</CardTitle>
+            <CardTitle className="text-lg">Recent Reports</CardTitle>
             <Link to="/reports">
               <Button variant="ghost" size="sm" className="gap-1 text-xs">
                 View All <ArrowRight className="w-3 h-3" />
