@@ -100,98 +100,54 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Incomplete Reports */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-4">
-          <CardTitle className="text-lg">Incomplete Reports</CardTitle>
-          <Link to="/reports?filter=incomplete">
-            <Button variant="ghost" size="sm" className="gap-1 text-xs">
-              View All <ArrowRight className="w-3 h-3" />
-            </Button>
-          </Link>
-        </CardHeader>
-        <CardContent>
-          {incompleteReports.length === 0 ? (
-            <p className="text-muted-foreground text-sm text-center py-8">No incomplete reports. All caught up!</p>
-          ) : (
-            <div className="space-y-3">
-              {incompleteReports.map((r) => (
-                <Link key={r.id} to={`/reports/${r.id}`}>
-                  <Card className="hover:shadow-md transition-shadow cursor-pointer mb-3">
-                    <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                          <FileText className="w-5 h-5 text-primary" />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="font-medium truncate">{r.customer_name || "Unknown Customer"}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {r.report_number ? `#${r.report_number} · ` : ""}{r.date ? format(new Date(r.date.includes("T") ? r.date : r.date + "T00:00:00"), "MMM d, yyyy") : "No date"}
-                            {r.technician_name ? ` · ${r.technician_name}` : ""}
-                          </p>
-                          {r.memo && <p className="text-xs text-muted-foreground italic truncate">{r.memo}</p>}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3 shrink-0">
-                        <Badge variant="outline" className="capitalize text-[10px]">{r.report_type || "repair"}</Badge>
-                        <Badge variant="secondary" className="text-[10px] capitalize">incomplete</Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Recent Technician Reports */}
-      {user?.email && myReports.length > 0 && (
+      {/* Incomplete Reports & Notes side by side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-4">
-            <CardTitle className="text-lg">My Recent Reports</CardTitle>
-            <Link to="/reports">
+            <CardTitle className="text-lg">Incomplete Reports</CardTitle>
+            <Link to="/reports?filter=incomplete">
               <Button variant="ghost" size="sm" className="gap-1 text-xs">
                 View All <ArrowRight className="w-3 h-3" />
               </Button>
             </Link>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {myReports.map((r) => (
-                <Link key={r.id} to={`/reports/${r.id}`}>
-                  <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
-                    <CardContent className="p-3 flex flex-col gap-2 h-full">
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <FileText className="w-4 h-4 text-primary" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm truncate">{r.customer_name || "Unknown"}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {r.report_number ? `#${r.report_number}` : "No #"}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {r.date ? format(new Date(r.date.includes("T") ? r.date : r.date + "T00:00:00"), "MMM d, yyyy") : "No date"}
-                        </p>
-                        {r.memo && <p className="text-xs text-muted-foreground italic truncate mt-1">{r.memo}</p>}
-                      </div>
-                      <Badge
-                        variant={r.service_status === "complete" ? "default" : "secondary"}
-                        className="text-[10px] capitalize w-fit"
-                      >
-                        {r.service_status || "incomplete"}
-                      </Badge>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </div>
+            {incompleteReports.length === 0 ? (
+              <p className="text-muted-foreground text-sm text-center py-8">No incomplete reports. All caught up!</p>
+            ) : (
+              <div className="space-y-3">
+                {incompleteReports.map((r) => (
+                  <Link key={r.id} to={`/reports/${r.id}`}>
+                    <Card className="hover:shadow-md transition-shadow cursor-pointer mb-3">
+                      <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                            <FileText className="w-5 h-5 text-primary" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-medium truncate">{r.customer_name || "Unknown Customer"}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {r.report_number ? `#${r.report_number} · ` : ""}{r.date ? format(new Date(r.date.includes("T") ? r.date : r.date + "T00:00:00"), "MMM d, yyyy") : "No date"}
+                              {r.technician_name ? ` · ${r.technician_name}` : ""}
+                            </p>
+                            {r.memo && <p className="text-xs text-muted-foreground italic truncate">{r.memo}</p>}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 shrink-0">
+                          <Badge variant="outline" className="capitalize text-[10px]">{r.report_type || "repair"}</Badge>
+                          <Badge variant="secondary" className="text-[10px] capitalize">incomplete</Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
-      )}
 
-      {/* Notes */}
-      <NotesSection user={user} />
+        <NotesSection user={user} />
+      </div>
 
       <NewCustomerDialog open={showNewCustomer} onOpenChange={setShowNewCustomer} />
     </div>
