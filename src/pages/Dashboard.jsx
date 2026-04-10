@@ -149,6 +149,51 @@ export default function Dashboard() {
         <NotesSection user={user} />
       </div>
 
+      {/* Recent Technician Reports */}
+      {user?.email && myReports.length > 0 && (
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <CardTitle className="text-lg">My Recent Reports</CardTitle>
+            <Link to="/reports">
+              <Button variant="ghost" size="sm" className="gap-1 text-xs">
+                View All <ArrowRight className="w-3 h-3" />
+              </Button>
+            </Link>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {myReports.map((r) => (
+                <Link key={r.id} to={`/reports/${r.id}`}>
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
+                    <CardContent className="p-3 flex flex-col gap-2 h-full">
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <FileText className="w-4 h-4 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">{r.customer_name || "Unknown"}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {r.report_number ? `#${r.report_number}` : "No #"}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {r.date ? format(new Date(r.date.includes("T") ? r.date : r.date + "T00:00:00"), "MMM d, yyyy") : "No date"}
+                        </p>
+                        {r.memo && <p className="text-xs text-muted-foreground italic truncate mt-1">{r.memo}</p>}
+                      </div>
+                      <Badge
+                        variant={r.service_status === "complete" ? "default" : "secondary"}
+                        className="text-[10px] capitalize w-fit"
+                      >
+                        {r.service_status || "incomplete"}
+                      </Badge>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <NewCustomerDialog open={showNewCustomer} onOpenChange={setShowNewCustomer} />
     </div>
   );
