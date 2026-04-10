@@ -1,0 +1,21 @@
+{
+  "name": "TechNote",
+  "type": "object",
+  "properties": {
+    "author_name": {
+      "type": "string",
+      "description": "Name of the technician who wrote the note"
+    },
+    "author_email": {
+      "type": "string",
+      "description": "Email of the technician"
+    },
+    "message": {
+      "type": "string",
+      "description": "Note content"
+    }
+  },
+  "required": [
+    "message"
+  ]
+}

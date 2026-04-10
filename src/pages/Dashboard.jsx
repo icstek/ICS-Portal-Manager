@@ -10,6 +10,7 @@ import { useUserSettings } from "@/hooks/useUserSettings";
 import { useRole } from "@/hooks/useRole";
 import { useState } from "react";
 import NewCustomerDialog from "@/components/customers/NewCustomerDialog";
+import NotesSection from "@/components/dashboard/NotesSection";
 
 export default function Dashboard() {
   const { settings } = useUserSettings();
@@ -188,6 +189,9 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       )}
+
+      {/* Notes */}
+      <NotesSection user={user} />
 
       <NewCustomerDialog open={showNewCustomer} onOpenChange={setShowNewCustomer} />
     </div>
