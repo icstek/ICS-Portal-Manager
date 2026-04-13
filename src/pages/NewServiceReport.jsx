@@ -243,7 +243,10 @@ export default function NewServiceReport() {
             <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">Problem Description (Customer)</h3>
             <Textarea
               value={form.problem_description || ""}
-              onChange={(e) => setForm((f) => ({ ...f, problem_description: e.target.value }))}
+              onChange={(e) => {
+                const val = e.target.value;
+                setForm((f) => ({ ...f, problem_description: val, memo: val.substring(0, 100) }));
+              }}
               placeholder="Describe the problem as reported by the customer..."
               className="min-h-[80px]"
             />
