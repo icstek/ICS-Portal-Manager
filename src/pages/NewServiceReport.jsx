@@ -248,7 +248,7 @@ export default function NewServiceReport() {
               value={form.problem_description || ""}
               onChange={(e) => {
                 const val = e.target.value;
-                setForm((f) => ({ ...f, problem_description: val, memo: val.substring(0, 100) }));
+                setForm((f) => ({ ...f, problem_description: val, memo: val.substring(0, 150) }));
               }}
               placeholder="Describe the problem as reported by the customer..."
               className="min-h-[80px]"
