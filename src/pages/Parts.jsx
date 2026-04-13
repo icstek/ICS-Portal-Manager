@@ -68,8 +68,8 @@ export default function Parts() {
     return <Navigate to="/" replace />;
   }
 
-  const openNew = () => { setEditing(null); setForm({ name: "", sku: "", unit_cost: 0, stock_quantity: 0, category: "other" }); setDialogOpen(true); };
-  const openEdit = (p) => { setEditing(p); setForm({ name: p.name || "", sku: p.sku || "", unit_cost: p.unit_cost || 0, stock_quantity: p.stock_quantity || 0, category: p.category || "other" }); setDialogOpen(true); };
+  const openNew = () => { setEditing(null); setForm({ name: "", sku: "", unit_cost: 0, stock_quantity: 0, category: "other", taxable: true }); setDialogOpen(true); };
+  const openEdit = (p) => { setEditing(p); setForm({ name: p.name || "", sku: p.sku || "", unit_cost: p.unit_cost || 0, stock_quantity: p.stock_quantity || 0, category: p.category || "other", taxable: p.taxable !== false }); setDialogOpen(true); };
 
   const filtered = parts.filter((p) => (p.name || "").toLowerCase().includes(search.toLowerCase()) || (p.sku || "").toLowerCase().includes(search.toLowerCase()));
 
@@ -203,6 +203,10 @@ export default function Parts() {
                   {categories.map((c) => (<SelectItem key={c} value={c} className="capitalize">{c}</SelectItem>))}
                 </SelectContent>
               </Select>
+            </div>
+            <div className="flex items-center gap-2">
+              <Checkbox checked={form.taxable !== false} onCheckedChange={(v) => setForm({ ...form, taxable: !!v })} />
+              <Label className="text-xs">Taxable</Label>
             </div>
           </div>
           <DialogFooter>

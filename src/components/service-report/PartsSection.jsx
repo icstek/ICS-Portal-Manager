@@ -18,7 +18,7 @@ export default function PartsSection({ items, setItems }) {
   });
 
   const addItem = () => {
-    setItems([...items, { part_name: "", part_description: "", part_id: "", qty: 1, unit_cost: 0, total: 0 }]);
+    setItems([...items, { part_name: "", part_description: "", part_id: "", qty: 1, unit_cost: 0, total: 0, taxable: true }]);
   };
 
   const removeItem = (idx) => {
@@ -45,6 +45,7 @@ export default function PartsSection({ items, setItems }) {
         part_description: p.name,
         unit_cost: p.unit_cost || 0,
         total: (updated[idx].qty || 1) * (p.unit_cost || 0),
+        taxable: p.taxable !== false,
       };
       setItems(updated);
       setSearches({ ...searches, [idx]: "" });

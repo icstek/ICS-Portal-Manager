@@ -1,12 +1,13 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
-export default function ChargesSection({ form, setForm, partsTotal }) {
+export default function ChargesSection({ form, setForm, partsTotal, taxablePartsTotal }) {
   const laborOnly = (form.total_time_hours || 0) * (form.hourly_rate || 0);
   const travelCharge = form.misc_charge || 0;
   const subTotal = laborOnly + travelCharge + partsTotal;
   const taxRate = form.tax_rate ?? 9.75;
-  const taxAmount = partsTotal * (taxRate / 100);
+  const taxBase = taxablePartsTotal != null ? taxablePartsTotal : partsTotal;
+  const taxAmount = taxBase * (taxRate / 100);
   const totalCharges = subTotal + taxAmount;
 
   return (
