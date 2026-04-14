@@ -28,14 +28,18 @@ export default function Dashboard() {
     queryFn: () => base44.entities.ServiceReport.filter({ service_status: "incomplete" }, "-created_date", 2),
   });
 
+  const { isAdmin } = useRole();
+
   const { data: myReports = [] } = useQuery({
-    queryKey: ["reports", "mine", user?.email],
+    queryKey: ["reports", "recent", isAdmin ? "all" : user?.email],
     queryFn: () =>
-      base44.entities.ServiceReport.filter(
-        { created_by: user?.email },
-        "-created_date",
-        8
-      ),
+      isAdmin
+        ? base44.entities.ServiceReport.list("-created_date", 8)
+        : base44.entities.ServiceReport.filter(
+            { created_by: user?.email },
+            "-created_date",
+            8
+          ),
     enabled: !!user?.email,
   });
 
